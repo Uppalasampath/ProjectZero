@@ -9,6 +9,7 @@ import Dashboard from "./pages/Dashboard";
 import Marketplace from "./pages/Marketplace";
 import Carbon from "./pages/Carbon";
 import Compliance from "./pages/Compliance";
+import Organization from "./pages/Organization";
 import Settings from "./pages/Settings";
 import Help from "./pages/Help";
 import ListWaste from "./pages/ListWaste";
@@ -73,6 +74,7 @@ const App = () => (
             <Route path="/data-collection" element={<ProtectedRoute><DataCollection /></ProtectedRoute>} />
             <Route path="/report-generation" element={<ProtectedRoute><ReportGeneration /></ProtectedRoute>} />
             <Route path="/regulatory-monitor" element={<ProtectedRoute><RegulatoryMonitor /></ProtectedRoute>} />
+            <Route path="/organization" element={<ProtectedRoute><Organization /></ProtectedRoute>} />
             <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
             <Route path="/help" element={<ProtectedRoute><Help /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />

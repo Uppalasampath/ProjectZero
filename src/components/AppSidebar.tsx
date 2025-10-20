@@ -1,4 +1,4 @@
-import { Home, Recycle, Leaf, ShieldCheck, Settings, HelpCircle, ChevronDown } from "lucide-react";
+import { Home, Recycle, Leaf, ShieldCheck, Building2, Settings, HelpCircle, ChevronDown } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useState } from "react";
 import {
@@ -56,6 +56,7 @@ const menuItems = [
       { title: "Regulatory Monitor", url: "/regulatory-monitor" },
     ]
   },
+  { title: "Organization", url: "/organization", icon: Building2 },
   { title: "Settings", url: "/settings", icon: Settings },
   { title: "Help & Support", url: "/help", icon: HelpCircle },
 ];
@@ -78,14 +79,14 @@ export function AppSidebar() {
     <Sidebar className="border-r border-sidebar-border">
       <SidebarContent>
         <div className="p-6">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center">
-              <Leaf className="w-5 h-5 text-white" />
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-eco flex items-center justify-center shadow-eco">
+              <Leaf className="w-6 h-6 text-white" />
             </div>
             {open && (
               <div>
-                <h1 className="text-xl font-bold text-sidebar-foreground">ZERO</h1>
-                <p className="text-xs text-sidebar-foreground/60">Sustainability Platform</p>
+                <h1 className="text-2xl font-bold text-sidebar-foreground">ZERO</h1>
+                <p className="text-xs text-sidebar-foreground/70">Sustainable Future</p>
               </div>
             )}
           </div>
