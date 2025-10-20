@@ -1,5 +1,6 @@
-import { Home, Recycle, Leaf, ShieldCheck, Settings, HelpCircle } from "lucide-react";
-import { NavLink } from "react-router-dom";
+import { Home, Recycle, Leaf, ShieldCheck, Settings, HelpCircle, ChevronDown } from "lucide-react";
+import { NavLink, useLocation } from "react-router-dom";
+import { useState } from "react";
 import {
   Sidebar,
   SidebarContent,
@@ -9,20 +10,64 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 const menuItems = [
   { title: "Dashboard", url: "/", icon: Home },
-  { title: "Circular Marketplace", url: "/marketplace", icon: Recycle },
-  { title: "Carbon Engine", url: "/carbon", icon: Leaf },
-  { title: "Compliance Autopilot", url: "/compliance", icon: ShieldCheck },
+  { 
+    title: "Circular Marketplace", 
+    url: "/marketplace", 
+    icon: Recycle,
+    submenu: [
+      { title: "Browse Materials", url: "/marketplace" },
+      { title: "My Transactions", url: "/my-transactions" },
+      { title: "List Waste", url: "/list-waste" },
+    ]
+  },
+  { 
+    title: "Carbon Engine", 
+    url: "/carbon", 
+    icon: Leaf,
+    submenu: [
+      { title: "Dashboard", url: "/carbon" },
+      { title: "Emission Sources", url: "/emission-sources" },
+      { title: "Offset Marketplace", url: "/offset-marketplace" },
+    ]
+  },
+  { 
+    title: "Compliance Autopilot", 
+    url: "/compliance", 
+    icon: ShieldCheck,
+    submenu: [
+      { title: "Overview", url: "/compliance" },
+      { title: "CSRD Framework", url: "/framework/csrd" },
+      { title: "Data Collection", url: "/data-collection" },
+      { title: "Report Generation", url: "/report-generation" },
+      { title: "Regulatory Monitor", url: "/regulatory-monitor" },
+    ]
+  },
   { title: "Settings", url: "/settings", icon: Settings },
   { title: "Help & Support", url: "/help", icon: HelpCircle },
 ];
 
 export function AppSidebar() {
   const { open } = useSidebar();
+  const location = useLocation();
+  const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
+
+  const toggleMenu = (title: string) => {
+    setOpenMenus(prev => ({ ...prev, [title]: !prev[title] }));
+  };
+
+  const isSubmenuActive = (submenu?: Array<{ url: string }>) => {
+    if (!submenu) return false;
+    return submenu.some(item => location.pathname === item.url || location.pathname.startsWith(item.url + '/'));
+  };
 
   return (
     <Sidebar className="border-r border-sidebar-border">
@@ -47,19 +92,54 @@ export function AppSidebar() {
             <SidebarMenu>
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <NavLink
-                      to={item.url}
-                      className={({ isActive }) =>
-                        isActive
-                          ? "bg-sidebar-accent text-sidebar-primary font-medium"
-                          : "hover:bg-sidebar-accent/50"
-                      }
+                  {item.submenu ? (
+                    <Collapsible
+                      open={openMenus[item.title] || isSubmenuActive(item.submenu)}
+                      onOpenChange={() => toggleMenu(item.title)}
                     >
-                      <item.icon className="w-5 h-5" />
-                      <span>{item.title}</span>
-                    </NavLink>
-                  </SidebarMenuButton>
+                      <CollapsibleTrigger asChild>
+                        <SidebarMenuButton className={isSubmenuActive(item.submenu) ? "bg-sidebar-accent text-sidebar-primary font-medium" : ""}>
+                          <item.icon className="w-5 h-5" />
+                          <span>{item.title}</span>
+                          <ChevronDown className="ml-auto h-4 w-4 transition-transform" />
+                        </SidebarMenuButton>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent>
+                        <SidebarMenuSub>
+                          {item.submenu.map((subItem) => (
+                            <SidebarMenuSubItem key={subItem.url}>
+                              <SidebarMenuSubButton asChild>
+                                <NavLink
+                                  to={subItem.url}
+                                  className={({ isActive }) =>
+                                    isActive
+                                      ? "bg-sidebar-accent text-sidebar-primary font-medium"
+                                      : "hover:bg-sidebar-accent/50"
+                                  }
+                                >
+                                  {subItem.title}
+                                </NavLink>
+                              </SidebarMenuSubButton>
+                            </SidebarMenuSubItem>
+                          ))}
+                        </SidebarMenuSub>
+                      </CollapsibleContent>
+                    </Collapsible>
+                  ) : (
+                    <SidebarMenuButton asChild>
+                      <NavLink
+                        to={item.url}
+                        className={({ isActive }) =>
+                          isActive
+                            ? "bg-sidebar-accent text-sidebar-primary font-medium"
+                            : "hover:bg-sidebar-accent/50"
+                        }
+                      >
+                        <item.icon className="w-5 h-5" />
+                        <span>{item.title}</span>
+                      </NavLink>
+                    </SidebarMenuButton>
+                  )}
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>

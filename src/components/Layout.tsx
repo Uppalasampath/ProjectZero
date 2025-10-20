@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { Header } from "@/components/Header";
+import { QuickActionsButton } from "@/components/QuickActionsButton";
 
 interface LayoutProps {
   children: ReactNode;
@@ -18,6 +19,7 @@ export const Layout = ({ children }: LayoutProps) => {
             {children}
           </main>
         </div>
+        <QuickActionsButton />
       </div>
     </SidebarProvider>
   );
