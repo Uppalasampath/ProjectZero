@@ -3,6 +3,8 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./contexts/AuthContext";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 import Dashboard from "./pages/Dashboard";
 import Marketplace from "./pages/Marketplace";
 import Carbon from "./pages/Carbon";
@@ -19,6 +21,9 @@ import FrameworkDetail from "./pages/FrameworkDetail";
 import DataCollection from "./pages/DataCollection";
 import ReportGeneration from "./pages/ReportGeneration";
 import RegulatoryMonitor from "./pages/RegulatoryMonitor";
+import Login from "./pages/Login";
+import SignUp from "./pages/SignUp";
+import Onboarding from "./pages/Onboarding";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -29,25 +34,33 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/marketplace" element={<Marketplace />} />
-          <Route path="/list-waste" element={<ListWaste />} />
-          <Route path="/my-transactions" element={<MyTransactions />} />
-          <Route path="/transaction/:id" element={<TransactionDetail />} />
-          <Route path="/carbon" element={<Carbon />} />
-          <Route path="/emission-sources" element={<EmissionSources />} />
-          <Route path="/offset-marketplace" element={<OffsetMarketplace />} />
-          <Route path="/offset-project/:id" element={<OffsetProjectDetail />} />
-          <Route path="/compliance" element={<Compliance />} />
-          <Route path="/framework/:id" element={<FrameworkDetail />} />
-          <Route path="/data-collection" element={<DataCollection />} />
-          <Route path="/report-generation" element={<ReportGeneration />} />
-          <Route path="/regulatory-monitor" element={<RegulatoryMonitor />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/help" element={<Help />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <AuthProvider>
+          <Routes>
+            {/* Public routes */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<SignUp />} />
+            
+            {/* Protected routes */}
+            <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
+            <Route path="/marketplace" element={<ProtectedRoute><Marketplace /></ProtectedRoute>} />
+            <Route path="/list-waste" element={<ProtectedRoute><ListWaste /></ProtectedRoute>} />
+            <Route path="/my-transactions" element={<ProtectedRoute><MyTransactions /></ProtectedRoute>} />
+            <Route path="/transaction/:id" element={<ProtectedRoute><TransactionDetail /></ProtectedRoute>} />
+            <Route path="/carbon" element={<ProtectedRoute><Carbon /></ProtectedRoute>} />
+            <Route path="/emission-sources" element={<ProtectedRoute><EmissionSources /></ProtectedRoute>} />
+            <Route path="/offset-marketplace" element={<ProtectedRoute><OffsetMarketplace /></ProtectedRoute>} />
+            <Route path="/offset-project/:id" element={<ProtectedRoute><OffsetProjectDetail /></ProtectedRoute>} />
+            <Route path="/compliance" element={<ProtectedRoute><Compliance /></ProtectedRoute>} />
+            <Route path="/framework/:id" element={<ProtectedRoute><FrameworkDetail /></ProtectedRoute>} />
+            <Route path="/data-collection" element={<ProtectedRoute><DataCollection /></ProtectedRoute>} />
+            <Route path="/report-generation" element={<ProtectedRoute><ReportGeneration /></ProtectedRoute>} />
+            <Route path="/regulatory-monitor" element={<ProtectedRoute><RegulatoryMonitor /></ProtectedRoute>} />
+            <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+            <Route path="/help" element={<ProtectedRoute><Help /></ProtectedRoute>} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
