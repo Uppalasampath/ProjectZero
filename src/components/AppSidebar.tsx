@@ -50,7 +50,7 @@ const menuItems = [
     icon: ShieldCheck,
     submenu: [
       { title: "Overview", url: "/compliance" },
-      { title: "CSRD Framework", url: "/framework/csrd" },
+      { title: "Frameworks", url: "/framework/csrd" },
       { title: "Data Collection", url: "/data-collection" },
       { title: "Report Generation", url: "/report-generation" },
       { title: "Regulatory Monitor", url: "/regulatory-monitor" },
