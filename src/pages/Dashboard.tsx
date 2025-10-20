@@ -1,8 +1,9 @@
 import { Layout } from "@/components/Layout";
 import { MetricCard } from "@/components/dashboard/MetricCard";
 import { ModuleCard } from "@/components/dashboard/ModuleCard";
-import { Activity, Trash2, ShieldCheck, DollarSign, Recycle, Leaf, FileCheck } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ActivityFeed } from "@/components/ActivityFeed";
+import { Activity, Trash2, ShieldCheck, DollarSign, Recycle, Leaf, FileCheck, TrendingUp } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
 const Dashboard = () => {
@@ -84,38 +85,48 @@ const Dashboard = () => {
           />
         </div>
 
-        {/* Recent Activity */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Activity</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {[
-                { type: "marketplace", title: "New waste transaction", description: "Steel scrap sold to Regional Recycling Co.", time: "2 hours ago", badge: "Completed" },
-                { type: "carbon", title: "Carbon credit generated", description: "15 tons CO2e from circular transaction", time: "5 hours ago", badge: "Verified" },
-                { type: "compliance", title: "CSRD milestone reached", description: "E5 metric auto-updated from marketplace data", time: "1 day ago", badge: "Auto-Updated" },
-                { type: "marketplace", title: "AI match found", description: "Potential buyer for textile waste identified", time: "2 days ago", badge: "Pending" },
-              ].map((activity, index) => (
-                <div key={index} className="flex items-start justify-between border-b border-border pb-4 last:border-0 last:pb-0">
-                  <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                      {activity.type === "marketplace" && <Recycle className="w-5 h-5 text-primary" />}
-                      {activity.type === "carbon" && <Leaf className="w-5 h-5 text-primary" />}
-                      {activity.type === "compliance" && <FileCheck className="w-5 h-5 text-primary" />}
-                    </div>
-                    <div>
-                      <h4 className="font-semibold">{activity.title}</h4>
-                      <p className="text-sm text-muted-foreground">{activity.description}</p>
-                      <p className="text-xs text-muted-foreground mt-1">{activity.time}</p>
-                    </div>
+        <div className="grid gap-6 lg:grid-cols-2">
+          {/* Cross-Module Impact Summary */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Cross-Module Impact</CardTitle>
+              <CardDescription>Real-time synchronized data across all modules</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="p-4 border-l-4 border-blue-500 bg-blue-50 dark:bg-blue-950/20">
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-sm font-medium">Circular Economy</p>
+                    <Badge variant="outline" className="text-xs">Module 1 → 2, 3</Badge>
                   </div>
-                  <Badge variant="outline">{activity.badge}</Badge>
+                  <p className="text-2xl font-bold">8,200 tons</p>
+                  <p className="text-xs text-muted-foreground mt-1">Waste diverted • $3.2M revenue • Updated CSRD E5</p>
                 </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+                
+                <div className="p-4 border-l-4 border-green-500 bg-green-50 dark:bg-green-950/20">
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-sm font-medium">Climate Action</p>
+                    <Badge variant="outline" className="text-xs">Module 2 → 3</Badge>
+                  </div>
+                  <p className="text-2xl font-bold">-22%</p>
+                  <p className="text-xs text-muted-foreground mt-1">Scope 3 reduction • Auto-synced to all frameworks</p>
+                </div>
+                
+                <div className="p-4 border-l-4 border-purple-500 bg-purple-50 dark:bg-purple-950/20">
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-sm font-medium">Compliance Reporting</p>
+                    <Badge variant="outline" className="text-xs">Auto-populated</Badge>
+                  </div>
+                  <p className="text-2xl font-bold">68%</p>
+                  <p className="text-xs text-muted-foreground mt-1">Data auto-populated from Modules 1 & 2</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Activity Feed */}
+          <ActivityFeed />
+        </div>
       </div>
     </Layout>
   );
