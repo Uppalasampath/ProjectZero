@@ -73,17 +73,17 @@ export function NotificationCenter() {
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
-  const getModuleBadge = (type: string) => {
+  const getAreaBadge = (type: string) => {
     if (type.includes('transaction') || type.includes('marketplace')) {
-      return { label: "Module 1", color: "bg-blue-500" };
+      return { label: "Marketplace", color: "bg-primary text-primary-foreground" };
     }
     if (type.includes('carbon') || type.includes('emission')) {
-      return { label: "Module 2", color: "bg-green-500" };
+      return { label: "Carbon", color: "bg-success text-success-foreground" };
     }
     if (type.includes('compliance') || type.includes('regulatory')) {
-      return { label: "Module 3", color: "bg-purple-500" };
+      return { label: "Compliance", color: "bg-accent text-accent-foreground" };
     }
-    return { label: "System", color: "bg-gray-500" };
+    return { label: "System", color: "bg-muted text-muted-foreground" };
   };
 
   const handleNotificationClick = (notification: any) => {
@@ -101,8 +101,8 @@ export function NotificationCenter() {
     if (type === 'unread') return notifications.filter(n => !n.read);
     
     return notifications.filter(n => {
-      const module = getModuleBadge(n.notification_type);
-      return module.label === type;
+      const area = getAreaBadge(n.notification_type);
+      return area.label === type;
     });
   };
 
@@ -136,12 +136,12 @@ export function NotificationCenter() {
           <TabsList className="w-full justify-start rounded-none border-b px-4">
             <TabsTrigger value="all">All</TabsTrigger>
             <TabsTrigger value="unread">Unread ({unreadCount})</TabsTrigger>
-            <TabsTrigger value="Module 1">Module 1</TabsTrigger>
-            <TabsTrigger value="Module 2">Module 2</TabsTrigger>
-            <TabsTrigger value="Module 3">Module 3</TabsTrigger>
+            <TabsTrigger value="Marketplace">Marketplace</TabsTrigger>
+            <TabsTrigger value="Carbon">Carbon</TabsTrigger>
+            <TabsTrigger value="Compliance">Compliance</TabsTrigger>
           </TabsList>
 
-          {['all', 'unread', 'Module 1', 'Module 2', 'Module 3'].map((tab) => (
+          {['all', 'unread', 'Marketplace', 'Carbon', 'Compliance'].map((tab) => (
             <TabsContent key={tab} value={tab} className="m-0">
               <ScrollArea className="h-[400px]">
                 <div className="divide-y">
@@ -152,7 +152,7 @@ export function NotificationCenter() {
                     </div>
                   ) : (
                     filterNotifications(tab).map((notification) => {
-                      const module = getModuleBadge(notification.notification_type);
+                      const area = getAreaBadge(notification.notification_type);
                       return (
                         <div
                           key={notification.id}
@@ -165,8 +165,8 @@ export function NotificationCenter() {
                             <div className={`w-2 h-2 rounded-full mt-2 ${!notification.read ? 'bg-primary' : 'bg-transparent'}`} />
                             <div className="flex-1 space-y-1">
                               <div className="flex items-center gap-2">
-                                <Badge className={`${module.color} text-white text-xs`}>
-                                  {module.label}
+                                <Badge className={`${area.color} text-xs`}>
+                                  {area.label}
                                 </Badge>
                                 <span className="text-xs text-muted-foreground">
                                   {new Date(notification.created_at).toLocaleDateString()}

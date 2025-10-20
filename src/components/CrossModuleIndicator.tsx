@@ -4,8 +4,8 @@ import { TrendingUp, ExternalLink, RefreshCw } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 interface CrossModuleIndicatorProps {
-  sourceModule: "Module 1" | "Module 2" | "Module 3";
-  targetModule: "Module 1" | "Module 2" | "Module 3";
+  sourceArea: "Marketplace" | "Carbon" | "Compliance";
+  targetArea: "Marketplace" | "Carbon" | "Compliance";
   lastSync?: string;
   dataPoints?: string[];
   linkUrl?: string;
@@ -13,8 +13,8 @@ interface CrossModuleIndicatorProps {
 }
 
 export function CrossModuleIndicator({
-  sourceModule,
-  targetModule,
+  sourceArea,
+  targetArea,
   lastSync,
   dataPoints,
   linkUrl,
@@ -22,51 +22,51 @@ export function CrossModuleIndicator({
 }: CrossModuleIndicatorProps) {
   const navigate = useNavigate();
 
-  const getModuleColor = (module: string) => {
-    switch (module) {
-      case "Module 1": return "bg-blue-500";
-      case "Module 2": return "bg-green-500";
-      case "Module 3": return "bg-purple-500";
-      default: return "bg-gray-500";
+  const getAreaColor = (area: string) => {
+    switch (area) {
+      case "Marketplace": return "bg-primary/10 text-primary border-primary/30";
+      case "Carbon": return "bg-success/10 text-success border-success/30";
+      case "Compliance": return "bg-accent/10 text-accent border-accent/30";
+      default: return "bg-muted text-muted-foreground";
     }
   };
 
-  const getModuleName = (module: string) => {
-    switch (module) {
-      case "Module 1": return "Circular Marketplace";
-      case "Module 2": return "Carbon Engine";
-      case "Module 3": return "Compliance Autopilot";
-      default: return module;
+  const getAreaName = (area: string) => {
+    switch (area) {
+      case "Marketplace": return "Circular Marketplace";
+      case "Carbon": return "Carbon Engine";
+      case "Compliance": return "Compliance Autopilot";
+      default: return area;
     }
   };
 
   return (
-    <div className="p-4 border border-primary/20 bg-primary/5 rounded-lg space-y-3">
+    <div className="p-4 border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-accent/5 rounded-xl space-y-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <RefreshCw className="h-4 w-4 text-primary" />
-          <span className="text-sm font-medium">Cross-Module Integration</span>
+          <span className="text-sm font-semibold">Platform Integration</span>
         </div>
         {showRealTimeIndicator && (
-          <Badge variant="outline" className="text-xs">
-            <span className="w-2 h-2 rounded-full bg-green-500 mr-1 animate-pulse" />
+          <Badge variant="outline" className="text-xs border-success/30">
+            <span className="w-2 h-2 rounded-full bg-success mr-1 animate-pulse" />
             Real-time sync
           </Badge>
         )}
       </div>
 
       <div className="flex items-center gap-2 text-sm">
-        <Badge className={`${getModuleColor(sourceModule)} text-white`}>
-          {sourceModule}
+        <Badge variant="outline" className={getAreaColor(sourceArea)}>
+          {sourceArea}
         </Badge>
         <TrendingUp className="h-4 w-4 text-muted-foreground" />
-        <Badge className={`${getModuleColor(targetModule)} text-white`}>
-          {targetModule}
+        <Badge variant="outline" className={getAreaColor(targetArea)}>
+          {targetArea}
         </Badge>
       </div>
 
       <p className="text-sm text-muted-foreground">
-        Data automatically synced from {getModuleName(sourceModule)}
+        Data automatically synced from {getAreaName(sourceArea)}
       </p>
 
       {dataPoints && dataPoints.length > 0 && (
@@ -89,7 +89,7 @@ export function CrossModuleIndicator({
           onClick={() => navigate(linkUrl)}
         >
           <ExternalLink className="h-4 w-4 mr-2" />
-          View in {getModuleName(sourceModule)}
+          View in {getAreaName(sourceArea)}
         </Button>
       )}
     </div>

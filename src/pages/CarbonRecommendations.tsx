@@ -75,7 +75,7 @@ const MOCK_RECOMMENDATIONS: Recommendation[] = [
     timeline: "0-6 months",
     category: "waste",
     details:
-      "Your current Scope 3 Category 5 (Waste) emissions could be significantly reduced by diverting materials through Module 1.",
+      "Your current Scope 3 Category 5 (Waste) emissions could be significantly reduced by diverting materials through the Circular Marketplace.",
     steps: [
       "Identify waste streams suitable for resale",
       "List materials on Circular Marketplace",

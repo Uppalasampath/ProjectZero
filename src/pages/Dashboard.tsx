@@ -123,11 +123,11 @@ const Dashboard = () => {
           </Card>
         </div>
 
-        {/* Module Overview Cards */}
+        {/* Platform Capabilities Overview */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <ModuleCard
             title="Circular Marketplace"
-            description="Waste materials trading platform"
+            description="Turn waste into revenue streams"
             icon={<Recycle className="w-6 h-6" />}
             metrics={[
               { label: "Active Transactions", value: "12" },
@@ -138,7 +138,7 @@ const Dashboard = () => {
           />
           <ModuleCard
             title="Carbon Engine"
-            description="Emission tracking & offset marketplace"
+            description="Track, reduce, and offset emissions"
             icon={<Leaf className="w-6 h-6" />}
             metrics={[
               { label: "Total Emissions", value: "220K tons" },
@@ -149,7 +149,7 @@ const Dashboard = () => {
           />
           <ModuleCard
             title="Compliance Autopilot"
-            description="Automated regulatory reporting"
+            description="Automated ESG & regulatory reporting"
             icon={<FileCheck className="w-6 h-6" />}
             metrics={[
               { label: "CSRD Progress", value: "87%" },
@@ -161,39 +161,54 @@ const Dashboard = () => {
         </div>
 
         <div className="grid gap-6 lg:grid-cols-2">
-          {/* Cross-Module Impact Summary */}
-          <Card>
+          {/* Integrated Platform Impact */}
+          <Card className="border-2 border-primary/20">
             <CardHeader>
-              <CardTitle>Cross-Module Impact</CardTitle>
-              <CardDescription>Real-time synchronized data across all modules</CardDescription>
+              <CardTitle className="flex items-center gap-2">
+                <TrendingUp className="h-5 w-5 text-primary" />
+                Integrated Impact Dashboard
+              </CardTitle>
+              <CardDescription>Real-time data synchronization across your sustainability platform</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div className="p-4 border-l-4 border-blue-500 bg-blue-50 dark:bg-blue-950/20">
+                <div className="p-4 rounded-lg border-l-4 border-success bg-success/5">
                   <div className="flex items-center justify-between mb-2">
-                    <p className="text-sm font-medium">Circular Economy</p>
-                    <Badge variant="outline" className="text-xs">Module 1 → 2, 3</Badge>
+                    <p className="text-sm font-semibold">Circular Economy Impact</p>
+                    <Badge variant="secondary" className="bg-success/10 text-success border-success/20">
+                      Live Data
+                    </Badge>
                   </div>
                   <p className="text-2xl font-bold">8,200 tons</p>
-                  <p className="text-xs text-muted-foreground mt-1">Waste diverted • $3.2M revenue • Updated CSRD E5</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Waste diverted • $3.2M revenue • CSRD E5 automatically updated
+                  </p>
                 </div>
                 
-                <div className="p-4 border-l-4 border-green-500 bg-green-50 dark:bg-green-950/20">
+                <div className="p-4 rounded-lg border-l-4 border-primary bg-primary/5">
                   <div className="flex items-center justify-between mb-2">
-                    <p className="text-sm font-medium">Climate Action</p>
-                    <Badge variant="outline" className="text-xs">Module 2 → 3</Badge>
+                    <p className="text-sm font-semibold">Carbon Footprint Reduction</p>
+                    <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20">
+                      Live Data
+                    </Badge>
                   </div>
                   <p className="text-2xl font-bold">-22%</p>
-                  <p className="text-xs text-muted-foreground mt-1">Scope 3 reduction • Auto-synced to all frameworks</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Scope 3 emissions reduced • All frameworks auto-synced
+                  </p>
                 </div>
                 
-                <div className="p-4 border-l-4 border-purple-500 bg-purple-50 dark:bg-purple-950/20">
+                <div className="p-4 rounded-lg border-l-4 border-accent bg-accent/5">
                   <div className="flex items-center justify-between mb-2">
-                    <p className="text-sm font-medium">Compliance Reporting</p>
-                    <Badge variant="outline" className="text-xs">Auto-populated</Badge>
+                    <p className="text-sm font-semibold">Compliance Automation</p>
+                    <Badge variant="secondary" className="bg-accent/10 text-accent border-accent/20">
+                      Auto-populated
+                    </Badge>
                   </div>
                   <p className="text-2xl font-bold">68%</p>
-                  <p className="text-xs text-muted-foreground mt-1">Data auto-populated from Modules 1 & 2</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Framework completion • Data pulled from marketplace & carbon tracking
+                  </p>
                 </div>
               </div>
             </CardContent>
