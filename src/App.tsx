@@ -18,6 +18,11 @@ import MyTransactions from "./pages/MyTransactions";
 import MarketplaceAnalytics from "./pages/MarketplaceAnalytics";
 import TransactionDetail from "./pages/TransactionDetail";
 import EmissionSources from "./pages/EmissionSources";
+import CarbonDashboard from "./pages/CarbonDashboard";
+import EmissionSourcesManagement from "./pages/EmissionSourcesManagement";
+import BaselineCalculator from "./pages/BaselineCalculator";
+import SupplierPortal from "./pages/SupplierPortal";
+import CarbonRecommendations from "./pages/CarbonRecommendations";
 import OffsetMarketplace from "./pages/OffsetMarketplace";
 import OffsetProjectDetail from "./pages/OffsetProjectDetail";
 import FrameworkDetail from "./pages/FrameworkDetail";
@@ -55,6 +60,11 @@ const App = () => (
           <Route path="/marketplace-analytics" element={<ProtectedRoute><MarketplaceAnalytics /></ProtectedRoute>} />
             <Route path="/transaction/:id" element={<ProtectedRoute><TransactionDetail /></ProtectedRoute>} />
             <Route path="/carbon" element={<ProtectedRoute><Carbon /></ProtectedRoute>} />
+            <Route path="/carbon/dashboard" element={<ProtectedRoute><CarbonDashboard /></ProtectedRoute>} />
+            <Route path="/carbon/sources" element={<ProtectedRoute><EmissionSourcesManagement /></ProtectedRoute>} />
+            <Route path="/carbon/baseline-calculator" element={<ProtectedRoute><BaselineCalculator /></ProtectedRoute>} />
+            <Route path="/carbon/suppliers" element={<ProtectedRoute><SupplierPortal /></ProtectedRoute>} />
+            <Route path="/carbon/recommendations" element={<ProtectedRoute><CarbonRecommendations /></ProtectedRoute>} />
             <Route path="/emission-sources" element={<ProtectedRoute><EmissionSources /></ProtectedRoute>} />
             <Route path="/offset-marketplace" element={<ProtectedRoute><OffsetMarketplace /></ProtectedRoute>} />
             <Route path="/offset-project/:id" element={<ProtectedRoute><OffsetProjectDetail /></ProtectedRoute>} />
