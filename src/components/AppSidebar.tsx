@@ -25,8 +25,10 @@ const menuItems = [
     icon: Recycle,
     submenu: [
       { title: "Browse Materials", url: "/marketplace" },
+      { title: "My Materials", url: "/my-materials" },
       { title: "My Transactions", url: "/my-transactions" },
       { title: "List Waste", url: "/list-waste" },
+      { title: "Analytics", url: "/marketplace-analytics" },
     ]
   },
   { 
@@ -34,8 +36,11 @@ const menuItems = [
     url: "/carbon", 
     icon: Leaf,
     submenu: [
-      { title: "Dashboard", url: "/carbon" },
-      { title: "Emission Sources", url: "/emission-sources" },
+      { title: "Dashboard", url: "/carbon/dashboard" },
+      { title: "Baseline Calculator", url: "/carbon/baseline-calculator" },
+      { title: "Emission Sources", url: "/carbon/sources" },
+      { title: "Supplier Portal", url: "/carbon/suppliers" },
+      { title: "Recommendations", url: "/carbon/recommendations" },
       { title: "Offset Marketplace", url: "/offset-marketplace" },
     ]
   },
