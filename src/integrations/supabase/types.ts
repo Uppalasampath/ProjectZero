@@ -420,6 +420,35 @@ export type Database = {
           },
         ]
       }
+      material_favorites: {
+        Row: {
+          created_at: string | null
+          id: string
+          material_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          material_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          material_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "material_favorites_material_id_fkey"
+            columns: ["material_id"]
+            isOneToOne: false
+            referencedRelation: "waste_materials"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       materiality_assessments: {
         Row: {
           assessment_date: string
@@ -596,6 +625,41 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      transaction_ratings: {
+        Row: {
+          created_at: string | null
+          id: string
+          rated_by: string
+          rating: number
+          review: string | null
+          transaction_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          rated_by: string
+          rating: number
+          review?: string | null
+          transaction_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          rated_by?: string
+          rating?: number
+          review?: string | null
+          transaction_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transaction_ratings_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
             referencedColumns: ["id"]
           },
         ]
@@ -797,6 +861,10 @@ export type Database = {
           carbon_tons: number
           credit_value: number
         }[]
+      }
+      calculate_distance: {
+        Args: { lat1: number; lat2: number; lon1: number; lon2: number }
+        Returns: number
       }
       has_role: {
         Args: {

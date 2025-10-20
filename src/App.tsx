@@ -12,7 +12,10 @@ import Compliance from "./pages/Compliance";
 import Settings from "./pages/Settings";
 import Help from "./pages/Help";
 import ListWaste from "./pages/ListWaste";
+import MaterialDetail from "./pages/MaterialDetail";
+import MyMaterials from "./pages/MyMaterials";
 import MyTransactions from "./pages/MyTransactions";
+import MarketplaceAnalytics from "./pages/MarketplaceAnalytics";
 import TransactionDetail from "./pages/TransactionDetail";
 import EmissionSources from "./pages/EmissionSources";
 import OffsetMarketplace from "./pages/OffsetMarketplace";
@@ -43,9 +46,13 @@ const App = () => (
             {/* Protected routes */}
             <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
-            <Route path="/marketplace" element={<ProtectedRoute><Marketplace /></ProtectedRoute>} />
-            <Route path="/list-waste" element={<ProtectedRoute><ListWaste /></ProtectedRoute>} />
-            <Route path="/my-transactions" element={<ProtectedRoute><MyTransactions /></ProtectedRoute>} />
+          <Route path="/marketplace" element={<ProtectedRoute><Marketplace /></ProtectedRoute>} />
+          <Route path="/marketplace/:id" element={<ProtectedRoute><MaterialDetail /></ProtectedRoute>} />
+          <Route path="/list-waste" element={<ProtectedRoute><ListWaste /></ProtectedRoute>} />
+          <Route path="/my-materials" element={<ProtectedRoute><MyMaterials /></ProtectedRoute>} />
+          <Route path="/my-transactions" element={<ProtectedRoute><MyTransactions /></ProtectedRoute>} />
+          <Route path="/transactions/:id" element={<ProtectedRoute><TransactionDetail /></ProtectedRoute>} />
+          <Route path="/marketplace-analytics" element={<ProtectedRoute><MarketplaceAnalytics /></ProtectedRoute>} />
             <Route path="/transaction/:id" element={<ProtectedRoute><TransactionDetail /></ProtectedRoute>} />
             <Route path="/carbon" element={<ProtectedRoute><Carbon /></ProtectedRoute>} />
             <Route path="/emission-sources" element={<ProtectedRoute><EmissionSources /></ProtectedRoute>} />
