@@ -14,6 +14,7 @@ import {
   Sparkles
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import forestBackground from "@/assets/forest-background.jpg";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -41,48 +42,58 @@ const Index = () => {
       </nav>
 
       {/* Hero Section */}
-      <section className="container mx-auto px-6 py-20">
-        <div className="text-center max-w-4xl mx-auto">
-          <Badge className="mb-6 bg-success/10 text-success border-success/20 hover:bg-success/20">
-            <Sparkles className="h-3 w-3 mr-1" />
-            Enterprise Sustainability Platform
-          </Badge>
-          <h1 className="text-6xl font-bold mb-6 leading-tight">
-            Achieve Net <span className="text-transparent bg-clip-text bg-gradient-eco">ZERO</span>
-            <br />With Confidence
-          </h1>
-          <p className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed">
-            The all-in-one platform for enterprise sustainability. Track carbon, transform waste into revenue, 
-            and automate compliance reporting—all in one place.
-          </p>
-          <div className="flex items-center justify-center gap-4">
-            <Button size="lg" className="bg-gradient-eco text-lg h-14 px-8" onClick={() => navigate("/signup")}>
-              Start Your Journey
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-            <Button size="lg" variant="outline" className="text-lg h-14 px-8">
-              Watch Demo
-            </Button>
+      <section 
+        className="relative min-h-[90vh] flex items-center"
+        style={{
+          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${forestBackground})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed'
+        }}
+      >
+        <div className="container mx-auto px-6 py-20">
+          <div className="text-center max-w-4xl mx-auto">
+            <Badge className="mb-6 bg-success/20 text-white border-success/30 hover:bg-success/30 backdrop-blur-sm">
+              <Sparkles className="h-3 w-3 mr-1" />
+              Enterprise Sustainability Platform
+            </Badge>
+            <h1 className="text-6xl font-bold mb-6 leading-tight text-white drop-shadow-lg">
+              Achieve Net <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-300 to-emerald-400">ZERO</span>
+              <br />With Confidence
+            </h1>
+            <p className="text-xl text-white/90 mb-10 max-w-2xl mx-auto leading-relaxed drop-shadow-md">
+              The all-in-one platform for enterprise sustainability. Track carbon, transform waste into revenue, 
+              and automate compliance reporting—all in one place.
+            </p>
+            <div className="flex items-center justify-center gap-4">
+              <Button size="lg" className="bg-white text-primary hover:bg-white/90 text-lg h-14 px-8 shadow-xl" onClick={() => navigate("/signup")}>
+                Start Your Journey
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+              <Button size="lg" variant="outline" className="text-lg h-14 px-8 border-white/50 text-white hover:bg-white/10 backdrop-blur-sm">
+                Watch Demo
+              </Button>
+            </div>
           </div>
-        </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mt-20 max-w-5xl mx-auto">
-          <div className="text-center">
-            <p className="text-5xl font-bold text-primary mb-2">500+</p>
-            <p className="text-muted-foreground">Enterprise Clients</p>
-          </div>
-          <div className="text-center">
-            <p className="text-5xl font-bold text-success mb-2">2.5M</p>
-            <p className="text-muted-foreground">Tons CO2 Reduced</p>
-          </div>
-          <div className="text-center">
-            <p className="text-5xl font-bold text-accent mb-2">$180M</p>
-            <p className="text-muted-foreground">Revenue from Circularity</p>
-          </div>
-          <div className="text-center">
-            <p className="text-5xl font-bold text-chart-2 mb-2">98%</p>
-            <p className="text-muted-foreground">Compliance Rate</p>
+          {/* Stats */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mt-20 max-w-5xl mx-auto">
+            <div className="text-center backdrop-blur-sm bg-white/10 rounded-lg p-6">
+              <p className="text-5xl font-bold text-white mb-2 drop-shadow-lg">500+</p>
+              <p className="text-white/80">Enterprise Clients</p>
+            </div>
+            <div className="text-center backdrop-blur-sm bg-white/10 rounded-lg p-6">
+              <p className="text-5xl font-bold text-white mb-2 drop-shadow-lg">2.5M</p>
+              <p className="text-white/80">Tons CO2 Reduced</p>
+            </div>
+            <div className="text-center backdrop-blur-sm bg-white/10 rounded-lg p-6">
+              <p className="text-5xl font-bold text-white mb-2 drop-shadow-lg">$180M</p>
+              <p className="text-white/80">Revenue from Circularity</p>
+            </div>
+            <div className="text-center backdrop-blur-sm bg-white/10 rounded-lg p-6">
+              <p className="text-5xl font-bold text-white mb-2 drop-shadow-lg">98%</p>
+              <p className="text-white/80">Compliance Rate</p>
+            </div>
           </div>
         </div>
       </section>
