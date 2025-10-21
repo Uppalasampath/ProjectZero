@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useToast } from '@/hooks/use-toast';
 import { Leaf, Mail, Lock, Building2, MapPin, ArrowRight, Check } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
+import forestHero from "@/assets/forest-hero.png";
 
 export default function SignUp() {
   const [step, setStep] = useState(1);
@@ -144,66 +145,76 @@ export default function SignUp() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+    <div 
+      className="min-h-screen flex items-center justify-center p-4"
+      style={{
+        backgroundImage: `linear-gradient(rgba(50, 35, 20, 0.9), rgba(30, 25, 15, 0.95)), url(${forestHero})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed'
+      }}
+    >
       <div className="w-full max-w-2xl space-y-8">
         <div className="text-center">
           <div className="flex justify-center mb-4">
-            <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
-              <Leaf className="h-6 w-6 text-primary" />
+            <div className="h-12 w-12 rounded-full bg-white/20 backdrop-blur flex items-center justify-center">
+              <Leaf className="h-6 w-6 text-white" />
             </div>
           </div>
-          <h1 className="text-3xl font-bold">Join ZERO</h1>
-          <p className="text-muted-foreground mt-2">Create your sustainability management account</p>
+          <h1 className="text-3xl font-bold text-white">Join ZERO</h1>
+          <p className="text-white/70 mt-2">Create your sustainability management account</p>
         </div>
 
         <Progress value={progress} className="h-2" />
+
+        <div className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-8">
 
         {step === 1 && (
           <form onSubmit={handleStep1Submit} className="space-y-6">
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email" className="text-white">Email</Label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Mail className="absolute left-3 top-3 h-4 w-4 text-white/50" />
                   <Input
                     id="email"
                     type="email"
                     placeholder="your@email.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="pl-10"
+                    className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-white/50"
                     required
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password" className="text-white">Password</Label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Lock className="absolute left-3 top-3 h-4 w-4 text-white/50" />
                   <Input
                     id="password"
                     type="password"
                     placeholder="Minimum 8 characters"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="pl-10"
+                    className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-white/50"
                     required
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                <Label htmlFor="confirmPassword" className="text-white">Confirm Password</Label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Lock className="absolute left-3 top-3 h-4 w-4 text-white/50" />
                   <Input
                     id="confirmPassword"
                     type="password"
                     placeholder="Re-enter password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="pl-10"
+                    className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-white/50"
                     required
                   />
                 </div>
@@ -214,23 +225,24 @@ export default function SignUp() {
                   id="terms"
                   checked={termsAccepted}
                   onCheckedChange={(checked) => setTermsAccepted(checked as boolean)}
+                  className="border-white/30 data-[state=checked]:bg-white/20"
                 />
-                <label htmlFor="terms" className="text-sm">
+                <label htmlFor="terms" className="text-sm text-white/80">
                   I agree to the{' '}
-                  <a href="#" className="text-primary hover:underline">Terms of Service</a>
+                  <a href="#" className="text-white hover:underline">Terms of Service</a>
                   {' '}and{' '}
-                  <a href="#" className="text-primary hover:underline">Privacy Policy</a>
+                  <a href="#" className="text-white hover:underline">Privacy Policy</a>
                 </label>
               </div>
             </div>
 
-            <Button type="submit" className="w-full">
+            <Button type="submit" className="w-full bg-white/20 backdrop-blur text-white hover:bg-white/30 border border-white/40">
               Continue <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
 
-            <div className="text-center text-sm">
+            <div className="text-center text-sm text-white/70">
               Already have an account?{' '}
-              <Link to="/login" className="text-primary font-medium hover:underline">
+              <Link to="/login" className="text-white font-medium hover:underline">
                 Sign in
               </Link>
             </div>
@@ -475,6 +487,7 @@ export default function SignUp() {
             </div>
           </form>
         )}
+        </div>
       </div>
     </div>
   );

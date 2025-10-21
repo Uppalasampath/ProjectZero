@@ -20,21 +20,29 @@ const Index = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-background">
+    <div 
+      className="min-h-screen bg-background relative"
+      style={{
+        backgroundImage: `linear-gradient(rgba(50, 35, 20, 0.85), rgba(30, 25, 15, 0.9)), url(${forestHero})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed'
+      }}
+    >
       {/* Navigation */}
-      <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
+      <nav className="border-b border-white/10 bg-black/20 backdrop-blur-md sticky top-0 z-50">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-gradient-eco flex items-center justify-center">
-              <Leaf className="h-6 w-6 text-primary-foreground" />
+            <div className="h-10 w-10 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center">
+              <Leaf className="h-6 w-6 text-white" />
             </div>
-            <span className="text-2xl font-bold">ZERO</span>
+            <span className="text-2xl font-bold text-white">ZERO</span>
           </div>
           <div className="flex items-center gap-4">
-            <Button variant="ghost" onClick={() => navigate("/login")}>
+            <Button variant="ghost" className="text-white hover:bg-white/10" onClick={() => navigate("/login")}>
               Sign In
             </Button>
-            <Button className="bg-gradient-eco" onClick={() => navigate("/signup")}>
+            <Button className="bg-white/20 backdrop-blur text-white hover:bg-white/30 border border-white/30" onClick={() => navigate("/signup")}>
               Get Started
             </Button>
           </div>
@@ -42,15 +50,7 @@ const Index = () => {
       </nav>
 
       {/* Hero Section */}
-      <section 
-        className="relative min-h-[90vh] flex items-center"
-        style={{
-          backgroundImage: `linear-gradient(rgba(50, 35, 20, 0.4), rgba(30, 25, 15, 0.6)), url(${forestHero})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundAttachment: 'fixed'
-        }}
-      >
+      <section className="relative min-h-[90vh] flex items-center">
         <div className="container mx-auto px-6 py-20">
           <div className="text-center max-w-4xl mx-auto">
             <Badge className="mb-6 bg-success/20 text-white border-success/30 hover:bg-success/30 backdrop-blur-sm">
@@ -66,11 +66,11 @@ const Index = () => {
               and automate compliance reporting—all in one place.
             </p>
             <div className="flex items-center justify-center gap-4">
-              <Button size="lg" className="bg-white text-primary hover:bg-white/90 text-lg h-14 px-8 shadow-xl" onClick={() => navigate("/signup")}>
+              <Button size="lg" className="bg-white/20 backdrop-blur text-white hover:bg-white/30 border border-white/40 text-lg h-14 px-8 shadow-xl" onClick={() => navigate("/signup")}>
                 Start Your Journey
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
-              <Button size="lg" variant="outline" className="text-lg h-14 px-8 border-white/50 text-white hover:bg-white/10 backdrop-blur-sm">
+              <Button size="lg" variant="outline" className="text-lg h-14 px-8 border-white/40 bg-white/10 text-white hover:bg-white/20 backdrop-blur">
                 Watch Demo
               </Button>
             </div>
@@ -99,41 +99,41 @@ const Index = () => {
       </section>
 
       {/* Features Section */}
-      <section className="bg-muted/30 py-20">
+      <section className="py-20">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">Three Powerful Engines, One Platform</h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            <h2 className="text-4xl font-bold mb-4 text-white">Three Powerful Engines, One Platform</h2>
+            <p className="text-xl text-white/80 max-w-2xl mx-auto">
               ZERO unifies carbon tracking, circular economy, and compliance automation
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {/* Carbon Engine */}
-            <Card className="border-2 border-primary/20 hover:border-primary/40 transition-all hover:shadow-xl">
+            <Card className="border-2 border-white/20 bg-white/10 backdrop-blur hover:border-white/40 transition-all hover:shadow-xl">
               <CardContent className="pt-8 pb-8">
-                <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mb-6">
-                  <Leaf className="h-8 w-8 text-primary" />
+                <div className="h-16 w-16 rounded-2xl bg-white/20 backdrop-blur flex items-center justify-center mb-6">
+                  <Leaf className="h-8 w-8 text-white" />
                 </div>
-                <h3 className="text-2xl font-bold mb-3">Carbon Engine</h3>
-                <p className="text-muted-foreground mb-6">
+                <h3 className="text-2xl font-bold mb-3 text-white">Carbon Engine</h3>
+                <p className="text-white/80 mb-6">
                   Measure, track, and reduce your carbon footprint across all three scopes with AI-powered insights.
                 </p>
                 <ul className="space-y-3 mb-6">
                   <li className="flex items-start gap-2">
-                    <CheckCircle2 className="h-5 w-5 text-success mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">Real-time emissions tracking</span>
+                    <CheckCircle2 className="h-5 w-5 text-green-300 mt-0.5 flex-shrink-0" />
+                    <span className="text-sm text-white/90">Real-time emissions tracking</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <CheckCircle2 className="h-5 w-5 text-success mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">Scope 1, 2, and 3 coverage</span>
+                    <CheckCircle2 className="h-5 w-5 text-green-300 mt-0.5 flex-shrink-0" />
+                    <span className="text-sm text-white/90">Scope 1, 2, and 3 coverage</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <CheckCircle2 className="h-5 w-5 text-success mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">Science-based target alignment</span>
+                    <CheckCircle2 className="h-5 w-5 text-green-300 mt-0.5 flex-shrink-0" />
+                    <span className="text-sm text-white/90">Science-based target alignment</span>
                   </li>
                 </ul>
-                <Button variant="outline" className="w-full group">
+                <Button variant="outline" className="w-full group bg-white/10 border-white/30 text-white hover:bg-white/20 backdrop-blur">
                   Learn More
                   <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                 </Button>
@@ -141,30 +141,30 @@ const Index = () => {
             </Card>
 
             {/* Circular Marketplace */}
-            <Card className="border-2 border-success/20 hover:border-success/40 transition-all hover:shadow-xl">
+            <Card className="border-2 border-white/20 bg-white/10 backdrop-blur hover:border-white/40 transition-all hover:shadow-xl">
               <CardContent className="pt-8 pb-8">
-                <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-success/20 to-success/10 flex items-center justify-center mb-6">
-                  <Recycle className="h-8 w-8 text-success" />
+                <div className="h-16 w-16 rounded-2xl bg-white/20 backdrop-blur flex items-center justify-center mb-6">
+                  <Recycle className="h-8 w-8 text-white" />
                 </div>
-                <h3 className="text-2xl font-bold mb-3">Circular Marketplace</h3>
-                <p className="text-muted-foreground mb-6">
+                <h3 className="text-2xl font-bold mb-3 text-white">Circular Marketplace</h3>
+                <p className="text-white/80 mb-6">
                   Turn waste into revenue streams by connecting with buyers and sellers in our circular economy network.
                 </p>
                 <ul className="space-y-3 mb-6">
                   <li className="flex items-start gap-2">
-                    <CheckCircle2 className="h-5 w-5 text-success mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">List and discover materials</span>
+                    <CheckCircle2 className="h-5 w-5 text-green-300 mt-0.5 flex-shrink-0" />
+                    <span className="text-sm text-white/90">List and discover materials</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <CheckCircle2 className="h-5 w-5 text-success mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">Automated matching & pricing</span>
+                    <CheckCircle2 className="h-5 w-5 text-green-300 mt-0.5 flex-shrink-0" />
+                    <span className="text-sm text-white/90">Automated matching & pricing</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <CheckCircle2 className="h-5 w-5 text-success mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">Impact tracking & reporting</span>
+                    <CheckCircle2 className="h-5 w-5 text-green-300 mt-0.5 flex-shrink-0" />
+                    <span className="text-sm text-white/90">Impact tracking & reporting</span>
                   </li>
                 </ul>
-                <Button variant="outline" className="w-full group">
+                <Button variant="outline" className="w-full group bg-white/10 border-white/30 text-white hover:bg-white/20 backdrop-blur">
                   Learn More
                   <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                 </Button>
@@ -172,30 +172,30 @@ const Index = () => {
             </Card>
 
             {/* Compliance Autopilot */}
-            <Card className="border-2 border-accent/20 hover:border-accent/40 transition-all hover:shadow-xl">
+            <Card className="border-2 border-white/20 bg-white/10 backdrop-blur hover:border-white/40 transition-all hover:shadow-xl">
               <CardContent className="pt-8 pb-8">
-                <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-accent/20 to-accent/10 flex items-center justify-center mb-6">
-                  <ShieldCheck className="h-8 w-8 text-accent" />
+                <div className="h-16 w-16 rounded-2xl bg-white/20 backdrop-blur flex items-center justify-center mb-6">
+                  <ShieldCheck className="h-8 w-8 text-white" />
                 </div>
-                <h3 className="text-2xl font-bold mb-3">Compliance Hub</h3>
-                <p className="text-muted-foreground mb-6">
+                <h3 className="text-2xl font-bold mb-3 text-white">Compliance Hub</h3>
+                <p className="text-white/80 mb-6">
                   Automate ESG and regulatory reporting with data pulled directly from your operations.
                 </p>
                 <ul className="space-y-3 mb-6">
                   <li className="flex items-start gap-2">
-                    <CheckCircle2 className="h-5 w-5 text-success mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">CSRD, CDP, GRI frameworks</span>
+                    <CheckCircle2 className="h-5 w-5 text-green-300 mt-0.5 flex-shrink-0" />
+                    <span className="text-sm text-white/90">CSRD, CDP, GRI frameworks</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <CheckCircle2 className="h-5 w-5 text-success mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">Auto-populated reports</span>
+                    <CheckCircle2 className="h-5 w-5 text-green-300 mt-0.5 flex-shrink-0" />
+                    <span className="text-sm text-white/90">Auto-populated reports</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <CheckCircle2 className="h-5 w-5 text-success mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">Audit-ready documentation</span>
+                    <CheckCircle2 className="h-5 w-5 text-green-300 mt-0.5 flex-shrink-0" />
+                    <span className="text-sm text-white/90">Audit-ready documentation</span>
                   </li>
                 </ul>
-                <Button variant="outline" className="w-full group">
+                <Button variant="outline" className="w-full group bg-white/10 border-white/30 text-white hover:bg-white/20 backdrop-blur">
                   Learn More
                   <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                 </Button>
@@ -270,23 +270,23 @@ const Index = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-muted/30">
+      <section className="py-20">
         <div className="container mx-auto px-6">
           <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-4xl font-bold mb-6">Ready to Achieve Net Zero?</h2>
-            <p className="text-xl text-muted-foreground mb-10">
+            <h2 className="text-4xl font-bold mb-6 text-white">Ready to Achieve Net Zero?</h2>
+            <p className="text-xl text-white/80 mb-10">
               Join leading enterprises transforming their sustainability journey with ZERO.
             </p>
             <div className="flex items-center justify-center gap-4">
-              <Button size="lg" className="bg-gradient-eco text-lg h-14 px-8" onClick={() => navigate("/signup")}>
+              <Button size="lg" className="bg-white/20 backdrop-blur text-white hover:bg-white/30 border border-white/40 text-lg h-14 px-8" onClick={() => navigate("/signup")}>
                 Get Started Free
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
-              <Button size="lg" variant="outline" className="text-lg h-14 px-8">
+              <Button size="lg" variant="outline" className="text-lg h-14 px-8 border-white/40 bg-white/10 text-white hover:bg-white/20 backdrop-blur">
                 Schedule Demo
               </Button>
             </div>
-            <p className="text-sm text-muted-foreground mt-6">
+            <p className="text-sm text-white/70 mt-6">
               No credit card required • 14-day free trial • Full platform access
             </p>
           </div>
@@ -294,23 +294,23 @@ const Index = () => {
       </section>
 
       {/* Footer */}
-      <footer className="border-t py-12 bg-background">
+      <footer className="border-t border-white/10 py-12 bg-black/20 backdrop-blur">
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <div className="h-8 w-8 rounded-lg bg-gradient-eco flex items-center justify-center">
-                  <Leaf className="h-5 w-5 text-primary-foreground" />
+                <div className="h-8 w-8 rounded-lg bg-white/20 backdrop-blur flex items-center justify-center">
+                  <Leaf className="h-5 w-5 text-white" />
                 </div>
-                <span className="text-xl font-bold">ZERO</span>
+                <span className="text-xl font-bold text-white">ZERO</span>
               </div>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-white/70">
                 Enterprise sustainability platform for net zero transformation.
               </p>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">Product</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
+              <h4 className="font-semibold mb-4 text-white">Product</h4>
+              <ul className="space-y-2 text-sm text-white/70">
                 <li>Carbon Engine</li>
                 <li>Circular Marketplace</li>
                 <li>Compliance Hub</li>
@@ -318,8 +318,8 @@ const Index = () => {
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">Resources</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
+              <h4 className="font-semibold mb-4 text-white">Resources</h4>
+              <ul className="space-y-2 text-sm text-white/70">
                 <li>Documentation</li>
                 <li>Case Studies</li>
                 <li>Blog</li>
@@ -327,8 +327,8 @@ const Index = () => {
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">Company</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
+              <h4 className="font-semibold mb-4 text-white">Company</h4>
+              <ul className="space-y-2 text-sm text-white/70">
                 <li>About Us</li>
                 <li>Careers</li>
                 <li>Contact</li>
@@ -336,7 +336,7 @@ const Index = () => {
               </ul>
             </div>
           </div>
-          <div className="mt-12 pt-8 border-t text-center text-sm text-muted-foreground">
+          <div className="mt-12 pt-8 border-t border-white/10 text-center text-sm text-white/70">
             <p>© 2024 ZERO Platform. All rights reserved.</p>
           </div>
         </div>
