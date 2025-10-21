@@ -80,12 +80,14 @@ export default {
         'gradient-primary': 'var(--gradient-primary)',
         'gradient-success': 'var(--gradient-success)',
         'gradient-eco': 'var(--gradient-eco)',
+        'gradient-warm': 'var(--gradient-warm)',
       },
       boxShadow: {
         sm: 'var(--shadow-sm)',
         md: 'var(--shadow-md)',
         lg: 'var(--shadow-lg)',
         eco: 'var(--shadow-eco)',
+        warm: 'var(--shadow-warm)',
       },
       borderRadius: {
         lg: "var(--radius)",

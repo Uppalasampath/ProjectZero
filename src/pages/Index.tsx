@@ -14,7 +14,7 @@ import {
   Sparkles
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import forestBackground from "@/assets/forest-background.jpg";
+import forestHero from "@/assets/forest-hero.png";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -45,7 +45,7 @@ const Index = () => {
       <section 
         className="relative min-h-[90vh] flex items-center"
         style={{
-          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${forestBackground})`,
+          backgroundImage: `linear-gradient(rgba(50, 35, 20, 0.4), rgba(30, 25, 15, 0.6)), url(${forestHero})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundAttachment: 'fixed'

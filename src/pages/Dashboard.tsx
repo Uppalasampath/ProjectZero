@@ -31,7 +31,7 @@ const Dashboard = () => {
     <Layout>
       <div className="space-y-8 animate-fade-in">
         {/* Hero Header */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-eco p-10 text-primary-foreground shadow-eco">
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-eco p-10 text-primary-foreground shadow-warm">
           <div className="absolute top-0 right-0 -mr-16 -mt-16 h-64 w-64 rounded-full bg-white/5 blur-3xl"></div>
           <div className="absolute bottom-0 left-0 -ml-16 -mb-16 h-64 w-64 rounded-full bg-white/5 blur-3xl"></div>
           <div className="relative">
