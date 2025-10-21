@@ -18,8 +18,8 @@ import {
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 const menuItems = [
-  { title: "Dashboard", url: "/", icon: Home },
-  { 
+  { title: "Dashboard", url: "/dashboard", icon: Home },
+  {
     title: "Circular Marketplace", 
     url: "/marketplace", 
     icon: Recycle,
