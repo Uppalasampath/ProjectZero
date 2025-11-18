@@ -73,14 +73,14 @@ const Dashboard = () => {
     enabled: !!user?.id,
   });
 
-  // Fetch transactions for revenue calculation
+  // Fetch transactions for revenue and carbon credits calculation
   const { data: transactions } = useQuery({
     queryKey: ['transactions-revenue', user?.id],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('transactions')
-        .select('total_price')
-        .eq('seller_id', user?.id)
+        .select('total_amount, carbon_credits_generated')
+        .or(`seller_id.eq.${user?.id},buyer_id.eq.${user?.id}`)
         .eq('status', 'completed');
       if (error) throw error;
       return data || [];
@@ -94,9 +94,15 @@ const Dashboard = () => {
                         (emissionsData?.scope_3_total || 0);
 
   const totalCarbonCredits = carbonCredits?.reduce((sum, credit) => sum + (credit.quantity_tons || 0), 0) || 0;
-  const progressPercent = totalEmissions > 0 ? Math.min(100, (totalCarbonCredits / totalEmissions) * 100) : 0;
 
-  const totalRevenue = transactions?.reduce((sum, t) => sum + (t.total_price || 0), 0) || 0;
+  // Calculate marketplace carbon credits from transactions
+  const marketplaceCarbonCredits = transactions?.reduce((sum, t) => sum + (t.carbon_credits_generated || 0), 0) || 0;
+
+  // Total carbon offsets including marketplace and purchased credits
+  const totalOffsets = totalCarbonCredits + marketplaceCarbonCredits;
+  const progressPercent = totalEmissions > 0 ? Math.min(100, (totalOffsets / totalEmissions) * 100) : 0;
+
+  const totalRevenue = transactions?.reduce((sum, t) => sum + (t.total_amount || 0), 0) || 0;
 
   // Format large numbers
   const formatNumber = (num: number) => {
@@ -170,8 +176,11 @@ const Dashboard = () => {
                 </Badge>
               </div>
               <p className="text-sm text-muted-foreground mb-2">Circular Economy</p>
-              <p className="text-4xl font-bold">{totalRevenue > 0 ? `$${formatNumber(totalRevenue)}` : '$0'}</p>
-              <p className="text-xs text-muted-foreground mt-1">marketplace revenue</p>
+              <p className="text-4xl font-bold">{marketplaceCarbonCredits > 0 ? formatNumber(marketplaceCarbonCredits) : '0'}</p>
+              <p className="text-xs text-muted-foreground mt-1">tons CO2e avoided via marketplace</p>
+              {totalRevenue > 0 && (
+                <p className="text-sm text-success font-semibold mt-2">${formatNumber(totalRevenue)} revenue</p>
+              )}
             </CardContent>
           </Card>
 
@@ -210,7 +219,7 @@ const Dashboard = () => {
             icon={<Leaf className="w-6 h-6" />}
             metrics={[
               { label: "Total Emissions", value: totalEmissions > 0 ? `${formatNumber(totalEmissions)} tons` : "0 tons" },
-              { label: "Carbon Offsets", value: totalCarbonCredits > 0 ? `${formatNumber(totalCarbonCredits)} tons` : "0 tons" },
+              { label: "Carbon Offsets", value: totalOffsets > 0 ? `${formatNumber(totalOffsets)} tons` : "0 tons" },
             ]}
             route="/carbon"
           />
