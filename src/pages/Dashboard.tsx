@@ -27,6 +27,84 @@ const Dashboard = () => {
     enabled: !!user?.id
   });
 
+  // Fetch latest carbon emissions data
+  const { data: emissionsData } = useQuery({
+    queryKey: ['carbon-emissions-latest', user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('carbon_emissions')
+        .select('scope_1_total, scope_2_total, scope_3_total')
+        .eq('user_id', user?.id)
+        .order('reporting_period_end', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!user?.id,
+  });
+
+  // Fetch carbon credit purchases for offset calculation
+  const { data: carbonCredits } = useQuery({
+    queryKey: ['carbon-credits-total', user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('carbon_credit_purchases')
+        .select('quantity_tons')
+        .eq('user_id', user?.id);
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: !!user?.id,
+  });
+
+  // Fetch waste materials count
+  const { data: wasteMaterials } = useQuery({
+    queryKey: ['waste-materials-count', user?.id],
+    queryFn: async () => {
+      const { count, error } = await supabase
+        .from('waste_materials')
+        .select('*', { count: 'exact', head: true })
+        .eq('seller_id', user?.id)
+        .eq('status', 'available');
+      if (error) throw error;
+      return count || 0;
+    },
+    enabled: !!user?.id,
+  });
+
+  // Fetch transactions for revenue calculation
+  const { data: transactions } = useQuery({
+    queryKey: ['transactions-revenue', user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('transactions')
+        .select('total_price')
+        .eq('seller_id', user?.id)
+        .eq('status', 'completed');
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: !!user?.id,
+  });
+
+  // Calculate metrics
+  const totalEmissions = (emissionsData?.scope_1_total || 0) +
+                        (emissionsData?.scope_2_total || 0) +
+                        (emissionsData?.scope_3_total || 0);
+
+  const totalCarbonCredits = carbonCredits?.reduce((sum, credit) => sum + (credit.quantity_tons || 0), 0) || 0;
+  const progressPercent = totalEmissions > 0 ? Math.min(100, (totalCarbonCredits / totalEmissions) * 100) : 0;
+
+  const totalRevenue = transactions?.reduce((sum, t) => sum + (t.total_price || 0), 0) || 0;
+
+  // Format large numbers
+  const formatNumber = (num: number) => {
+    if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
+    if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
+    return num.toFixed(0);
+  };
+
   return (
     <Layout>
       <div className="space-y-8 animate-fade-in">
@@ -57,7 +135,7 @@ const Dashboard = () => {
               </div>
               <div className="bg-white/10 backdrop-blur rounded-2xl p-4">
                 <p className="text-sm opacity-90 mb-1">Progress</p>
-                <p className="text-4xl font-bold">35%</p>
+                <p className="text-4xl font-bold">{progressPercent.toFixed(0)}%</p>
               </div>
             </div>
           </div>
@@ -76,7 +154,7 @@ const Dashboard = () => {
                 </Badge>
               </div>
               <p className="text-sm text-muted-foreground mb-2">Carbon Footprint</p>
-              <p className="text-4xl font-bold">220K</p>
+              <p className="text-4xl font-bold">{totalEmissions > 0 ? formatNumber(totalEmissions) : '0'}</p>
               <p className="text-xs text-muted-foreground mt-1">tons CO2e annually</p>
             </CardContent>
           </Card>
@@ -92,8 +170,8 @@ const Dashboard = () => {
                 </Badge>
               </div>
               <p className="text-sm text-muted-foreground mb-2">Circular Economy</p>
-              <p className="text-4xl font-bold">8.2K</p>
-              <p className="text-xs text-muted-foreground mt-1">tons waste diverted</p>
+              <p className="text-4xl font-bold">{totalRevenue > 0 ? `$${formatNumber(totalRevenue)}` : '$0'}</p>
+              <p className="text-xs text-muted-foreground mt-1">marketplace revenue</p>
             </CardContent>
           </Card>
 
@@ -121,8 +199,8 @@ const Dashboard = () => {
             description="Transform waste into revenue"
             icon={<Recycle className="w-6 h-6" />}
             metrics={[
-              { label: "Active Listings", value: "28" },
-              { label: "Revenue YTD", value: "$3.2M" },
+              { label: "Active Listings", value: wasteMaterials?.toString() || "0" },
+              { label: "Revenue YTD", value: totalRevenue > 0 ? `$${formatNumber(totalRevenue)}` : "$0" },
             ]}
             route="/marketplace"
           />
@@ -131,8 +209,8 @@ const Dashboard = () => {
             description="Measure and reduce emissions"
             icon={<Leaf className="w-6 h-6" />}
             metrics={[
-              { label: "Total Emissions", value: "220K tons" },
-              { label: "Reduction Goal", value: "-45% by 2030" },
+              { label: "Total Emissions", value: totalEmissions > 0 ? `${formatNumber(totalEmissions)} tons` : "0 tons" },
+              { label: "Carbon Offsets", value: totalCarbonCredits > 0 ? `${formatNumber(totalCarbonCredits)} tons` : "0 tons" },
             ]}
             route="/carbon"
           />

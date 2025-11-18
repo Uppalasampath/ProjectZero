@@ -3,24 +3,165 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Download, RefreshCw } from "lucide-react";
-import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from "recharts";
-
-const emissionData = [
-  { name: "Scope 1", value: 45000, color: "hsl(var(--chart-1))" },
-  { name: "Scope 2", value: 55000, color: "hsl(var(--chart-2))" },
-  { name: "Scope 3", value: 120000, color: "hsl(var(--chart-3))" },
-];
-
-const scope3Data = [
-  { category: "Purchased Goods", emissions: 35000 },
-  { category: "Logistics", emissions: 28000 },
-  { category: "Business Travel", emissions: 15000 },
-  { category: "Waste", emissions: 12000 },
-  { category: "Employee Commuting", emissions: 10000 },
-  { category: "Other", emissions: 20000 },
-];
+import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, LineChart, Line, Area, AreaChart } from "recharts";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { useMemo } from "react";
 
 const Carbon = () => {
+  const { user } = useAuth();
+
+  // Fetch latest carbon emissions data
+  const { data: emissionsData, isLoading: emissionsLoading } = useQuery({
+    queryKey: ['carbon-emissions', user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('carbon_emissions')
+        .select('*')
+        .eq('user_id', user?.id)
+        .order('reporting_period_end', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!user?.id,
+  });
+
+  // Fetch emissions history for trend chart
+  const { data: emissionsHistory } = useQuery({
+    queryKey: ['carbon-emissions-history', user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('carbon_emissions')
+        .select('reporting_period_end, scope_1_total, scope_2_total, scope_3_total')
+        .eq('user_id', user?.id)
+        .order('reporting_period_end', { ascending: true })
+        .limit(12);
+
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: !!user?.id,
+  });
+
+  // Fetch emission sources for top sources display
+  const { data: emissionSources } = useQuery({
+    queryKey: ['emission-sources', user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('emission_sources')
+        .select('*')
+        .eq('user_id', user?.id)
+        .order('emission_amount', { ascending: false })
+        .limit(5);
+
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: !!user?.id,
+  });
+
+  // Fetch carbon credit purchases for offset total
+  const { data: carbonCredits } = useQuery({
+    queryKey: ['carbon-credits', user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('carbon_credit_purchases')
+        .select('quantity_tons')
+        .eq('user_id', user?.id);
+
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: !!user?.id,
+  });
+
+  // Fetch user profile for net-zero target
+  const { data: profile } = useQuery({
+    queryKey: ['profile', user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('net_zero_target_year')
+        .eq('id', user?.id)
+        .single();
+
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!user?.id,
+  });
+
+  // Calculate totals and derived data
+  const scope1Total = emissionsData?.scope_1_total || 0;
+  const scope2Total = emissionsData?.scope_2_total || 0;
+  const scope3Total = emissionsData?.scope_3_total || 0;
+  const totalEmissions = scope1Total + scope2Total + scope3Total;
+
+  const totalCarbonCredits = carbonCredits?.reduce((sum, credit) => sum + (credit.quantity_tons || 0), 0) || 0;
+
+  const netZeroYear = profile?.net_zero_target_year || 2050;
+  const currentYear = new Date().getFullYear();
+  const yearsToTarget = netZeroYear - currentYear;
+  const progressPercent = yearsToTarget > 0 ? Math.max(0, Math.min(100, ((totalCarbonCredits / totalEmissions) * 100))) : 100;
+
+  // Prepare emission data for pie chart
+  const emissionData = [
+    { name: "Scope 1", value: scope1Total, color: "hsl(var(--chart-1))" },
+    { name: "Scope 2", value: scope2Total, color: "hsl(var(--chart-2))" },
+    { name: "Scope 3", value: scope3Total, color: "hsl(var(--chart-3))" },
+  ];
+
+  // Parse scope 3 breakdown from JSON
+  const scope3Breakdown = useMemo(() => {
+    if (!emissionsData?.scope_3_breakdown) return [];
+
+    try {
+      const breakdown = typeof emissionsData.scope_3_breakdown === 'string'
+        ? JSON.parse(emissionsData.scope_3_breakdown)
+        : emissionsData.scope_3_breakdown;
+
+      return Object.entries(breakdown).map(([category, emissions]) => ({
+        category,
+        emissions: Number(emissions) || 0,
+      }));
+    } catch (e) {
+      console.error('Error parsing scope 3 breakdown:', e);
+      return [];
+    }
+  }, [emissionsData?.scope_3_breakdown]);
+
+  // Prepare top emission sources with percentages
+  const topSources = useMemo(() => {
+    if (!emissionSources || totalEmissions === 0) return [];
+
+    return emissionSources.map(source => ({
+      source: source.source_type || source.category_name || 'Unknown',
+      emissions: source.emission_amount || 0,
+      percentage: totalEmissions > 0 ? Math.round((source.emission_amount || 0) / totalEmissions * 100) : 0,
+    }));
+  }, [emissionSources, totalEmissions]);
+
+  // Prepare emissions trend data for line chart
+  const emissionsTrendData = useMemo(() => {
+    if (!emissionsHistory || emissionsHistory.length === 0) return [];
+
+    return emissionsHistory.map(record => {
+      const date = new Date(record.reporting_period_end);
+      const monthYear = date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+
+      return {
+        period: monthYear,
+        total: (record.scope_1_total || 0) + (record.scope_2_total || 0) + (record.scope_3_total || 0),
+        scope1: record.scope_1_total || 0,
+        scope2: record.scope_2_total || 0,
+        scope3: record.scope_3_total || 0,
+      };
+    });
+  }, [emissionsHistory]);
   return (
     <Layout>
       <div className="space-y-6 animate-fade-in">
@@ -49,8 +190,19 @@ const Carbon = () => {
               <CardTitle className="text-sm font-medium text-muted-foreground">Total Emissions</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold">220,000</div>
-              <p className="text-sm text-muted-foreground">tons CO2e</p>
+              {emissionsLoading ? (
+                <div className="text-3xl font-bold text-muted-foreground">Loading...</div>
+              ) : totalEmissions > 0 ? (
+                <>
+                  <div className="text-3xl font-bold">{totalEmissions.toLocaleString()}</div>
+                  <p className="text-sm text-muted-foreground">tons CO2e</p>
+                </>
+              ) : (
+                <>
+                  <div className="text-3xl font-bold">0</div>
+                  <p className="text-sm text-muted-foreground">No emissions data yet</p>
+                </>
+              )}
             </CardContent>
           </Card>
           <Card>
@@ -58,9 +210,9 @@ const Carbon = () => {
               <CardTitle className="text-sm font-medium text-muted-foreground">Net Zero Target</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold">2045</div>
-              <Progress value={35} className="mt-3" />
-              <p className="text-sm text-muted-foreground mt-2">35% progress</p>
+              <div className="text-3xl font-bold">{netZeroYear}</div>
+              <Progress value={progressPercent} className="mt-3" />
+              <p className="text-sm text-muted-foreground mt-2">{progressPercent.toFixed(0)}% progress</p>
             </CardContent>
           </Card>
           <Card>
@@ -68,7 +220,7 @@ const Carbon = () => {
               <CardTitle className="text-sm font-medium text-muted-foreground">Carbon Credits</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold">15,000</div>
+              <div className="text-3xl font-bold">{totalCarbonCredits.toLocaleString()}</div>
               <p className="text-sm text-muted-foreground">tons offset</p>
             </CardContent>
           </Card>
@@ -108,18 +260,75 @@ const Carbon = () => {
               <CardTitle>Scope 3 Breakdown</CardTitle>
             </CardHeader>
             <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={scope3Data} layout="vertical">
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis type="number" />
-                  <YAxis dataKey="category" type="category" width={120} />
-                  <Tooltip />
-                  <Bar dataKey="emissions" fill="hsl(var(--chart-1))" />
-                </BarChart>
-              </ResponsiveContainer>
+              {scope3Breakdown.length > 0 ? (
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={scope3Breakdown} layout="vertical">
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis type="number" />
+                    <YAxis dataKey="category" type="category" width={120} />
+                    <Tooltip />
+                    <Bar dataKey="emissions" fill="hsl(var(--chart-1))" />
+                  </BarChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="h-[300px] flex items-center justify-center text-muted-foreground">
+                  No Scope 3 breakdown data available
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
+
+        {/* Emissions Trend Over Time */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Emissions Trend</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {emissionsTrendData.length > 0 ? (
+              <ResponsiveContainer width="100%" height={350}>
+                <AreaChart data={emissionsTrendData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="period" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Area
+                    type="monotone"
+                    dataKey="scope1"
+                    stackId="1"
+                    stroke="hsl(var(--chart-1))"
+                    fill="hsl(var(--chart-1))"
+                    fillOpacity={0.6}
+                    name="Scope 1"
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="scope2"
+                    stackId="1"
+                    stroke="hsl(var(--chart-2))"
+                    fill="hsl(var(--chart-2))"
+                    fillOpacity={0.6}
+                    name="Scope 2"
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="scope3"
+                    stackId="1"
+                    stroke="hsl(var(--chart-3))"
+                    fill="hsl(var(--chart-3))"
+                    fillOpacity={0.6}
+                    name="Scope 3"
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="h-[350px] flex items-center justify-center text-muted-foreground">
+                No historical emissions data available. Add more emissions records to see trends.
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
         {/* Top Emission Sources */}
         <Card>
@@ -127,23 +336,25 @@ const Carbon = () => {
             <CardTitle>Top Emission Sources</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              {[
-                { source: "Purchased Goods & Services", emissions: 35000, percentage: 16 },
-                { source: "Logistics & Transportation", emissions: 28000, percentage: 13 },
-                { source: "Purchased Electricity", emissions: 55000, percentage: 25 },
-                { source: "Natural Gas Facilities", emissions: 30000, percentage: 14 },
-                { source: "Business Travel", emissions: 15000, percentage: 7 },
-              ].map((item, index) => (
-                <div key={index} className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium">{item.source}</span>
-                    <span className="text-sm text-muted-foreground">{item.emissions.toLocaleString()} tons ({item.percentage}%)</span>
+            {topSources.length > 0 ? (
+              <div className="space-y-4">
+                {topSources.map((item, index) => (
+                  <div key={index} className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="font-medium">{item.source}</span>
+                      <span className="text-sm text-muted-foreground">
+                        {item.emissions.toLocaleString()} tons ({item.percentage}%)
+                      </span>
+                    </div>
+                    <Progress value={item.percentage} />
                   </div>
-                  <Progress value={item.percentage * 4} />
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center text-muted-foreground py-8">
+                No emission sources tracked yet. Add emission sources to see breakdown.
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
