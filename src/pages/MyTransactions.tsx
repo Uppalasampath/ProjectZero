@@ -216,11 +216,11 @@ const MyTransactions = () => {
           </Card>
           <Card>
             <CardHeader>
-              <CardTitle className="text-sm text-muted-foreground">Carbon Credits Earned</CardTitle>
+              <CardTitle className="text-sm text-muted-foreground">Estimated Carbon Impact</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-3xl font-bold">{metrics.carbonCredits.toFixed(1)} tons</p>
-              <p className="text-sm text-muted-foreground mt-1">CO2e avoided</p>
+              <p className="text-3xl font-bold">~{metrics.carbonCredits.toFixed(1)} tons</p>
+              <p className="text-sm text-muted-foreground mt-1">Estimated CO2e avoided (pending verification)</p>
             </CardContent>
           </Card>
         </div>

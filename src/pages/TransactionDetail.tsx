@@ -98,7 +98,7 @@ const TransactionDetail = () => {
     },
   });
 
-  // Complete transaction mutation (with carbon credit calculation)
+  // Complete transaction mutation (with estimated carbon credit calculation)
   const completeTransaction = useMutation({
     mutationFn: async () => {
       if (!transaction) return;
@@ -107,7 +107,7 @@ const TransactionDetail = () => {
       const materialType = material?.material_type || '';
       const quantity = transaction.quantity || 0;
 
-      // Call the database function to calculate carbon credits
+      // Call the database function to estimate carbon credits
       const { data: carbonData, error: carbonError } = await supabase.rpc(
         'calculate_carbon_credits',
         {
@@ -120,7 +120,7 @@ const TransactionDetail = () => {
 
       const carbonCredits = carbonData?.[0] || { carbon_tons: 0, credit_value: 0 };
 
-      // Update transaction with completed status and carbon credits
+      // Update transaction with completed status and estimated carbon credits
       const { error } = await supabase
         .from('transactions')
         .update({
@@ -136,7 +136,7 @@ const TransactionDetail = () => {
     onSuccess: () => {
       toast({
         title: "Transaction completed!",
-        description: "Carbon credits have been calculated and added to your account.",
+        description: "Estimated carbon impact has been calculated. Complete verification to claim credits.",
       });
       queryClient.invalidateQueries({ queryKey: ['transaction', id] });
       queryClient.invalidateQueries({ queryKey: ['my-transactions'] });
@@ -396,31 +396,40 @@ const TransactionDetail = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Leaf className="w-5 h-5" />
-                  Carbon Impact
+                  Estimated Carbon Impact
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 <div>
                   <p className="text-3xl font-bold">
                     {transaction.carbon_credits_generated
-                      ? `${transaction.carbon_credits_generated.toFixed(1)} tons`
+                      ? `~${transaction.carbon_credits_generated.toFixed(1)} tons`
                       : 'Pending calculation'}
                   </p>
-                  <p className="text-sm opacity-90">CO2e avoided vs virgin production</p>
+                  <p className="text-sm opacity-90">Estimated CO2e avoided vs virgin production</p>
                 </div>
                 {transaction.carbon_credits_value && (
                   <div>
                     <p className="text-lg font-semibold">
-                      ${transaction.carbon_credits_value.toLocaleString()}
+                      ~${transaction.carbon_credits_value.toLocaleString()}
                     </p>
-                    <p className="text-sm opacity-90">Carbon credit value</p>
+                    <p className="text-sm opacity-90">Estimated carbon credit value</p>
                   </div>
                 )}
-                {transaction.status === 'completed' && (
-                  <div className="flex items-center gap-2 text-sm opacity-90">
-                    <Shield className="w-4 h-4" />
-                    <span>Carbon credits generated and tracked</span>
-                  </div>
+                {transaction.status === 'completed' && transaction.carbon_credits_generated && (
+                  <>
+                    <div className="flex items-center gap-2 text-sm opacity-90 bg-white/10 rounded p-2">
+                      <Shield className="w-4 h-4" />
+                      <span className="text-xs">Estimate only - verification required for official credits</span>
+                    </div>
+                    <Button
+                      className="w-full bg-white text-primary hover:bg-white/90"
+                      size="sm"
+                      onClick={() => navigate(`/carbon/verify-transaction/${transaction.id}`)}
+                    >
+                      Start Verification Process
+                    </Button>
+                  </>
                 )}
               </CardContent>
             </Card>

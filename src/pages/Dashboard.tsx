@@ -176,8 +176,8 @@ const Dashboard = () => {
                 </Badge>
               </div>
               <p className="text-sm text-muted-foreground mb-2">Circular Economy</p>
-              <p className="text-4xl font-bold">{marketplaceCarbonCredits > 0 ? formatNumber(marketplaceCarbonCredits) : '0'}</p>
-              <p className="text-xs text-muted-foreground mt-1">tons CO2e avoided via marketplace</p>
+              <p className="text-4xl font-bold">{marketplaceCarbonCredits > 0 ? `~${formatNumber(marketplaceCarbonCredits)}` : '0'}</p>
+              <p className="text-xs text-muted-foreground mt-1">est. tons CO2e avoided via marketplace</p>
               {totalRevenue > 0 && (
                 <p className="text-sm text-success font-semibold mt-2">${formatNumber(totalRevenue)} revenue</p>
               )}
