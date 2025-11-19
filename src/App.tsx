@@ -19,6 +19,7 @@ import MyMaterials from "./pages/MyMaterials";
 import MyTransactions from "./pages/MyTransactions";
 import MarketplaceAnalytics from "./pages/MarketplaceAnalytics";
 import TransactionDetail from "./pages/TransactionDetail";
+import VerifyTransaction from "./pages/VerifyTransaction";
 import EmissionSources from "./pages/EmissionSources";
 import CarbonDashboard from "./pages/CarbonDashboard";
 import EmissionSourcesManagement from "./pages/EmissionSourcesManagement";
@@ -66,6 +67,7 @@ const App = () => (
             <Route path="/carbon/dashboard" element={<ProtectedRoute><CarbonDashboard /></ProtectedRoute>} />
             <Route path="/carbon/sources" element={<ProtectedRoute><EmissionSourcesManagement /></ProtectedRoute>} />
             <Route path="/carbon/baseline-calculator" element={<ProtectedRoute><BaselineCalculator /></ProtectedRoute>} />
+            <Route path="/carbon/verify-transaction/:id" element={<ProtectedRoute><VerifyTransaction /></ProtectedRoute>} />
             <Route path="/carbon/suppliers" element={<ProtectedRoute><SupplierPortal /></ProtectedRoute>} />
             <Route path="/carbon/recommendations" element={<ProtectedRoute><CarbonRecommendations /></ProtectedRoute>} />
             <Route path="/emission-sources" element={<ProtectedRoute><EmissionSources /></ProtectedRoute>} />

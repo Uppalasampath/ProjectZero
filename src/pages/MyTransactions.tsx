@@ -6,16 +6,70 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Download, Eye, MessageSquare } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-
-const transactions = [
-  { id: "TRX-001", date: "2024-01-15", material: "Industrial Steel Scrap", quantity: "150 tons", counterparty: "Regional Recycling Co.", status: "completed", amount: "$67,500", type: "sell" },
-  { id: "TRX-002", date: "2024-01-18", material: "HDPE Plastic Pellets", quantity: "80 tons", counterparty: "GreenTech Industries", status: "active", amount: "$25,600", type: "sell" },
-  { id: "TRX-003", date: "2024-01-20", material: "Organic Waste Compost", quantity: "200 tons", counterparty: "Urban Farms LLC", status: "pending", amount: "$36,000", type: "sell" },
-  { id: "TRX-004", date: "2024-01-12", material: "Aluminum Cans", quantity: "50 tons", counterparty: "Metal Recovery Inc.", status: "completed", amount: "$42,500", type: "buy" },
-];
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { useMemo, useState } from "react";
 
 const MyTransactions = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const [activeTab, setActiveTab] = useState("all");
+
+  // Fetch all transactions where user is buyer or seller
+  const { data: transactions, isLoading } = useQuery({
+    queryKey: ['my-transactions', user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('transactions')
+        .select(`
+          *,
+          material:waste_materials(material_type, material_subtype, quantity, unit),
+          buyer:buyer_id(company_name),
+          seller:seller_id(company_name)
+        `)
+        .or(`buyer_id.eq.${user?.id},seller_id.eq.${user?.id}`)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: !!user?.id,
+  });
+
+  // Filter transactions by tab
+  const filteredTransactions = useMemo(() => {
+    if (!transactions) return [];
+    if (activeTab === "all") return transactions;
+    return transactions.filter(t => t.status === activeTab);
+  }, [transactions, activeTab]);
+
+  // Calculate metrics
+  const metrics = useMemo(() => {
+    if (!transactions) return { revenue: 0, materialsDiverted: 0, carbonCredits: 0, transactionCount: 0 };
+
+    const completedTransactions = transactions.filter(t => t.status === 'completed');
+
+    // Calculate revenue from sales where user is the seller
+    const revenue = completedTransactions
+      .filter(t => t.seller_id === user?.id)
+      .reduce((sum, t) => sum + (t.total_amount || 0), 0);
+
+    // Calculate materials diverted (all completed transactions)
+    const materialsDiverted = completedTransactions
+      .reduce((sum, t) => sum + (t.quantity || 0), 0);
+
+    // Calculate carbon credits generated
+    const carbonCredits = completedTransactions
+      .reduce((sum, t) => sum + (t.carbon_credits_generated || 0), 0);
+
+    return {
+      revenue,
+      materialsDiverted,
+      carbonCredits,
+      transactionCount: completedTransactions.length,
+    };
+  }, [transactions, user?.id]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -24,6 +78,14 @@ const MyTransactions = () => {
       case "pending": return "bg-warning";
       default: return "bg-muted";
     }
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
   };
 
   return (
@@ -40,7 +102,7 @@ const MyTransactions = () => {
           </Button>
         </div>
 
-        <Tabs defaultValue="all">
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList>
             <TabsTrigger value="all">All Transactions</TabsTrigger>
             <TabsTrigger value="active">Active</TabsTrigger>
@@ -48,83 +110,82 @@ const MyTransactions = () => {
             <TabsTrigger value="completed">Completed</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="all" className="mt-6">
+          <TabsContent value={activeTab} className="mt-6">
             <Card>
               <CardHeader>
                 <CardTitle>Transaction History</CardTitle>
               </CardHeader>
               <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Transaction ID</TableHead>
-                      <TableHead>Date</TableHead>
-                      <TableHead>Material</TableHead>
-                      <TableHead>Quantity</TableHead>
-                      <TableHead>Counterparty</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Amount</TableHead>
-                      <TableHead>Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {transactions.map((transaction) => (
-                      <TableRow key={transaction.id}>
-                        <TableCell className="font-medium">{transaction.id}</TableCell>
-                        <TableCell>{transaction.date}</TableCell>
-                        <TableCell>{transaction.material}</TableCell>
-                        <TableCell>{transaction.quantity}</TableCell>
-                        <TableCell>{transaction.counterparty}</TableCell>
-                        <TableCell>
-                          <Badge className={getStatusColor(transaction.status)}>
-                            {transaction.status}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="font-semibold text-success">{transaction.amount}</TableCell>
-                        <TableCell>
-                          <div className="flex gap-2">
-                            <Button 
-                              size="sm" 
-                              variant="outline"
-                              onClick={() => navigate(`/transaction/${transaction.id}`)}
-                            >
-                              <Eye className="w-4 h-4" />
-                            </Button>
-                            {transaction.status === "active" && (
-                              <Button size="sm" variant="outline">
-                                <MessageSquare className="w-4 h-4" />
-                              </Button>
-                            )}
-                          </div>
-                        </TableCell>
+                {isLoading ? (
+                  <div className="text-center py-8 text-muted-foreground">Loading transactions...</div>
+                ) : filteredTransactions.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    No {activeTab !== "all" ? activeTab : ""} transactions found.
+                  </div>
+                ) : (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Transaction ID</TableHead>
+                        <TableHead>Date</TableHead>
+                        <TableHead>Material</TableHead>
+                        <TableHead>Quantity</TableHead>
+                        <TableHead>Counterparty</TableHead>
+                        <TableHead>Type</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Amount</TableHead>
+                        <TableHead>Actions</TableHead>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
-          </TabsContent>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredTransactions.map((transaction) => {
+                        const isSeller = transaction.seller_id === user?.id;
+                        const counterparty = isSeller
+                          ? (transaction.buyer as any)?.company_name || 'Unknown Buyer'
+                          : (transaction.seller as any)?.company_name || 'Unknown Seller';
+                        const materialName = (transaction.material as any)?.material_type || 'Unknown Material';
+                        const materialQuantity = (transaction.material as any)?.quantity || transaction.quantity;
+                        const materialUnit = (transaction.material as any)?.unit || 'tons';
 
-          <TabsContent value="active">
-            <Card>
-              <CardContent className="pt-6">
-                <p className="text-center text-muted-foreground">Showing active transactions only</p>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="pending">
-            <Card>
-              <CardContent className="pt-6">
-                <p className="text-center text-muted-foreground">Showing pending transactions only</p>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="completed">
-            <Card>
-              <CardContent className="pt-6">
-                <p className="text-center text-muted-foreground">Showing completed transactions only</p>
+                        return (
+                          <TableRow key={transaction.id}>
+                            <TableCell className="font-medium">
+                              {transaction.id.substring(0, 8)}
+                            </TableCell>
+                            <TableCell>{formatDate(transaction.created_at || '')}</TableCell>
+                            <TableCell>{materialName}</TableCell>
+                            <TableCell>{transaction.quantity} {materialUnit}</TableCell>
+                            <TableCell>{counterparty}</TableCell>
+                            <TableCell>
+                              <Badge variant={isSeller ? "default" : "secondary"}>
+                                {isSeller ? "Sell" : "Buy"}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>
+                              <Badge className={getStatusColor(transaction.status || 'pending')}>
+                                {transaction.status || 'pending'}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="font-semibold text-success">
+                              ${transaction.total_amount.toLocaleString()}
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex gap-2">
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => navigate(`/transactions/${transaction.id}`)}
+                                >
+                                  <Eye className="w-4 h-4" />
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
@@ -136,8 +197,12 @@ const MyTransactions = () => {
               <CardTitle className="text-sm text-muted-foreground">Total Revenue</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-3xl font-bold text-success">$129,100</p>
-              <p className="text-sm text-muted-foreground mt-1">From 8 transactions</p>
+              <p className="text-3xl font-bold text-success">
+                ${metrics.revenue.toLocaleString()}
+              </p>
+              <p className="text-sm text-muted-foreground mt-1">
+                From {metrics.transactionCount} completed {metrics.transactionCount === 1 ? 'transaction' : 'transactions'}
+              </p>
             </CardContent>
           </Card>
           <Card>
@@ -145,17 +210,17 @@ const MyTransactions = () => {
               <CardTitle className="text-sm text-muted-foreground">Materials Diverted</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-3xl font-bold">480 tons</p>
-              <p className="text-sm text-muted-foreground mt-1">This month</p>
+              <p className="text-3xl font-bold">{metrics.materialsDiverted.toFixed(1)} tons</p>
+              <p className="text-sm text-muted-foreground mt-1">Completed transactions</p>
             </CardContent>
           </Card>
           <Card>
             <CardHeader>
-              <CardTitle className="text-sm text-muted-foreground">Carbon Credits Earned</CardTitle>
+              <CardTitle className="text-sm text-muted-foreground">Estimated Carbon Impact</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-3xl font-bold">152 tons</p>
-              <p className="text-sm text-muted-foreground mt-1">CO2e avoided</p>
+              <p className="text-3xl font-bold">~{metrics.carbonCredits.toFixed(1)} tons</p>
+              <p className="text-sm text-muted-foreground mt-1">Estimated CO2e avoided (pending verification)</p>
             </CardContent>
           </Card>
         </div>
