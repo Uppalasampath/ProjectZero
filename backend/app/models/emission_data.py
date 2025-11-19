@@ -360,7 +360,7 @@ class AuditLog(Base):
 
     # Details
     changes = Column(JSONB)  # Before/after values
-    metadata = Column(JSONB)  # Additional context
+    additional_metadata = Column(JSONB)  # Additional context
 
     # When & Where
     timestamp = Column(TIMESTAMP, default=datetime.utcnow, index=True)
