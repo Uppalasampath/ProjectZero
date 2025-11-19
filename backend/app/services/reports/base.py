@@ -169,7 +169,7 @@ class ChartGenerator:
     @staticmethod
     def create_pie_chart(
         data: List[tuple],  # [(label, value), ...]
-        colors: List[colors.Color],
+        slice_colors: List,
         width: int = 300,
         height: int = 300
     ) -> Drawing:
@@ -178,7 +178,7 @@ class ChartGenerator:
 
         Args:
             data: List of (label, value) tuples
-            colors: List of colors for slices
+            slice_colors: List of colors for slices
             width: Chart width
             height: Chart height
 
@@ -198,7 +198,7 @@ class ChartGenerator:
         pie.labels = [label for label, _ in data]
 
         # Set colors
-        for i, color in enumerate(colors):
+        for i, color in enumerate(slice_colors):
             pie.slices[i].fillColor = color
 
         # Style

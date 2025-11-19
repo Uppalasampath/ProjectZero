@@ -4,7 +4,7 @@ Generates audit-ready emissions inventory reports
 """
 from typing import Dict, List, Optional
 from decimal import Decimal
-from datetime import date
+from datetime import date, datetime
 from reportlab.lib.units import inch
 from reportlab.platypus import Paragraph, KeepTogether
 
@@ -262,7 +262,7 @@ class GHGProtocolReportGenerator(BaseReportGenerator):
 
         pie_chart = ChartGenerator.create_pie_chart(
             data=pie_data,
-            colors=[ReportColors.SCOPE_1, ReportColors.SCOPE_2, ReportColors.SCOPE_3]
+            slice_colors=[ReportColors.SCOPE_1, ReportColors.SCOPE_2, ReportColors.SCOPE_3]
         )
 
         self.add_chart(pie_chart)
