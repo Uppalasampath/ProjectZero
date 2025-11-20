@@ -12,6 +12,15 @@ from io import BytesIO
 
 from app.db.base import get_db
 from app.services.report_service import ReportService
+from app.schemas import (
+    ReportConfigCreate,
+    ReportConfigUpdate,
+    ReportConfigResponse,
+    ReportGenerateRequest,
+    ReportGenerateResponse,
+    ReportResponse,
+    ReportListResponse
+)
 
 
 router = APIRouter()
@@ -199,3 +208,130 @@ async def list_reports(
     )
 
     return reports
+
+
+# ============= Report Configuration Endpoints (MVP Phase 1) =============
+
+@router.post("/config", response_model=ReportConfigResponse, status_code=201)
+def create_report_config(
+    config: ReportConfigCreate,
+    db: Session = Depends(get_db)
+):
+    """
+    Create a new report configuration
+
+    Allows users to save report configurations for reuse:
+    - Select report type (GHG Protocol, SB253, CDP, etc.)
+    - Choose which sections to include
+    - Set authorization details
+    - Configure verification/assurance
+    - Customize report options
+
+    - **company_id**: Company ID (required)
+    - **report_type**: Type of report (required)
+    - **sections**: List of sections to include (required)
+    - **authorized_by_name**: Person authorizing the report (required)
+    - **authorized_by_title**: Authorizer's title (required)
+    """
+    # TODO: Save configuration to database
+    return {
+        "id": 1,
+        "created_at": datetime.now().date(),
+        **config.dict()
+    }
+
+
+@router.get("/config", response_model=ReportListResponse)
+def list_report_configs(
+    company_id: int,
+    report_type: Optional[str] = None,
+    db: Session = Depends(get_db)
+):
+    """
+    List all saved report configurations for a company
+
+    - **company_id**: Company ID
+    - **report_type**: Optional filter by report type
+    """
+    # TODO: Query configurations from database
+    return {
+        "total": 0,
+        "reports": []
+    }
+
+
+@router.get("/config/{config_id}", response_model=ReportConfigResponse)
+def get_report_config(
+    config_id: int,
+    db: Session = Depends(get_db)
+):
+    """
+    Get a specific report configuration
+
+    - **config_id**: Configuration ID
+    """
+    # TODO: Get configuration from database
+    raise HTTPException(status_code=404, detail="Report configuration not found")
+
+
+@router.put("/config/{config_id}", response_model=ReportConfigResponse)
+def update_report_config(
+    config_id: int,
+    config: ReportConfigUpdate,
+    db: Session = Depends(get_db)
+):
+    """
+    Update a report configuration
+
+    - **config_id**: Configuration ID
+    """
+    # TODO: Update configuration in database
+    raise HTTPException(status_code=404, detail="Report configuration not found")
+
+
+@router.delete("/config/{config_id}", status_code=204)
+def delete_report_config(
+    config_id: int,
+    db: Session = Depends(get_db)
+):
+    """
+    Delete a report configuration
+
+    - **config_id**: Configuration ID
+    """
+    # TODO: Delete configuration from database
+    raise HTTPException(status_code=404, detail="Report configuration not found")
+
+
+@router.post("/generate-custom", response_model=ReportGenerateResponse)
+async def generate_custom_report(
+    request: ReportGenerateRequest,
+    db: Session = Depends(get_db)
+):
+    """
+    Generate a custom report using saved configuration or inline configuration
+
+    This endpoint allows:
+    1. Using a saved configuration: Provide config_id
+    2. Inline configuration: Provide config object
+
+    The report will be generated according to the configuration settings:
+    - Selected sections will be included
+    - Custom authorization and verification details
+    - Chosen output format (PDF, Excel, JSON)
+
+    - **config_id**: Use existing configuration (optional)
+    - **config**: Provide inline configuration (optional)
+
+    **Note**: Provide either config_id OR config, not both
+    """
+    # TODO: Implement custom report generation
+    return {
+        "success": True,
+        "report_id": 1,
+        "report_type": "ghg_protocol",
+        "report_format": "pdf",
+        "file_size_bytes": 0,
+        "download_url": "/api/v1/reports/1/download",
+        "message": "Custom report generation not yet fully implemented"
+    }
