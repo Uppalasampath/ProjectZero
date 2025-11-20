@@ -1,0 +1,224 @@
+{
+  "description": "Transportation emission factors for Scope 3 (Category 6: Business Travel, Category 4 & 9: Freight)",
+  "source": "DEFRA 2024, EPA, GHG Protocol",
+  "last_updated": "2024-01-01",
+  "factors": [
+    {
+      "mode": "Air Travel",
+      "category": "Short-haul Economy (<500 km)",
+      "unit": "passenger_km",
+      "emission_factor_kg_co2e_per_unit": 0.156,
+      "notes": "Domestic flights, economy class"
+    },
+    {
+      "mode": "Air Travel",
+      "category": "Short-haul Business (<500 km)",
+      "unit": "passenger_km",
+      "emission_factor_kg_co2e_per_unit": 0.234,
+      "notes": "Domestic flights, business class (1.5x economy)"
+    },
+    {
+      "mode": "Air Travel",
+      "category": "Long-haul Economy (>3700 km)",
+      "unit": "passenger_km",
+      "emission_factor_kg_co2e_per_unit": 0.150,
+      "notes": "International long-haul, economy class"
+    },
+    {
+      "mode": "Air Travel",
+      "category": "Long-haul Premium Economy (>3700 km)",
+      "unit": "passenger_km",
+      "emission_factor_kg_co2e_per_unit": 0.240,
+      "notes": "International long-haul, premium economy (1.6x economy)"
+    },
+    {
+      "mode": "Air Travel",
+      "category": "Long-haul Business (>3700 km)",
+      "unit": "passenger_km",
+      "emission_factor_kg_co2e_per_unit": 0.450,
+      "notes": "International long-haul, business class (3x economy)"
+    },
+    {
+      "mode": "Air Travel",
+      "category": "Long-haul First Class (>3700 km)",
+      "unit": "passenger_km",
+      "emission_factor_kg_co2e_per_unit": 0.600,
+      "notes": "International long-haul, first class (4x economy)"
+    },
+    {
+      "mode": "Rail",
+      "category": "Commuter Rail",
+      "unit": "passenger_km",
+      "emission_factor_kg_co2e_per_unit": 0.041,
+      "notes": "National rail, diesel"
+    },
+    {
+      "mode": "Rail",
+      "category": "Light Rail / Tram",
+      "unit": "passenger_km",
+      "emission_factor_kg_co2e_per_unit": 0.035,
+      "notes": "Urban light rail, average grid"
+    },
+    {
+      "mode": "Rail",
+      "category": "Subway / Metro",
+      "unit": "passenger_km",
+      "emission_factor_kg_co2e_per_unit": 0.029,
+      "notes": "Underground metro, average grid"
+    },
+    {
+      "mode": "Rail",
+      "category": "High-speed Rail (Electric)",
+      "unit": "passenger_km",
+      "emission_factor_kg_co2e_per_unit": 0.006,
+      "notes": "Eurostar, Shinkansen type"
+    },
+    {
+      "mode": "Road - Car",
+      "category": "Gasoline Car - Small",
+      "unit": "km",
+      "emission_factor_kg_co2e_per_unit": 0.142,
+      "notes": "Up to 1.4L engine"
+    },
+    {
+      "mode": "Road - Car",
+      "category": "Gasoline Car - Medium",
+      "unit": "km",
+      "emission_factor_kg_co2e_per_unit": 0.192,
+      "notes": "1.4L to 2.0L engine"
+    },
+    {
+      "mode": "Road - Car",
+      "category": "Gasoline Car - Large",
+      "unit": "km",
+      "emission_factor_kg_co2e_per_unit": 0.282,
+      "notes": "Over 2.0L engine"
+    },
+    {
+      "mode": "Road - Car",
+      "category": "Diesel Car - Small",
+      "unit": "km",
+      "emission_factor_kg_co2e_per_unit": 0.123,
+      "notes": "Up to 1.7L engine"
+    },
+    {
+      "mode": "Road - Car",
+      "category": "Diesel Car - Medium",
+      "unit": "km",
+      "emission_factor_kg_co2e_per_unit": 0.171,
+      "notes": "1.7L to 2.0L engine"
+    },
+    {
+      "mode": "Road - Car",
+      "category": "Diesel Car - Large",
+      "unit": "km",
+      "emission_factor_kg_co2e_per_unit": 0.231,
+      "notes": "Over 2.0L engine"
+    },
+    {
+      "mode": "Road - Car",
+      "category": "Hybrid Car",
+      "unit": "km",
+      "emission_factor_kg_co2e_per_unit": 0.109,
+      "notes": "Plug-in hybrid, average"
+    },
+    {
+      "mode": "Road - Car",
+      "category": "Electric Car",
+      "unit": "km",
+      "emission_factor_kg_co2e_per_unit": 0.053,
+      "notes": "Battery electric, average grid (US)"
+    },
+    {
+      "mode": "Road - Bus",
+      "category": "City Bus - Diesel",
+      "unit": "passenger_km",
+      "emission_factor_kg_co2e_per_unit": 0.089,
+      "notes": "Local bus service"
+    },
+    {
+      "mode": "Road - Bus",
+      "category": "Coach - Long Distance",
+      "unit": "passenger_km",
+      "emission_factor_kg_co2e_per_unit": 0.027,
+      "notes": "Intercity coach"
+    },
+    {
+      "mode": "Road - Taxi",
+      "category": "Taxi - Regular",
+      "unit": "passenger_km",
+      "emission_factor_kg_co2e_per_unit": 0.211,
+      "notes": "Black cab / regular taxi"
+    },
+    {
+      "mode": "Road - Motorcycle",
+      "category": "Motorcycle - Small",
+      "unit": "km",
+      "emission_factor_kg_co2e_per_unit": 0.084,
+      "notes": "Up to 125cc"
+    },
+    {
+      "mode": "Road - Motorcycle",
+      "category": "Motorcycle - Medium",
+      "unit": "km",
+      "emission_factor_kg_co2e_per_unit": 0.103,
+      "notes": "125cc to 500cc"
+    },
+    {
+      "mode": "Freight - Road",
+      "category": "Heavy Goods Vehicle (HGV)",
+      "unit": "tonne_km",
+      "emission_factor_kg_co2e_per_unit": 0.111,
+      "notes": "Rigid truck, average load"
+    },
+    {
+      "mode": "Freight - Road",
+      "category": "Articulated HGV",
+      "unit": "tonne_km",
+      "emission_factor_kg_co2e_per_unit": 0.062,
+      "notes": "Articulated lorry, average load"
+    },
+    {
+      "mode": "Freight - Rail",
+      "category": "Freight Train - Diesel",
+      "unit": "tonne_km",
+      "emission_factor_kg_co2e_per_unit": 0.027,
+      "notes": "Rail freight, diesel"
+    },
+    {
+      "mode": "Freight - Rail",
+      "category": "Freight Train - Electric",
+      "unit": "tonne_km",
+      "emission_factor_kg_co2e_per_unit": 0.021,
+      "notes": "Rail freight, electric (average grid)"
+    },
+    {
+      "mode": "Freight - Sea",
+      "category": "Container Ship",
+      "unit": "tonne_km",
+      "emission_factor_kg_co2e_per_unit": 0.011,
+      "notes": "Large container vessel"
+    },
+    {
+      "mode": "Freight - Sea",
+      "category": "Bulk Carrier",
+      "unit": "tonne_km",
+      "emission_factor_kg_co2e_per_unit": 0.008,
+      "notes": "Dry bulk cargo ship"
+    },
+    {
+      "mode": "Freight - Air",
+      "category": "Air Cargo",
+      "unit": "tonne_km",
+      "emission_factor_kg_co2e_per_unit": 0.602,
+      "notes": "Dedicated cargo plane"
+    },
+    {
+      "mode": "Hotel Stay",
+      "category": "Hotel Night",
+      "unit": "night",
+      "emission_factor_kg_co2e_per_unit": 14.3,
+      "notes": "Average hotel room night (US)"
+    }
+  ]
+}
