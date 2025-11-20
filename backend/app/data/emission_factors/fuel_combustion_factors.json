@@ -1,0 +1,140 @@
+{
+  "description": "Fuel combustion emission factors (Scope 1)",
+  "source": "EPA, DEFRA 2024, IPCC",
+  "last_updated": "2024-01-01",
+  "factors": [
+    {
+      "fuel_type": "Natural Gas",
+      "category": "stationary_combustion",
+      "unit": "therms",
+      "emission_factor_kg_co2e_per_unit": 5.3,
+      "co2_kg_per_unit": 5.28,
+      "ch4_kg_per_unit": 0.01,
+      "n2o_kg_per_unit": 0.01,
+      "source": "EPA",
+      "notes": "Pipeline natural gas"
+    },
+    {
+      "fuel_type": "Natural Gas",
+      "category": "stationary_combustion",
+      "unit": "cubic_meters",
+      "emission_factor_kg_co2e_per_unit": 1.88,
+      "co2_kg_per_unit": 1.87,
+      "ch4_kg_per_unit": 0.004,
+      "n2o_kg_per_unit": 0.006,
+      "source": "DEFRA",
+      "notes": "Gross CV"
+    },
+    {
+      "fuel_type": "Diesel",
+      "category": "stationary_combustion",
+      "unit": "liters",
+      "emission_factor_kg_co2e_per_unit": 2.68,
+      "co2_kg_per_unit": 2.66,
+      "ch4_kg_per_unit": 0.01,
+      "n2o_kg_per_unit": 0.01,
+      "source": "EPA",
+      "notes": "Distillate fuel oil"
+    },
+    {
+      "fuel_type": "Diesel",
+      "category": "mobile_combustion",
+      "unit": "liters",
+      "emission_factor_kg_co2e_per_unit": 2.7,
+      "co2_kg_per_unit": 2.68,
+      "ch4_kg_per_unit": 0.01,
+      "n2o_kg_per_unit": 0.01,
+      "source": "DEFRA",
+      "notes": "Average biofuel blend (7%)"
+    },
+    {
+      "fuel_type": "Gasoline",
+      "category": "mobile_combustion",
+      "unit": "liters",
+      "emission_factor_kg_co2e_per_unit": 2.31,
+      "co2_kg_per_unit": 2.29,
+      "ch4_kg_per_unit": 0.01,
+      "n2o_kg_per_unit": 0.01,
+      "source": "EPA",
+      "notes": "Motor gasoline"
+    },
+    {
+      "fuel_type": "Gasoline",
+      "category": "mobile_combustion",
+      "unit": "gallons",
+      "emission_factor_kg_co2e_per_unit": 8.78,
+      "co2_kg_per_unit": 8.72,
+      "ch4_kg_per_unit": 0.03,
+      "n2o_kg_per_unit": 0.03,
+      "source": "EPA",
+      "notes": "Motor gasoline (US gallons)"
+    },
+    {
+      "fuel_type": "Propane",
+      "category": "stationary_combustion",
+      "unit": "liters",
+      "emission_factor_kg_co2e_per_unit": 1.51,
+      "co2_kg_per_unit": 1.50,
+      "ch4_kg_per_unit": 0.005,
+      "n2o_kg_per_unit": 0.005,
+      "source": "EPA",
+      "notes": "LPG"
+    },
+    {
+      "fuel_type": "Coal",
+      "category": "stationary_combustion",
+      "unit": "kg",
+      "emission_factor_kg_co2e_per_unit": 2.42,
+      "co2_kg_per_unit": 2.40,
+      "ch4_kg_per_unit": 0.01,
+      "n2o_kg_per_unit": 0.01,
+      "source": "EPA",
+      "notes": "Bituminous coal"
+    },
+    {
+      "fuel_type": "Coal",
+      "category": "stationary_combustion",
+      "unit": "tons",
+      "emission_factor_kg_co2e_per_unit": 2420,
+      "co2_kg_per_unit": 2400,
+      "ch4_kg_per_unit": 10,
+      "n2o_kg_per_unit": 10,
+      "source": "EPA",
+      "notes": "Bituminous coal (metric tons)"
+    },
+    {
+      "fuel_type": "Fuel Oil",
+      "category": "stationary_combustion",
+      "unit": "liters",
+      "emission_factor_kg_co2e_per_unit": 3.16,
+      "co2_kg_per_unit": 3.14,
+      "ch4_kg_per_unit": 0.01,
+      "n2o_kg_per_unit": 0.01,
+      "source": "DEFRA",
+      "notes": "Heavy fuel oil"
+    },
+    {
+      "fuel_type": "Biomass",
+      "category": "stationary_combustion",
+      "unit": "kg",
+      "emission_factor_kg_co2e_per_unit": 0,
+      "co2_kg_per_unit": 0,
+      "ch4_kg_per_unit": 0,
+      "n2o_kg_per_unit": 0,
+      "biogenic_co2_kg_per_unit": 1.81,
+      "source": "GHG Protocol",
+      "notes": "Biogenic CO2 reported separately, net zero for carbon neutral biomass"
+    },
+    {
+      "fuel_type": "Jet Fuel",
+      "category": "mobile_combustion",
+      "unit": "liters",
+      "emission_factor_kg_co2e_per_unit": 2.52,
+      "co2_kg_per_unit": 2.50,
+      "ch4_kg_per_unit": 0.01,
+      "n2o_kg_per_unit": 0.01,
+      "source": "DEFRA",
+      "notes": "Aviation turbine fuel"
+    }
+  ]
+}

@@ -1,0 +1,132 @@
+{
+  "description": "Global Warming Potentials (GWP) for refrigerants and industrial gases",
+  "source": "IPCC AR5 (100-year GWP)",
+  "last_updated": "2024-01-01",
+  "factors": [
+    {
+      "gas_name": "Carbon Dioxide",
+      "chemical_formula": "CO2",
+      "gwp_100yr": 1,
+      "category": "reference",
+      "notes": "Reference gas"
+    },
+    {
+      "gas_name": "Methane",
+      "chemical_formula": "CH4",
+      "gwp_100yr": 28,
+      "category": "greenhouse_gas",
+      "notes": "IPCC AR5 value (including climate-carbon feedbacks)"
+    },
+    {
+      "gas_name": "Nitrous Oxide",
+      "chemical_formula": "N2O",
+      "gwp_100yr": 265,
+      "category": "greenhouse_gas",
+      "notes": "IPCC AR5 value"
+    },
+    {
+      "gas_name": "R-134a",
+      "chemical_formula": "CH2FCF3",
+      "gwp_100yr": 1430,
+      "category": "hfc",
+      "common_use": "Automotive AC, refrigeration",
+      "notes": "1,1,1,2-Tetrafluoroethane"
+    },
+    {
+      "gas_name": "R-410A",
+      "chemical_formula": "CH2F2/CHF2CF3",
+      "gwp_100yr": 2088,
+      "category": "hfc",
+      "common_use": "Residential & commercial AC",
+      "notes": "Blend of R-32 and R-125"
+    },
+    {
+      "gas_name": "R-404A",
+      "chemical_formula": "Blend",
+      "gwp_100yr": 3922,
+      "category": "hfc",
+      "common_use": "Commercial refrigeration",
+      "notes": "HFC blend"
+    },
+    {
+      "gas_name": "R-407C",
+      "chemical_formula": "Blend",
+      "gwp_100yr": 1774,
+      "category": "hfc",
+      "common_use": "AC systems",
+      "notes": "HFC blend"
+    },
+    {
+      "gas_name": "R-22",
+      "chemical_formula": "CHClF2",
+      "gwp_100yr": 1810,
+      "category": "hcfc",
+      "common_use": "Legacy AC systems",
+      "notes": "Being phased out under Montreal Protocol"
+    },
+    {
+      "gas_name": "R-32",
+      "chemical_formula": "CH2F2",
+      "gwp_100yr": 675,
+      "category": "hfc",
+      "common_use": "Modern AC systems",
+      "notes": "Lower GWP alternative"
+    },
+    {
+      "gas_name": "R-1234yf",
+      "chemical_formula": "CF3CF=CH2",
+      "gwp_100yr": 4,
+      "category": "hfo",
+      "common_use": "Automotive AC (new)",
+      "notes": "Low GWP alternative to R-134a"
+    },
+    {
+      "gas_name": "SF6",
+      "chemical_formula": "SF6",
+      "gwp_100yr": 23500,
+      "category": "high_gwp",
+      "common_use": "Electrical equipment, semiconductor manufacturing",
+      "notes": "Sulfur hexafluoride - extremely high GWP"
+    },
+    {
+      "gas_name": "NF3",
+      "chemical_formula": "NF3",
+      "gwp_100yr": 16100,
+      "category": "high_gwp",
+      "common_use": "Semiconductor manufacturing, solar panels",
+      "notes": "Nitrogen trifluoride"
+    },
+    {
+      "gas_name": "CF4",
+      "chemical_formula": "CF4",
+      "gwp_100yr": 6630,
+      "category": "pfc",
+      "common_use": "Semiconductor etching, aluminum production",
+      "notes": "Perfluoromethane"
+    },
+    {
+      "gas_name": "C2F6",
+      "chemical_formula": "C2F6",
+      "gwp_100yr": 11100,
+      "category": "pfc",
+      "common_use": "Semiconductor manufacturing",
+      "notes": "Perfluoroethane"
+    },
+    {
+      "gas_name": "C3F8",
+      "chemical_formula": "C3F8",
+      "gwp_100yr": 8900,
+      "category": "pfc",
+      "common_use": "Semiconductor manufacturing",
+      "notes": "Perfluoropropane"
+    },
+    {
+      "gas_name": "CHF3",
+      "chemical_formula": "CHF3",
+      "gwp_100yr": 12400,
+      "category": "hfc",
+      "common_use": "Semiconductor plasma etching",
+      "notes": "HFC-23, trifluoromethane"
+    }
+  ]
+}
