@@ -2,139 +2,447 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
+/*
+  ZERO - Persefoni-Inspired Design System
+  Minimal, Professional, Sustainable
+
+  Characteristics:
+  - Clean, data-focused interface
+  - Professional blue-gray palette
+  - Subtle sustainability accents
+  - Card-based layouts with minimal shadows
+  - High contrast for readability
+  - Professional typography
 */
 
 @layer base {
   :root {
-    --background: 40 25% 97%;
-    --foreground: 30 15% 15%;
+    /* Base Colors - Clean whites and light grays */
+    --background: 0 0% 100%;                    /* Pure white */
+    --foreground: 215 20% 15%;                  /* Deep blue-gray for text */
 
-    --card: 40 20% 99%;
-    --card-foreground: 30 15% 15%;
+    /* Cards - Subtle elevation */
+    --card: 0 0% 100%;                          /* White cards */
+    --card-foreground: 215 20% 15%;             /* Dark text on cards */
 
-    --popover: 40 20% 99%;
-    --popover-foreground: 30 15% 15%;
+    /* Popovers */
+    --popover: 0 0% 100%;
+    --popover-foreground: 215 20% 15%;
 
-    --primary: 130 45% 35%;
-    --primary-foreground: 0 0% 100%;
+    /* Primary - Professional teal/blue (Persefoni-like) */
+    --primary: 195 85% 40%;                     /* Professional teal-blue */
+    --primary-foreground: 0 0% 100%;            /* White text */
 
-    --secondary: 35 55% 88%;
-    --secondary-foreground: 30 15% 15%;
+    /* Secondary - Subtle gray */
+    --secondary: 215 15% 96%;                   /* Very light blue-gray */
+    --secondary-foreground: 215 20% 25%;        /* Dark blue-gray */
 
-    --muted: 40 20% 92%;
-    --muted-foreground: 30 10% 45%;
+    /* Muted - Background accents */
+    --muted: 215 15% 97%;                       /* Almost white with blue tint */
+    --muted-foreground: 215 12% 50%;            /* Medium gray */
 
-    --accent: 42 85% 55%;
-    --accent-foreground: 30 15% 15%;
+    /* Accent - Sustainability green (subtle) */
+    --accent: 160 60% 45%;                      /* Professional green */
+    --accent-foreground: 0 0% 100%;             /* White text */
 
-    --destructive: 0 84% 60%;
+    /* Destructive - Professional red */
+    --destructive: 0 70% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --success: 135 50% 40%;
+    /* Success - Subtle green for positive metrics */
+    --success: 145 60% 45%;
     --success-foreground: 0 0% 100%;
 
-    --warning: 38 92% 50%;
-    --warning-foreground: 30 15% 15%;
+    /* Warning - Amber for attention */
+    --warning: 38 90% 55%;
+    --warning-foreground: 0 0% 100%;
 
-    --border: 40 20% 88%;
-    --input: 40 20% 88%;
-    --ring: 130 45% 35%;
+    /* Info - Light blue for information */
+    --info: 205 95% 55%;
+    --info-foreground: 0 0% 100%;
 
-    --radius: 0.75rem;
+    /* Borders - Subtle, professional */
+    --border: 215 20% 90%;                      /* Light gray with blue tint */
+    --input: 215 20% 88%;                       /* Slightly darker for inputs */
+    --ring: 195 85% 40%;                        /* Match primary */
 
-    --sidebar-background: 30 20% 12%;
-    --sidebar-foreground: 40 25% 95%;
-    --sidebar-primary: 130 45% 40%;
+    /* Radius - Modern but not overly rounded */
+    --radius: 0.5rem;                           /* 8px - clean, modern */
+
+    /* Sidebar - Professional dark sidebar (Persefoni style) */
+    --sidebar-background: 215 25% 12%;          /* Dark blue-gray */
+    --sidebar-foreground: 215 15% 90%;          /* Light text */
+    --sidebar-primary: 195 85% 45%;             /* Teal accent */
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 35 15% 18%;
-    --sidebar-accent-foreground: 40 25% 95%;
-    --sidebar-border: 30 15% 22%;
-    --sidebar-ring: 130 45% 40%;
+    --sidebar-accent: 215 20% 18%;              /* Slightly lighter bg for hover */
+    --sidebar-accent-foreground: 215 15% 95%;   /* Lighter text on hover */
+    --sidebar-border: 215 20% 20%;              /* Subtle border */
+    --sidebar-ring: 195 85% 45%;
 
-    --chart-1: 130 45% 35%;
-    --chart-2: 42 85% 55%;
-    --chart-3: 135 50% 40%;
-    --chart-4: 120 40% 45%;
-    --chart-5: 100 45% 45%;
+    /* Charts - Professional data visualization palette */
+    --chart-1: 195 85% 40%;                     /* Primary blue */
+    --chart-2: 160 60% 45%;                     /* Green */
+    --chart-3: 280 60% 50%;                     /* Purple */
+    --chart-4: 38 90% 55%;                      /* Amber */
+    --chart-5: 340 75% 55%;                     /* Rose */
 
-    --gradient-primary: linear-gradient(135deg, hsl(130 45% 35%), hsl(135 50% 40%));
-    --gradient-success: linear-gradient(135deg, hsl(135 50% 40%), hsl(120 45% 45%));
-    --gradient-eco: linear-gradient(120deg, hsl(130 45% 35%) 0%, hsl(42 85% 55%) 50%, hsl(135 50% 40%) 100%);
-    --gradient-warm: linear-gradient(135deg, hsl(42 85% 55%), hsl(35 80% 60%));
-    
-    --shadow-sm: 0 1px 2px 0 rgba(62, 45, 20, 0.08);
-    --shadow-md: 0 4px 6px -1px rgba(62, 45, 20, 0.12);
-    --shadow-lg: 0 10px 15px -3px rgba(62, 45, 20, 0.15);
-    --shadow-eco: 0 8px 24px -4px rgba(62, 45, 20, 0.2);
-    --shadow-warm: 0 10px 30px -5px rgba(200, 140, 40, 0.25);
+    /* Shadows - Minimal, professional */
+    --shadow-sm: 0 1px 2px 0 rgba(30, 45, 60, 0.04);
+    --shadow-md: 0 2px 8px -2px rgba(30, 45, 60, 0.08);
+    --shadow-lg: 0 8px 24px -4px rgba(30, 45, 60, 0.10);
+    --shadow-card: 0 1px 3px 0 rgba(30, 45, 60, 0.05);
+
+    /* Data visualization colors */
+    --scope-1: 0 70% 55%;                       /* Red for Scope 1 */
+    --scope-2: 38 90% 55%;                      /* Amber for Scope 2 */
+    --scope-3: 195 85% 40%;                     /* Blue for Scope 3 */
+
+    /* Status colors */
+    --status-complete: 145 60% 45%;             /* Green */
+    --status-in-progress: 205 95% 55%;          /* Blue */
+    --status-pending: 215 12% 50%;              /* Gray */
+    --status-error: 0 70% 55%;                  /* Red */
   }
 
   .dark {
-    --background: 30 20% 10%;
-    --foreground: 40 25% 92%;
+    /* Base Colors - Professional dark mode */
+    --background: 215 25% 10%;                  /* Dark blue-gray background */
+    --foreground: 215 15% 92%;                  /* Light text */
 
-    --card: 30 18% 14%;
-    --card-foreground: 40 25% 92%;
+    /* Cards */
+    --card: 215 22% 14%;                        /* Slightly lighter than bg */
+    --card-foreground: 215 15% 92%;
 
-    --popover: 30 18% 14%;
-    --popover-foreground: 40 25% 92%;
+    /* Popovers */
+    --popover: 215 22% 14%;
+    --popover-foreground: 215 15% 92%;
 
-    --primary: 130 45% 45%;
+    /* Primary - Brighter in dark mode */
+    --primary: 195 85% 50%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 30 15% 20%;
-    --secondary-foreground: 40 25% 92%;
+    /* Secondary */
+    --secondary: 215 20% 18%;
+    --secondary-foreground: 215 15% 90%;
 
-    --muted: 30 15% 20%;
-    --muted-foreground: 40 15% 65%;
+    /* Muted */
+    --muted: 215 20% 18%;
+    --muted-foreground: 215 12% 60%;
 
-    --accent: 42 75% 55%;
-    --accent-foreground: 30 20% 10%;
+    /* Accent */
+    --accent: 160 60% 50%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 62.8% 50%;
-    --destructive-foreground: 40 25% 92%;
+    /* Destructive */
+    --destructive: 0 70% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    --success: 135 50% 45%;
+    /* Success */
+    --success: 145 60% 50%;
     --success-foreground: 0 0% 100%;
 
-    --warning: 38 92% 50%;
-    --warning-foreground: 30 20% 10%;
+    /* Warning */
+    --warning: 38 90% 60%;
+    --warning-foreground: 0 0% 100%;
 
-    --border: 30 15% 22%;
-    --input: 30 15% 22%;
-    --ring: 130 45% 45%;
+    /* Info */
+    --info: 205 95% 60%;
+    --info-foreground: 0 0% 100%;
 
-    --sidebar-background: 30 25% 8%;
-    --sidebar-foreground: 40 25% 92%;
-    --sidebar-primary: 130 45% 45%;
+    /* Borders */
+    --border: 215 20% 22%;
+    --input: 215 20% 22%;
+    --ring: 195 85% 50%;
+
+    /* Sidebar - Darker in dark mode */
+    --sidebar-background: 215 28% 8%;
+    --sidebar-foreground: 215 15% 90%;
+    --sidebar-primary: 195 85% 50%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 30 18% 16%;
-    --sidebar-accent-foreground: 40 25% 92%;
-    --sidebar-border: 30 15% 18%;
-    --sidebar-ring: 130 45% 45%;
+    --sidebar-accent: 215 22% 14%;
+    --sidebar-accent-foreground: 215 15% 95%;
+    --sidebar-border: 215 20% 16%;
+    --sidebar-ring: 195 85% 50%;
 
-    --chart-1: 130 45% 45%;
-    --chart-2: 42 75% 55%;
-    --chart-3: 135 50% 45%;
-    --chart-4: 120 40% 50%;
-    --chart-5: 100 45% 50%;
+    /* Charts - Adjusted for dark mode */
+    --chart-1: 195 85% 55%;
+    --chart-2: 160 60% 55%;
+    --chart-3: 280 60% 60%;
+    --chart-4: 38 90% 60%;
+    --chart-5: 340 75% 60%;
 
-    --gradient-primary: linear-gradient(135deg, hsl(130 45% 45%), hsl(135 50% 45%));
-    --gradient-success: linear-gradient(135deg, hsl(135 50% 45%), hsl(120 45% 50%));
-    --gradient-eco: linear-gradient(120deg, hsl(130 45% 35%) 0%, hsl(42 75% 55%) 50%, hsl(135 50% 40%) 100%);
-    --gradient-warm: linear-gradient(135deg, hsl(42 75% 50%), hsl(35 70% 55%));
+    /* Shadows - More pronounced in dark mode */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 2px 8px -2px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 8px 24px -4px rgba(0, 0, 0, 0.5);
+    --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.4);
+
+    /* Data visualization */
+    --scope-1: 0 70% 60%;
+    --scope-2: 38 90% 60%;
+    --scope-3: 195 85% 55%;
+
+    /* Status colors */
+    --status-complete: 145 60% 50%;
+    --status-in-progress: 205 95% 60%;
+    --status-pending: 215 12% 60%;
+    --status-error: 0 70% 60%;
   }
 }
 
 @layer base {
   * {
     @apply border-border;
-    font-family: 'Gothic A1', 'Century Gothic', 'Avant Garde', sans-serif;
   }
 
   body {
     @apply bg-background text-foreground;
+    font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+    font-feature-settings: 'cv11' 1, 'ss01' 1;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Typography - Clean, professional hierarchy */
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: hsl(var(--foreground));
+  }
+
+  h1 {
+    font-size: 2rem;
+    line-height: 1.2;
+    font-weight: 700;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    line-height: 1.3;
+  }
+
+  h3 {
+    font-size: 1.25rem;
+    line-height: 1.4;
+  }
+
+  /* Links - Professional styling */
+  a {
+    @apply text-primary hover:underline;
+    transition: color 0.15s ease;
+  }
+
+  /* Code - Monospace font */
+  code {
+    font-family: 'SF Mono', 'Consolas', 'Monaco', 'Andale Mono', 'Ubuntu Mono', monospace;
+    font-size: 0.875em;
+  }
+}
+
+/* Custom utility classes for Persefoni-style interface */
+@layer components {
+  /* Card styles - Minimal elevation */
+  .card-minimal {
+    @apply bg-card text-card-foreground rounded-lg border border-border;
+    box-shadow: var(--shadow-card);
+  }
+
+  .card-elevated {
+    @apply bg-card text-card-foreground rounded-lg border border-border;
+    box-shadow: var(--shadow-md);
+  }
+
+  /* Metric card - For displaying data */
+  .metric-card {
+    @apply card-minimal p-6 hover:shadow-md transition-shadow duration-200;
+  }
+
+  /* Section header - Clean, minimal */
+  .section-header {
+    @apply text-lg font-semibold text-foreground mb-4 flex items-center justify-between;
+  }
+
+  /* Data table header */
+  .table-header {
+    @apply bg-muted/50 text-muted-foreground font-medium text-sm;
+  }
+
+  /* Status badges */
+  .badge-success {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-success/10 text-success border border-success/20;
+  }
+
+  .badge-warning {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-warning/10 text-warning border border-warning/20;
+  }
+
+  .badge-error {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-destructive/10 text-destructive border border-destructive/20;
+  }
+
+  .badge-info {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-info/10 text-info border border-info/20;
+  }
+
+  .badge-neutral {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-muted text-muted-foreground border border-border;
+  }
+
+  /* Button variants - Professional, minimal */
+  .btn-primary {
+    @apply bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-150;
+  }
+
+  .btn-secondary {
+    @apply bg-secondary text-secondary-foreground hover:bg-secondary/80 border border-border transition-colors duration-150;
+  }
+
+  .btn-ghost {
+    @apply hover:bg-muted transition-colors duration-150;
+  }
+
+  /* Input fields - Clean, professional */
+  .input-field {
+    @apply border-input bg-background ring-offset-background focus:ring-2 focus:ring-ring focus:ring-offset-2;
+  }
+
+  /* Page container */
+  .page-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8;
+  }
+
+  /* Dashboard grid */
+  .dashboard-grid {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6;
+  }
+
+  /* Stat display */
+  .stat-value {
+    @apply text-3xl font-bold text-foreground;
+  }
+
+  .stat-label {
+    @apply text-sm text-muted-foreground font-medium;
+  }
+
+  .stat-change-positive {
+    @apply text-success text-sm font-medium;
+  }
+
+  .stat-change-negative {
+    @apply text-destructive text-sm font-medium;
+  }
+
+  /* Divider */
+  .divider {
+    @apply border-t border-border my-6;
+  }
+
+  /* Focus states - Professional, accessible */
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background;
+  }
+}
+
+/* Smooth transitions */
+@layer utilities {
+  .transition-base {
+    transition-property: color, background-color, border-color, box-shadow;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+  }
+
+  /* Scroll behavior */
+  .scroll-smooth {
+    scroll-behavior: smooth;
+  }
+
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Data grid - Professional spacing */
+  .data-grid {
+    @apply grid gap-px bg-border;
+  }
+
+  .data-cell {
+    @apply bg-background p-4;
+  }
+}
+
+/* Chart customizations - Clean, professional colors */
+.recharts-cartesian-grid-horizontal line,
+.recharts-cartesian-grid-vertical line {
+  stroke: hsl(var(--border));
+  stroke-opacity: 0.5;
+}
+
+.recharts-text {
+  fill: hsl(var(--muted-foreground));
+  font-size: 12px;
+}
+
+.recharts-legend-wrapper {
+  font-size: 14px;
+}
+
+/* Loading states */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.shimmer {
+  animation: shimmer 2s infinite linear;
+  background: linear-gradient(
+    to right,
+    hsl(var(--muted)) 0%,
+    hsl(var(--muted-foreground) / 0.1) 20%,
+    hsl(var(--muted)) 40%,
+    hsl(var(--muted)) 100%
+  );
+  background-size: 1000px 100%;
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Print styles - Professional reports */
+@media print {
+  body {
+    @apply bg-white text-black;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .page-break-before {
+    page-break-before: always;
+  }
+
+  .page-break-after {
+    page-break-after: always;
   }
 }
