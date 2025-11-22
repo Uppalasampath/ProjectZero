@@ -113,90 +113,82 @@ const Dashboard = () => {
 
   return (
     <Layout>
-      <div className="space-y-8 animate-fade-in">
-        {/* Hero Header */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-eco p-10 text-primary-foreground shadow-warm">
-          <div className="absolute top-0 right-0 -mr-16 -mt-16 h-64 w-64 rounded-full bg-white/5 blur-3xl"></div>
-          <div className="absolute bottom-0 left-0 -ml-16 -mb-16 h-64 w-64 rounded-full bg-white/5 blur-3xl"></div>
-          <div className="relative">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="h-20 w-20 rounded-3xl bg-white/15 backdrop-blur flex items-center justify-center">
-                <Building2 className="h-10 w-10" />
-              </div>
-              <div>
-                <h1 className="text-5xl font-bold tracking-tight">Welcome to ZERO</h1>
-                <p className="text-xl text-primary-foreground/90 mt-2">
-                  {profile?.company_name || 'Your Organization'}
-                </p>
-              </div>
+      <div className="space-y-6 animate-fade-in">
+        {/* Clean Header - Persefoni Style */}
+        <div className="border-b border-border pb-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-semibold text-foreground mb-1">
+                {profile?.company_name || 'Your Organization'}
+              </h1>
+              <p className="text-sm text-muted-foreground">
+                {profile?.industry || 'Manufacturing'} • Target: Net Zero by {profile?.net_zero_target_year || 2040}
+              </p>
             </div>
-            <div className="grid grid-cols-3 gap-6 mt-8">
-              <div className="bg-white/10 backdrop-blur rounded-2xl p-4">
-                <p className="text-sm opacity-90 mb-1">Net Zero Target</p>
-                <p className="text-4xl font-bold">{profile?.net_zero_target_year || 2040}</p>
-              </div>
-              <div className="bg-white/10 backdrop-blur rounded-2xl p-4">
-                <p className="text-sm opacity-90 mb-1">Industry</p>
-                <p className="text-2xl font-semibold">{profile?.industry || 'Manufacturing'}</p>
-              </div>
-              <div className="bg-white/10 backdrop-blur rounded-2xl p-4">
-                <p className="text-sm opacity-90 mb-1">Progress</p>
-                <p className="text-4xl font-bold">{progressPercent.toFixed(0)}%</p>
+            <div className="flex items-center gap-3">
+              <div className="text-right">
+                <p className="text-xs text-muted-foreground mb-0.5">Progress to Net Zero</p>
+                <p className="text-3xl font-semibold text-foreground">{progressPercent.toFixed(0)}%</p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Key Metrics - Simplified */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="border-none bg-gradient-to-br from-primary/5 to-primary/10 hover:shadow-lg transition-shadow">
+        {/* Key Metrics - Clean Persefoni Style */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Card className="border border-border shadow-sm hover:shadow-md transition-shadow">
             <CardContent className="pt-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className="h-14 w-14 rounded-2xl bg-primary/20 flex items-center justify-center">
-                  <Activity className="h-7 w-7 text-primary" />
+              <div className="flex items-start justify-between mb-3">
+                <div>
+                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">Carbon Footprint</p>
+                  <p className="text-3xl font-semibold text-foreground">{totalEmissions > 0 ? formatNumber(totalEmissions) : '0'}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">tons CO2e annually</p>
                 </div>
-                <Badge variant="secondary" className="bg-destructive/10 text-destructive">
-                  -12% ↓
-                </Badge>
+                <Activity className="h-5 w-5 text-muted-foreground" />
               </div>
-              <p className="text-sm text-muted-foreground mb-2">Carbon Footprint</p>
-              <p className="text-4xl font-bold">{totalEmissions > 0 ? formatNumber(totalEmissions) : '0'}</p>
-              <p className="text-xs text-muted-foreground mt-1">tons CO2e annually</p>
+              <div className="flex items-center gap-1 text-xs mt-3 pt-3 border-t border-border">
+                <TrendingDown className="h-3 w-3 text-success" />
+                <span className="text-success font-medium">-12%</span>
+                <span className="text-muted-foreground">vs last year</span>
+              </div>
             </CardContent>
           </Card>
 
-          <Card className="border-none bg-gradient-to-br from-success/5 to-success/10 hover:shadow-lg transition-shadow">
+          <Card className="border border-border shadow-sm hover:shadow-md transition-shadow">
             <CardContent className="pt-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className="h-14 w-14 rounded-2xl bg-success/20 flex items-center justify-center">
-                  <Recycle className="h-7 w-7 text-success" />
+              <div className="flex items-start justify-between mb-3">
+                <div>
+                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">Circular Economy</p>
+                  <p className="text-3xl font-semibold text-foreground">{marketplaceCarbonCredits > 0 ? `${formatNumber(marketplaceCarbonCredits)}` : '0'}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">tons CO2e avoided</p>
                 </div>
-                <Badge variant="secondary" className="bg-success/10 text-success">
-                  +15% ↑
-                </Badge>
+                <Recycle className="h-5 w-5 text-muted-foreground" />
               </div>
-              <p className="text-sm text-muted-foreground mb-2">Circular Economy</p>
-              <p className="text-4xl font-bold">{marketplaceCarbonCredits > 0 ? `~${formatNumber(marketplaceCarbonCredits)}` : '0'}</p>
-              <p className="text-xs text-muted-foreground mt-1">est. tons CO2e avoided via marketplace</p>
-              {totalRevenue > 0 && (
-                <p className="text-sm text-success font-semibold mt-2">${formatNumber(totalRevenue)} revenue</p>
-              )}
+              <div className="flex items-center gap-1 text-xs mt-3 pt-3 border-t border-border">
+                {totalRevenue > 0 ? (
+                  <><DollarSign className="h-3 w-3 text-success" /><span className="text-success font-medium">${formatNumber(totalRevenue)}</span><span className="text-muted-foreground">revenue generated</span></>
+                ) : (
+                  <span className="text-muted-foreground">No transactions yet</span>
+                )}
+              </div>
             </CardContent>
           </Card>
 
-          <Card className="border-none bg-gradient-to-br from-accent/5 to-accent/10 hover:shadow-lg transition-shadow">
+          <Card className="border border-border shadow-sm hover:shadow-md transition-shadow">
             <CardContent className="pt-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className="h-14 w-14 rounded-2xl bg-accent/20 flex items-center justify-center">
-                  <ShieldCheck className="h-7 w-7 text-accent" />
+              <div className="flex items-start justify-between mb-3">
+                <div>
+                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">Compliance</p>
+                  <p className="text-3xl font-semibold text-foreground">87%</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">frameworks complete</p>
                 </div>
-                <Badge variant="secondary" className="bg-success/10 text-success">
+                <ShieldCheck className="h-5 w-5 text-muted-foreground" />
+              </div>
+              <div className="flex items-center gap-1 text-xs mt-3 pt-3 border-t border-border">
+                <Badge variant="secondary" className="bg-success/10 text-success border-0 text-xs px-2 py-0">
                   On Track
                 </Badge>
               </div>
-              <p className="text-sm text-muted-foreground mb-2">Compliance</p>
-              <p className="text-4xl font-bold">87%</p>
-              <p className="text-xs text-muted-foreground mt-1">frameworks complete</p>
             </CardContent>
           </Card>
         </div>
