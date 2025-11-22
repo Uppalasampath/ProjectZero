@@ -26,105 +26,91 @@ const Compliance = () => {
   return (
     <Layout>
       <div className="space-y-6 animate-fade-in">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold">Compliance Autopilot</h1>
-            <p className="text-muted-foreground mt-1">Automated regulatory reporting and monitoring</p>
+        {/* Clean Header - Persefoni Style */}
+        <div className="border-b border-border pb-5">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-semibold text-foreground">Compliance Autopilot</h1>
+              <p className="text-sm text-muted-foreground mt-1">Automated regulatory reporting and monitoring</p>
+            </div>
+            <Button size="sm">
+              <FileText className="w-3.5 h-3.5 mr-1.5" />
+              Generate Report
+            </Button>
           </div>
-          <Button className="bg-gradient-primary">
-            <FileText className="w-4 h-4 mr-2" />
-            Generate Report
-          </Button>
         </div>
 
-        {/* Overview Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-lg bg-success/10 flex items-center justify-center">
-                  <CheckCircle className="w-6 h-6 text-success" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold">3</p>
-                  <p className="text-sm text-muted-foreground">Frameworks Complete</p>
-                </div>
+        {/* Overview Stats - Clean Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <Card className="border border-border shadow-sm">
+            <CardContent className="pt-5 pb-4">
+              <div className="flex items-start justify-between mb-2">
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Frameworks Complete</p>
+                <CheckCircle className="w-4 h-4 text-success" />
               </div>
+              <p className="text-2xl font-semibold text-foreground">3</p>
             </CardContent>
           </Card>
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-lg bg-warning/10 flex items-center justify-center">
-                  <Clock className="w-6 h-6 text-warning" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold">2</p>
-                  <p className="text-sm text-muted-foreground">In Progress</p>
-                </div>
+          <Card className="border border-border shadow-sm">
+            <CardContent className="pt-5 pb-4">
+              <div className="flex items-start justify-between mb-2">
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">In Progress</p>
+                <Clock className="w-4 h-4 text-warning" />
               </div>
+              <p className="text-2xl font-semibold text-foreground">2</p>
             </CardContent>
           </Card>
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-lg bg-destructive/10 flex items-center justify-center">
-                  <AlertCircle className="w-6 h-6 text-destructive" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold">1</p>
-                  <p className="text-sm text-muted-foreground">Urgent Deadline</p>
-                </div>
+          <Card className="border border-border shadow-sm">
+            <CardContent className="pt-5 pb-4">
+              <div className="flex items-start justify-between mb-2">
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Urgent Deadline</p>
+                <AlertCircle className="w-4 h-4 text-destructive" />
               </div>
+              <p className="text-2xl font-semibold text-foreground">1</p>
             </CardContent>
           </Card>
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <FileText className="w-6 h-6 text-primary" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold">8</p>
-                  <p className="text-sm text-muted-foreground">Reports Generated</p>
-                </div>
+          <Card className="border border-border shadow-sm">
+            <CardContent className="pt-5 pb-4">
+              <div className="flex items-start justify-between mb-2">
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Reports Generated</p>
+                <FileText className="w-4 h-4 text-muted-foreground" />
               </div>
+              <p className="text-2xl font-semibold text-foreground">8</p>
             </CardContent>
           </Card>
         </div>
 
         {/* Regulatory Frameworks */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Regulatory Frameworks</CardTitle>
+        <Card className="border border-border shadow-sm">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base font-semibold">Regulatory Frameworks</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-6">
+            <div className="space-y-4">
               {frameworks.map((framework) => (
-                <div key={framework.name} className="space-y-3">
+                <div key={framework.name} className="p-4 border border-border rounded hover:bg-muted/30 transition-colors space-y-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className={`w-3 h-3 rounded-full ${getStatusColor(framework.status)}`}></div>
+                      <div className={`w-2 h-2 rounded-full ${getStatusColor(framework.status)}`}></div>
                       <div>
-                        <h4 className="font-semibold">{framework.name}</h4>
-                        <p className="text-sm text-muted-foreground">{framework.fullName}</p>
+                        <h4 className="text-sm font-medium">{framework.name}</h4>
+                        <p className="text-xs text-muted-foreground">{framework.fullName}</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-4">
-                      <Badge variant="outline">
+                    <div className="flex items-center gap-3">
+                      <Badge variant="outline" className="text-xs">
                         <Clock className="w-3 h-3 mr-1" />
                         {framework.deadline}
                       </Badge>
-                      <span className="text-sm font-semibold">{framework.completion}%</span>
+                      <span className="text-sm font-semibold min-w-[3rem] text-right">{framework.completion}%</span>
                     </div>
                   </div>
-                  <Progress value={framework.completion} />
+                  <Progress value={framework.completion} className="h-1.5" />
                   <div className="flex gap-2">
-                    <Button variant="outline" size="sm">View Details</Button>
-                    <Button variant="outline" size="sm">Generate Report</Button>
+                    <Button variant="outline" size="sm" className="text-xs h-8">View Details</Button>
+                    <Button variant="outline" size="sm" className="text-xs h-8">Generate Report</Button>
                     {framework.completion < 100 && (
-                      <Button variant="outline" size="sm">Add Data</Button>
+                      <Button variant="outline" size="sm" className="text-xs h-8">Add Data</Button>
                     )}
                   </div>
                 </div>
@@ -134,35 +120,35 @@ const Compliance = () => {
         </Card>
 
         {/* Integration Status */}
-        <Card className="bg-gradient-primary text-white">
-          <CardHeader>
-            <CardTitle>Data Integration Status</CardTitle>
+        <Card className="border border-border shadow-sm">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base font-semibold">Data Integration Status</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="space-y-2">
-                <p className="text-sm opacity-90">Circular Marketplace</p>
+              <div className="p-4 border border-border rounded space-y-2">
+                <p className="text-sm font-medium text-foreground">Circular Marketplace</p>
                 <div className="flex items-center gap-2">
-                  <CheckCircle className="w-5 h-5" />
-                  <span className="font-semibold">Connected</span>
+                  <CheckCircle className="w-4 h-4 text-success" />
+                  <span className="text-sm font-medium text-success">Connected</span>
                 </div>
-                <p className="text-xs opacity-75">Auto-updating waste metrics</p>
+                <p className="text-xs text-muted-foreground">Auto-updating waste metrics</p>
               </div>
-              <div className="space-y-2">
-                <p className="text-sm opacity-90">Carbon Engine</p>
+              <div className="p-4 border border-border rounded space-y-2">
+                <p className="text-sm font-medium text-foreground">Carbon Engine</p>
                 <div className="flex items-center gap-2">
-                  <CheckCircle className="w-5 h-5" />
-                  <span className="font-semibold">Connected</span>
+                  <CheckCircle className="w-4 h-4 text-success" />
+                  <span className="text-sm font-medium text-success">Connected</span>
                 </div>
-                <p className="text-xs opacity-75">Real-time emission data</p>
+                <p className="text-xs text-muted-foreground">Real-time emission data</p>
               </div>
-              <div className="space-y-2">
-                <p className="text-sm opacity-90">ERP Systems</p>
+              <div className="p-4 border border-border rounded space-y-2">
+                <p className="text-sm font-medium text-foreground">ERP Systems</p>
                 <div className="flex items-center gap-2">
-                  <CheckCircle className="w-5 h-5" />
-                  <span className="font-semibold">3 Systems Connected</span>
+                  <CheckCircle className="w-4 h-4 text-success" />
+                  <span className="text-sm font-medium text-success">3 Systems Connected</span>
                 </div>
-                <p className="text-xs opacity-75">SAP, Oracle, Workday</p>
+                <p className="text-xs text-muted-foreground">SAP, Oracle, Workday</p>
               </div>
             </div>
           </CardContent>

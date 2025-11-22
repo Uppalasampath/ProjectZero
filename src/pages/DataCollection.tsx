@@ -12,35 +12,37 @@ const DataCollection = () => {
   return (
     <Layout>
       <div className="space-y-6 animate-fade-in max-w-4xl mx-auto">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold">Data Collection</h1>
-            <p className="text-muted-foreground mt-1">CSRD E4: Biodiversity & Ecosystems</p>
-          </div>
-          <div className="text-right">
-            <p className="text-sm text-muted-foreground">Overall Progress</p>
-            <p className="text-2xl font-bold">65%</p>
+        <div className="border-b border-border pb-5">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-semibold text-foreground">Data Collection</h1>
+              <p className="text-sm text-muted-foreground mt-1">CSRD E4: Biodiversity & Ecosystems</p>
+            </div>
+            <div className="text-right">
+              <p className="text-xs text-muted-foreground mb-0.5">Overall Progress</p>
+              <p className="text-2xl font-semibold text-foreground">65%</p>
+            </div>
           </div>
         </div>
 
-        <Card>
-          <CardContent className="p-6">
-            <Progress value={65} className="mb-2" />
-            <p className="text-sm text-muted-foreground">7 of 12 data points completed</p>
+        <Card className="border border-border shadow-sm">
+          <CardContent className="p-5">
+            <Progress value={65} className="mb-2 h-2" />
+            <p className="text-xs text-muted-foreground">7 of 12 data points completed</p>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
+        <Card className="border border-border shadow-sm">
+          <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
-              <CardTitle>Required Data Points</CardTitle>
-              <Button variant="outline" size="sm">
-                <Users className="w-4 h-4 mr-2" />
+              <CardTitle className="text-base font-semibold">Required Data Points</CardTitle>
+              <Button variant="outline" size="sm" className="h-8 text-xs">
+                <Users className="w-3 h-3 mr-1.5" />
                 Request from Team
               </Button>
             </div>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className="space-y-4">
             <div className="space-y-4">
               <div className="p-4 border border-border rounded-lg">
                 <div className="flex items-start justify-between mb-3">
@@ -138,23 +140,23 @@ const DataCollection = () => {
             </div>
 
             <div className="flex gap-3 pt-4">
-              <Button className="flex-1 bg-gradient-primary">Save Progress</Button>
+              <Button className="flex-1">Save Progress</Button>
               <Button className="flex-1" variant="outline">Save as Draft</Button>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-primary/5 border-primary">
-          <CardContent className="p-6">
-            <div className="flex items-start gap-4">
-              <CheckCircle className="w-6 h-6 text-primary mt-1" />
+        <Card className="border border-border shadow-sm bg-muted/30">
+          <CardContent className="p-5">
+            <div className="flex items-start gap-3">
+              <CheckCircle className="w-5 h-5 text-primary mt-0.5" />
               <div>
-                <h4 className="font-semibold mb-2">Auto-fill Available</h4>
-                <p className="text-sm text-muted-foreground mb-3">
-                  Some data points can be automatically filled from your existing modules. 
+                <h4 className="text-sm font-semibold mb-1.5">Auto-fill Available</h4>
+                <p className="text-xs text-muted-foreground mb-3">
+                  Some data points can be automatically filled from your existing modules.
                   Click below to import verified data from Carbon Engine and Circular Marketplace.
                 </p>
-                <Button size="sm" variant="outline">Import from Modules</Button>
+                <Button size="sm" variant="outline" className="h-8 text-xs">Import from Modules</Button>
               </div>
             </div>
           </CardContent>
