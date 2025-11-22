@@ -193,106 +193,108 @@ export default function CarbonDashboard() {
   return (
     <Layout>
       <div className="space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold">Carbon Dashboard</h1>
-            <p className="text-muted-foreground mt-1">
-              Period: {new Date(emissions.reporting_period_start).toLocaleDateString()} -{" "}
-              {new Date(emissions.reporting_period_end).toLocaleDateString()}
-            </p>
-          </div>
-          <div className="flex gap-3">
-            <Button variant="outline" onClick={fetchCarbonData}>
-              <RefreshCw className="w-4 h-4 mr-2" />
-              Recalculate
-            </Button>
-            <Button variant="outline">
-              <Download className="w-4 h-4 mr-2" />
-              Export Report
-            </Button>
+        {/* Clean Header - Persefoni Style */}
+        <div className="border-b border-border pb-5">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-semibold text-foreground">Carbon Dashboard</h1>
+              <p className="text-sm text-muted-foreground mt-1">
+                {new Date(emissions.reporting_period_start).toLocaleDateString()} - {new Date(emissions.reporting_period_end).toLocaleDateString()}
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" onClick={fetchCarbonData}>
+                <RefreshCw className="w-3.5 h-3.5 mr-1.5" />
+                Refresh
+              </Button>
+              <Button variant="outline" size="sm">
+                <Download className="w-3.5 h-3.5 mr-1.5" />
+                Export
+              </Button>
+            </div>
           </div>
         </div>
 
-        {/* Hero Metrics */}
+        {/* Summary Metrics - Clean Grid */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Card className="md:col-span-1">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Total Footprint</CardTitle>
-              <Leaf className="w-4 h-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold">{getTotalEmissions().toLocaleString()}</div>
-              <p className="text-xs text-muted-foreground">tons CO2e</p>
-              <div className="flex items-center mt-2 text-xs">
-                <TrendingDown className="w-3 h-3 text-green-500 mr-1" />
-                <span className="text-green-500">8.2% vs last year</span>
+          <Card className="border border-border shadow-sm">
+            <CardContent className="pt-5 pb-4">
+              <div className="flex items-start justify-between mb-2">
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Total Footprint</p>
+                <Leaf className="w-4 h-4 text-muted-foreground" />
+              </div>
+              <div className="text-2xl font-semibold text-foreground">{getTotalEmissions().toLocaleString()}</div>
+              <p className="text-xs text-muted-foreground mt-0.5">tons CO2e</p>
+              <div className="flex items-center mt-3 pt-3 border-t border-border">
+                <TrendingDown className="w-3 h-3 text-success mr-1" />
+                <span className="text-xs text-success font-medium">8.2%</span>
+                <span className="text-xs text-muted-foreground ml-1">vs last year</span>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Scope 1</CardTitle>
-              <Factory className="w-4 h-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
+          <Card className="border border-border shadow-sm">
+            <CardContent className="pt-5 pb-4">
+              <div className="flex items-start justify-between mb-2">
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Scope 1</p>
+                <Factory className="w-4 h-4 text-muted-foreground" />
+              </div>
+              <div className="text-2xl font-semibold text-foreground">
                 {Number(emissions.scope_1_total || 0).toLocaleString()}
               </div>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-muted-foreground mt-0.5">
                 {getScopePercentage("scope_1")}% of total
               </p>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Scope 2</CardTitle>
-              <Zap className="w-4 h-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
+          <Card className="border border-border shadow-sm">
+            <CardContent className="pt-5 pb-4">
+              <div className="flex items-start justify-between mb-2">
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Scope 2</p>
+                <Zap className="w-4 h-4 text-muted-foreground" />
+              </div>
+              <div className="text-2xl font-semibold text-foreground">
                 {Number(emissions.scope_2_total || 0).toLocaleString()}
               </div>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-muted-foreground mt-0.5">
                 {getScopePercentage("scope_2")}% of total
               </p>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Scope 3</CardTitle>
-              <Users className="w-4 h-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
+          <Card className="border border-border shadow-sm">
+            <CardContent className="pt-5 pb-4">
+              <div className="flex items-start justify-between mb-2">
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Scope 3</p>
+                <Users className="w-4 h-4 text-muted-foreground" />
+              </div>
+              <div className="text-2xl font-semibold text-foreground">
                 {Number(emissions.scope_3_total || 0).toLocaleString()}
               </div>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-muted-foreground mt-0.5">
                 {getScopePercentage("scope_3")}% of total
               </p>
             </CardContent>
           </Card>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid md:grid-cols-2 gap-4">
           {/* Scope Breakdown Donut */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Emissions by Scope</CardTitle>
+          <Card className="border border-border shadow-sm">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base font-semibold">Emissions by Scope</CardTitle>
             </CardHeader>
             <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
+              <ResponsiveContainer width="100%" height={280}>
                 <PieChart>
                   <Pie
                     data={pieData}
                     cx="50%"
                     cy="50%"
                     innerRadius={60}
-                    outerRadius={100}
-                    paddingAngle={5}
+                    outerRadius={90}
+                    paddingAngle={2}
                     dataKey="value"
                   >
                     {pieData.map((entry, index) => (
@@ -307,52 +309,49 @@ export default function CarbonDashboard() {
           </Card>
 
           {/* Target Progress */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Target className="w-5 h-5 mr-2" />
+          <Card className="border border-border shadow-sm">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base font-semibold flex items-center">
+                <Target className="w-4 h-4 mr-2" />
                 Net Zero Target Progress
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="space-y-2">
+              <div className="space-y-3 pb-3 border-b border-border">
                 <div className="flex justify-between text-sm">
-                  <span>Current Emissions</span>
-                  <span className="font-semibold">{getTotalEmissions().toLocaleString()} tons</span>
+                  <span className="text-muted-foreground">Current Emissions</span>
+                  <span className="font-medium">{getTotalEmissions().toLocaleString()} tons</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span>Target Year</span>
-                  <span className="font-semibold">2040</span>
+                  <span className="text-muted-foreground">Target Year</span>
+                  <span className="font-medium">2040</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span>Reduction Needed</span>
-                  <span className="font-semibold text-orange-500">
+                  <span className="text-muted-foreground">Reduction Needed</span>
+                  <span className="font-medium text-warning">
                     {(getTotalEmissions() * 0.9).toLocaleString()} tons (90%)
                   </span>
                 </div>
               </div>
 
-              <div className="relative pt-1">
-                <div className="flex mb-2 items-center justify-between">
-                  <div>
-                    <span className="text-xs font-semibold inline-block text-primary">
-                      10% Progress
-                    </span>
-                  </div>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">Progress</span>
+                  <span className="font-medium text-primary">10%</span>
                 </div>
-                <div className="overflow-hidden h-4 text-xs flex rounded bg-muted">
+                <div className="overflow-hidden h-2 rounded-full bg-muted">
                   <div
                     style={{ width: "10%" }}
-                    className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-gradient-primary"
+                    className="h-full bg-primary transition-all"
                   />
                 </div>
               </div>
 
-              <p className="text-sm text-muted-foreground">
+              <p className="text-xs text-muted-foreground pt-2">
                 You're slightly behind schedule. View recommendations to accelerate progress.
               </p>
 
-              <Button className="w-full" onClick={() => navigate("/carbon/recommendations")}>
+              <Button className="w-full" size="sm" onClick={() => navigate("/carbon/recommendations")}>
                 View Recommendations
               </Button>
             </CardContent>
@@ -360,34 +359,35 @@ export default function CarbonDashboard() {
         </div>
 
         {/* Timeline Chart */}
-        <Card>
-          <CardHeader>
+        <Card className="border border-border shadow-sm">
+          <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
-              <CardTitle>Emissions Timeline</CardTitle>
+              <CardTitle className="text-base font-semibold">Emissions Timeline</CardTitle>
               <Tabs value={selectedScope} onValueChange={(v: any) => setSelectedScope(v)}>
-                <TabsList>
-                  <TabsTrigger value="all">All Scopes</TabsTrigger>
-                  <TabsTrigger value="scope1">Scope 1</TabsTrigger>
-                  <TabsTrigger value="scope2">Scope 2</TabsTrigger>
-                  <TabsTrigger value="scope3">Scope 3</TabsTrigger>
+                <TabsList className="h-8">
+                  <TabsTrigger value="all" className="text-xs px-2.5">All Scopes</TabsTrigger>
+                  <TabsTrigger value="scope1" className="text-xs px-2.5">Scope 1</TabsTrigger>
+                  <TabsTrigger value="scope2" className="text-xs px-2.5">Scope 2</TabsTrigger>
+                  <TabsTrigger value="scope3" className="text-xs px-2.5">Scope 3</TabsTrigger>
                 </TabsList>
               </Tabs>
             </div>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height={280}>
               <LineChart data={historicalData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
-                <YAxis />
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                <XAxis dataKey="month" tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
+                <YAxis tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
                 <Tooltip />
-                <Legend />
+                <Legend wrapperStyle={{ fontSize: '11px' }} />
                 {(selectedScope === "all" || selectedScope === "scope1") && (
                   <Line
                     type="monotone"
                     dataKey="scope1"
                     stroke={SCOPE_COLORS.scope1}
                     name="Scope 1"
+                    strokeWidth={2}
                   />
                 )}
                 {(selectedScope === "all" || selectedScope === "scope2") && (
@@ -396,6 +396,7 @@ export default function CarbonDashboard() {
                     dataKey="scope2"
                     stroke={SCOPE_COLORS.scope2}
                     name="Scope 2"
+                    strokeWidth={2}
                   />
                 )}
                 {(selectedScope === "all" || selectedScope === "scope3") && (
@@ -404,10 +405,11 @@ export default function CarbonDashboard() {
                     dataKey="scope3"
                     stroke={SCOPE_COLORS.scope3}
                     name="Scope 3"
+                    strokeWidth={2}
                   />
                 )}
                 {selectedScope === "all" && (
-                  <Line type="monotone" dataKey="total" stroke="#6366f1" name="Total" strokeWidth={2} />
+                  <Line type="monotone" dataKey="total" stroke="hsl(var(--primary))" name="Total" strokeWidth={2} />
                 )}
               </LineChart>
             </ResponsiveContainer>
@@ -416,18 +418,18 @@ export default function CarbonDashboard() {
 
         {/* Scope 3 Breakdown */}
         {scope3Breakdown.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Scope 3 Category Breakdown</CardTitle>
+          <Card className="border border-border shadow-sm">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base font-semibold">Scope 3 Category Breakdown</CardTitle>
             </CardHeader>
             <CardContent>
-              <ResponsiveContainer width="100%" height={400}>
+              <ResponsiveContainer width="100%" height={360}>
                 <BarChart data={scope3Breakdown} layout="vertical">
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis type="number" />
-                  <YAxis dataKey="category" type="category" width={200} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                  <XAxis type="number" tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
+                  <YAxis dataKey="category" type="category" width={180} tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" />
                   <Tooltip />
-                  <Bar dataKey="value" fill={SCOPE_COLORS.scope3} />
+                  <Bar dataKey="value" fill={SCOPE_COLORS.scope3} radius={[0, 4, 4, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </CardContent>
@@ -435,31 +437,31 @@ export default function CarbonDashboard() {
         )}
 
         {/* Top Emission Sources */}
-        <Card>
-          <CardHeader>
+        <Card className="border border-border shadow-sm">
+          <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
-              <CardTitle>Top Emission Sources</CardTitle>
-              <Button variant="outline" onClick={() => navigate("/carbon/sources")}>
-                View All Sources
+              <CardTitle className="text-base font-semibold">Top Emission Sources</CardTitle>
+              <Button variant="outline" size="sm" onClick={() => navigate("/carbon/sources")}>
+                View All
               </Button>
             </div>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
+            <div className="space-y-2">
               {topSources.map((source, index) => (
-                <div key={source.id} className="flex items-center justify-between p-3 border rounded-lg">
-                  <div className="flex items-center gap-4">
-                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center font-semibold">
+                <div key={source.id} className="flex items-center justify-between p-3 border border-border rounded hover:bg-muted/30 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center text-xs font-medium text-muted-foreground">
                       {index + 1}
                     </div>
                     <div>
-                      <p className="font-semibold">{source.source_type}</p>
-                      <p className="text-sm text-muted-foreground">Scope {source.scope}</p>
+                      <p className="text-sm font-medium">{source.source_type}</p>
+                      <p className="text-xs text-muted-foreground">Scope {source.scope}</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="font-bold">{Number(source.emission_amount || 0).toFixed(2)} tons</p>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm font-semibold">{Number(source.emission_amount || 0).toFixed(2)} tons</p>
+                    <p className="text-xs text-muted-foreground">
                       {((Number(source.emission_amount) / getTotalEmissions()) * 100).toFixed(1)}%
                     </p>
                   </div>
@@ -470,35 +472,35 @@ export default function CarbonDashboard() {
         </Card>
 
         {/* Quick Actions */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
+        <Card className="border border-border shadow-sm">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base font-semibold">Quick Actions</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               <Button
                 variant="outline"
-                className="h-auto py-4 flex-col"
+                className="h-auto py-4 flex-col gap-2 hover:bg-muted/50"
                 onClick={() => navigate("/carbon/sources")}
               >
-                <Plus className="w-6 h-6 mb-2" />
-                <span>Add Emission Source</span>
+                <Plus className="w-5 h-5" />
+                <span className="text-sm">Add Emission Source</span>
               </Button>
               <Button
                 variant="outline"
-                className="h-auto py-4 flex-col"
+                className="h-auto py-4 flex-col gap-2 hover:bg-muted/50"
                 onClick={() => navigate("/offset-marketplace")}
               >
-                <Leaf className="w-6 h-6 mb-2" />
-                <span>Buy Carbon Offsets</span>
+                <Leaf className="w-5 h-5" />
+                <span className="text-sm">Buy Carbon Offsets</span>
               </Button>
               <Button
                 variant="outline"
-                className="h-auto py-4 flex-col"
+                className="h-auto py-4 flex-col gap-2 hover:bg-muted/50"
                 onClick={() => navigate("/carbon/suppliers")}
               >
-                <Users className="w-6 h-6 mb-2" />
-                <span>Engage Suppliers</span>
+                <Users className="w-5 h-5" />
+                <span className="text-sm">Engage Suppliers</span>
               </Button>
             </div>
           </CardContent>
