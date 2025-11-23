@@ -210,12 +210,12 @@ export default function Marketplace() {
       <div className="flex gap-6">
         {/* Filters Sidebar */}
         <div className="w-80 space-y-6 hidden lg:block">
-          <Card>
+          <Card className="border border-border shadow-sm">
             <CardContent className="pt-6 space-y-6">
               <div className="flex items-center justify-between">
-                <h3 className="font-semibold text-lg">Filters</h3>
-                <Button variant="ghost" size="sm" onClick={clearFilters}>
-                  <X className="w-4 h-4 mr-1" />
+                <h3 className="text-base font-semibold">Filters</h3>
+                <Button variant="ghost" size="sm" onClick={clearFilters} className="h-8 text-xs">
+                  <X className="w-3 h-3 mr-1" />
                   Reset
                 </Button>
               </div>
@@ -304,17 +304,19 @@ export default function Marketplace() {
 
         {/* Main Content */}
         <div className="flex-1 space-y-4">
-          {/* Header */}
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold">Marketplace</h1>
-              <p className="text-muted-foreground">
-                {filteredMaterials.length} materials available
-              </p>
+          {/* Clean Header */}
+          <div className="border-b border-border pb-5">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-2xl font-semibold text-foreground">Marketplace</h1>
+                <p className="text-sm text-muted-foreground mt-1">
+                  {filteredMaterials.length} materials available
+                </p>
+              </div>
+              <Button size="sm" onClick={() => navigate("/list-waste")}>
+                List Your Waste
+              </Button>
             </div>
-            <Button onClick={() => navigate("/list-waste")}>
-              List Your Waste
-            </Button>
           </div>
 
           {/* Search and Sort Bar */}
@@ -378,7 +380,7 @@ export default function Marketplace() {
               {filteredMaterials.map((material) => (
                 <Card
                   key={material.id}
-                  className="hover:shadow-lg transition-all cursor-pointer"
+                  className="border border-border shadow-sm hover:shadow-md transition-all cursor-pointer"
                   onClick={() => navigate(`/marketplace/${material.id}`)}
                 >
                   <CardContent className="p-4">
@@ -387,37 +389,37 @@ export default function Marketplace() {
                         <img
                           src={material.image_urls[0]}
                           alt={material.material_type}
-                          className="w-full h-48 object-cover rounded-lg"
+                          className="w-full h-40 object-cover rounded"
                         />
                       ) : (
-                        <div className="w-full h-48 bg-muted rounded-lg flex items-center justify-center">
-                          <Package className="w-12 h-12 text-muted-foreground" />
+                        <div className="w-full h-40 bg-muted rounded flex items-center justify-center">
+                          <Package className="w-10 h-10 text-muted-foreground" />
                         </div>
                       )}
                       <Button
                         size="icon"
                         variant="secondary"
-                        className="absolute top-2 right-2"
+                        className="absolute top-2 right-2 h-8 w-8"
                         onClick={(e) => {
                           e.stopPropagation();
                           toggleFavorite(material.id);
                         }}
                       >
                         <Heart
-                          className={`w-4 h-4 ${
+                          className={`w-3.5 h-3.5 ${
                             favorites.has(material.id) ? "fill-red-500 text-red-500" : ""
                           }`}
                         />
                       </Button>
                     </div>
 
-                    <Badge className="mb-2">{material.material_type}</Badge>
-                    
-                    <h3 className="font-semibold mb-2 capitalize">
+                    <Badge variant="secondary" className="mb-2 text-xs">{material.material_type}</Badge>
+
+                    <h3 className="text-sm font-semibold mb-2 capitalize">
                       {material.material_subtype || material.material_type}
                     </h3>
 
-                    <div className="space-y-1 text-sm mb-3">
+                    <div className="space-y-1 text-xs mb-3">
                       <div className="flex items-center justify-between">
                         <span className="text-muted-foreground">Quantity:</span>
                         <span className="font-medium">
@@ -426,7 +428,7 @@ export default function Marketplace() {
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="text-muted-foreground">Quality:</span>
-                        <Badge className={getQualityColor(material.quality_grade)}>
+                        <Badge variant="secondary" className={`${getQualityColor(material.quality_grade)} text-white text-xs`}>
                           {material.quality_grade}
                         </Badge>
                       </div>
@@ -441,11 +443,11 @@ export default function Marketplace() {
                     {material.location_address && (
                       <div className="flex items-center text-xs text-muted-foreground mb-2">
                         <MapPin className="w-3 h-3 mr-1" />
-                        {material.location_address}
+                        <span className="truncate">{material.location_address}</span>
                       </div>
                     )}
 
-                    <div className="text-xl font-bold text-primary">
+                    <div className="text-lg font-semibold text-foreground border-t border-border pt-2 mt-2">
                       {material.price_per_unit
                         ? `$${material.price_per_unit}/${material.unit}`
                         : "Price on request"}

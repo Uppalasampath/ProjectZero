@@ -23,14 +23,14 @@ const ReportGeneration = () => {
   return (
     <Layout>
       <div className="space-y-6 animate-fade-in max-w-4xl mx-auto">
-        <div>
-          <h1 className="text-3xl font-bold">Generate Compliance Report</h1>
-          <p className="text-muted-foreground mt-1">Create audit-ready regulatory reports</p>
+        <div className="border-b border-border pb-5">
+          <h1 className="text-2xl font-semibold text-foreground">Generate Compliance Report</h1>
+          <p className="text-sm text-muted-foreground mt-1">Create audit-ready regulatory reports</p>
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Report Configuration</CardTitle>
+        <Card className="border border-border shadow-sm">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base font-semibold">Report Configuration</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
@@ -67,9 +67,9 @@ const ReportGeneration = () => {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Report Sections</CardTitle>
+        <Card className="border border-border shadow-sm">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base font-semibold">Report Sections</CardTitle>
           </CardHeader>
           <CardContent>
             <Accordion type="multiple" defaultValue={["general", "e1"]} className="w-full">
@@ -114,9 +114,9 @@ const ReportGeneration = () => {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Report Compliance Check</CardTitle>
+        <Card className="border border-border shadow-sm">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base font-semibold">Report Compliance Check</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
@@ -148,27 +148,27 @@ const ReportGeneration = () => {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Export Options</CardTitle>
+        <Card className="border border-border shadow-sm">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base font-semibold">Export Options</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-3 gap-3">
-              <Button variant="outline" className="h-20 flex flex-col gap-2">
-                <FileText className="w-6 h-6" />
-                <span className="text-sm">PDF Report</span>
+              <Button variant="outline" className="h-16 flex flex-col gap-1.5 hover:bg-muted/50">
+                <FileText className="w-5 h-5" />
+                <span className="text-xs">PDF Report</span>
               </Button>
-              <Button variant="outline" className="h-20 flex flex-col gap-2">
-                <FileText className="w-6 h-6" />
-                <span className="text-sm">XBRL Format</span>
+              <Button variant="outline" className="h-16 flex flex-col gap-1.5 hover:bg-muted/50">
+                <FileText className="w-5 h-5" />
+                <span className="text-xs">XBRL Format</span>
               </Button>
-              <Button variant="outline" className="h-20 flex flex-col gap-2">
-                <FileText className="w-6 h-6" />
-                <span className="text-sm">Excel Export</span>
+              <Button variant="outline" className="h-16 flex flex-col gap-1.5 hover:bg-muted/50">
+                <FileText className="w-5 h-5" />
+                <span className="text-xs">Excel Export</span>
               </Button>
             </div>
             <div className="flex gap-3 pt-2">
-              <Button className="flex-1 bg-gradient-primary">
+              <Button className="flex-1">
                 <Download className="w-4 h-4 mr-2" />
                 Generate Report
               </Button>
@@ -180,13 +180,13 @@ const ReportGeneration = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-primary/5 border-primary">
-          <CardContent className="p-6">
-            <h4 className="font-semibold mb-2">Third-Party Assurance</h4>
-            <p className="text-sm text-muted-foreground mb-3">
+        <Card className="border border-border shadow-sm bg-muted/30">
+          <CardContent className="p-5">
+            <h4 className="text-sm font-semibold mb-1.5">Third-Party Assurance</h4>
+            <p className="text-xs text-muted-foreground mb-3">
               Share your report with external auditors for limited or reasonable assurance.
             </p>
-            <Button size="sm" variant="outline">Generate Auditor Access Link</Button>
+            <Button size="sm" variant="outline" className="h-8 text-xs">Generate Auditor Access Link</Button>
           </CardContent>
         </Card>
       </div>
