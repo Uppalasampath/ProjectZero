@@ -15,10 +15,10 @@ const frameworks = [
 
 const getStatusColor = (status: string) => {
   switch (status) {
-    case "green": return "bg-success";
-    case "yellow": return "bg-warning";
-    case "red": return "bg-destructive";
-    default: return "bg-muted";
+    case "green": return "bg-green-600";
+    case "yellow": return "bg-yellow-500";
+    case "red": return "bg-red-600";
+    default: return "bg-neutral-400";
   }
 };
 
@@ -26,91 +26,99 @@ const Compliance = () => {
   return (
     <Layout>
       <div className="space-y-6 animate-fade-in">
-        {/* Clean Header - Persefoni Style */}
-        <div className="border-b border-border pb-5">
+        {/* Header */}
+        <div className="border-b border-neutral-200 pb-5">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-semibold text-foreground">Compliance Autopilot</h1>
-              <p className="text-sm text-muted-foreground mt-1">Automated regulatory reporting and monitoring</p>
+              <h1 className="text-2xl font-light text-neutral-900">Compliance Hub</h1>
+              <p className="text-sm text-neutral-600 mt-1">Automated regulatory reporting and monitoring</p>
             </div>
-            <Button size="sm">
+            <Button size="sm" className="bg-neutral-900 hover:bg-neutral-800 text-white">
               <FileText className="w-3.5 h-3.5 mr-1.5" />
               Generate Report
             </Button>
           </div>
         </div>
 
-        {/* Overview Stats - Clean Grid */}
+        {/* Overview Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Card className="border border-border shadow-sm">
+          <Card className="border border-neutral-200 bg-white shadow-none">
             <CardContent className="pt-5 pb-4">
               <div className="flex items-start justify-between mb-2">
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Frameworks Complete</p>
-                <CheckCircle className="w-4 h-4 text-success" />
+                <p className="text-xs font-medium text-neutral-500 uppercase tracking-wide">Frameworks Complete</p>
+                <div className="h-8 w-8 rounded-lg bg-neutral-100 flex items-center justify-center">
+                  <CheckCircle className="w-4 h-4 text-green-600" />
+                </div>
               </div>
-              <p className="text-2xl font-semibold text-foreground">3</p>
+              <p className="text-2xl font-light text-neutral-900">3</p>
             </CardContent>
           </Card>
-          <Card className="border border-border shadow-sm">
+          <Card className="border border-neutral-200 bg-white shadow-none">
             <CardContent className="pt-5 pb-4">
               <div className="flex items-start justify-between mb-2">
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">In Progress</p>
-                <Clock className="w-4 h-4 text-warning" />
+                <p className="text-xs font-medium text-neutral-500 uppercase tracking-wide">In Progress</p>
+                <div className="h-8 w-8 rounded-lg bg-neutral-100 flex items-center justify-center">
+                  <Clock className="w-4 h-4 text-yellow-600" />
+                </div>
               </div>
-              <p className="text-2xl font-semibold text-foreground">2</p>
+              <p className="text-2xl font-light text-neutral-900">2</p>
             </CardContent>
           </Card>
-          <Card className="border border-border shadow-sm">
+          <Card className="border border-neutral-200 bg-white shadow-none">
             <CardContent className="pt-5 pb-4">
               <div className="flex items-start justify-between mb-2">
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Urgent Deadline</p>
-                <AlertCircle className="w-4 h-4 text-destructive" />
+                <p className="text-xs font-medium text-neutral-500 uppercase tracking-wide">Urgent Deadline</p>
+                <div className="h-8 w-8 rounded-lg bg-neutral-100 flex items-center justify-center">
+                  <AlertCircle className="w-4 h-4 text-red-600" />
+                </div>
               </div>
-              <p className="text-2xl font-semibold text-foreground">1</p>
+              <p className="text-2xl font-light text-neutral-900">1</p>
             </CardContent>
           </Card>
-          <Card className="border border-border shadow-sm">
+          <Card className="border border-neutral-200 bg-white shadow-none">
             <CardContent className="pt-5 pb-4">
               <div className="flex items-start justify-between mb-2">
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Reports Generated</p>
-                <FileText className="w-4 h-4 text-muted-foreground" />
+                <p className="text-xs font-medium text-neutral-500 uppercase tracking-wide">Reports Generated</p>
+                <div className="h-8 w-8 rounded-lg bg-neutral-100 flex items-center justify-center">
+                  <FileText className="w-4 h-4 text-neutral-600" />
+                </div>
               </div>
-              <p className="text-2xl font-semibold text-foreground">8</p>
+              <p className="text-2xl font-light text-neutral-900">8</p>
             </CardContent>
           </Card>
         </div>
 
         {/* Regulatory Frameworks */}
-        <Card className="border border-border shadow-sm">
+        <Card className="border border-neutral-200 bg-white shadow-none">
           <CardHeader className="pb-3">
-            <CardTitle className="text-base font-semibold">Regulatory Frameworks</CardTitle>
+            <CardTitle className="text-base font-medium text-neutral-900">Regulatory Frameworks</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               {frameworks.map((framework) => (
-                <div key={framework.name} className="p-4 border border-border rounded hover:bg-muted/30 transition-colors space-y-3">
+                <div key={framework.name} className="p-4 border border-neutral-200 rounded hover:bg-neutral-50 transition-colors space-y-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className={`w-2 h-2 rounded-full ${getStatusColor(framework.status)}`}></div>
                       <div>
-                        <h4 className="text-sm font-medium">{framework.name}</h4>
-                        <p className="text-xs text-muted-foreground">{framework.fullName}</p>
+                        <h4 className="text-sm font-medium text-neutral-900">{framework.name}</h4>
+                        <p className="text-xs text-neutral-600">{framework.fullName}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
-                      <Badge variant="outline" className="text-xs">
+                      <Badge variant="outline" className="text-xs border-neutral-300 text-neutral-700">
                         <Clock className="w-3 h-3 mr-1" />
                         {framework.deadline}
                       </Badge>
-                      <span className="text-sm font-semibold min-w-[3rem] text-right">{framework.completion}%</span>
+                      <span className="text-sm font-medium min-w-[3rem] text-right text-neutral-900">{framework.completion}%</span>
                     </div>
                   </div>
                   <Progress value={framework.completion} className="h-1.5" />
                   <div className="flex gap-2">
-                    <Button variant="outline" size="sm" className="text-xs h-8">View Details</Button>
-                    <Button variant="outline" size="sm" className="text-xs h-8">Generate Report</Button>
+                    <Button variant="outline" size="sm" className="text-xs h-8 border-neutral-300 text-neutral-900 hover:bg-neutral-50">View Details</Button>
+                    <Button variant="outline" size="sm" className="text-xs h-8 border-neutral-300 text-neutral-900 hover:bg-neutral-50">Generate Report</Button>
                     {framework.completion < 100 && (
-                      <Button variant="outline" size="sm" className="text-xs h-8">Add Data</Button>
+                      <Button variant="outline" size="sm" className="text-xs h-8 border-neutral-300 text-neutral-900 hover:bg-neutral-50">Add Data</Button>
                     )}
                   </div>
                 </div>
@@ -120,35 +128,35 @@ const Compliance = () => {
         </Card>
 
         {/* Integration Status */}
-        <Card className="border border-border shadow-sm">
+        <Card className="border border-neutral-200 bg-white shadow-none">
           <CardHeader className="pb-3">
-            <CardTitle className="text-base font-semibold">Data Integration Status</CardTitle>
+            <CardTitle className="text-base font-medium text-neutral-900">Data Integration Status</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="p-4 border border-border rounded space-y-2">
-                <p className="text-sm font-medium text-foreground">Circular Marketplace</p>
+              <div className="p-4 border border-neutral-200 rounded space-y-2 bg-white">
+                <p className="text-sm font-medium text-neutral-900">Circular Marketplace</p>
                 <div className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-success" />
-                  <span className="text-sm font-medium text-success">Connected</span>
+                  <CheckCircle className="w-4 h-4 text-green-600" />
+                  <span className="text-sm font-medium text-green-700">Connected</span>
                 </div>
-                <p className="text-xs text-muted-foreground">Auto-updating waste metrics</p>
+                <p className="text-xs text-neutral-600">Auto-updating waste metrics</p>
               </div>
-              <div className="p-4 border border-border rounded space-y-2">
-                <p className="text-sm font-medium text-foreground">Carbon Engine</p>
+              <div className="p-4 border border-neutral-200 rounded space-y-2 bg-white">
+                <p className="text-sm font-medium text-neutral-900">Carbon Engine</p>
                 <div className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-success" />
-                  <span className="text-sm font-medium text-success">Connected</span>
+                  <CheckCircle className="w-4 h-4 text-green-600" />
+                  <span className="text-sm font-medium text-green-700">Connected</span>
                 </div>
-                <p className="text-xs text-muted-foreground">Real-time emission data</p>
+                <p className="text-xs text-neutral-600">Real-time emission data</p>
               </div>
-              <div className="p-4 border border-border rounded space-y-2">
-                <p className="text-sm font-medium text-foreground">ERP Systems</p>
+              <div className="p-4 border border-neutral-200 rounded space-y-2 bg-white">
+                <p className="text-sm font-medium text-neutral-900">ERP Systems</p>
                 <div className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-success" />
-                  <span className="text-sm font-medium text-success">3 Systems Connected</span>
+                  <CheckCircle className="w-4 h-4 text-green-600" />
+                  <span className="text-sm font-medium text-green-700">3 Systems Connected</span>
                 </div>
-                <p className="text-xs text-muted-foreground">SAP, Oracle, Workday</p>
+                <p className="text-xs text-neutral-600">SAP, Oracle, Workday</p>
               </div>
             </div>
           </CardContent>

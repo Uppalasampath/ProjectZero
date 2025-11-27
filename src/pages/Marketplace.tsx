@@ -40,7 +40,7 @@ export default function Marketplace() {
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  
+
   // Filters
   const [searchQuery, setSearchQuery] = useState(searchParams.get("search") || "");
   const [selectedTypes, setSelectedTypes] = useState<string[]>(
@@ -120,7 +120,7 @@ export default function Marketplace() {
         .from("material_favorites")
         .select("material_id")
         .eq("user_id", user.id);
-      
+
       if (data) {
         setFavorites(new Set(data.map(f => f.material_id)));
       }
@@ -142,7 +142,7 @@ export default function Marketplace() {
           .delete()
           .eq("user_id", user.id)
           .eq("material_id", materialId);
-        
+
         setFavorites(prev => {
           const newSet = new Set(prev);
           newSet.delete(materialId);
@@ -152,7 +152,7 @@ export default function Marketplace() {
         await supabase
           .from("material_favorites")
           .insert({ user_id: user.id, material_id: materialId });
-        
+
         setFavorites(prev => new Set(prev).add(materialId));
       }
     } catch (error: any) {
@@ -181,14 +181,14 @@ export default function Marketplace() {
 
   const getQualityColor = (grade: string) => {
     const colors: Record<string, string> = {
-      "A+": "bg-green-500",
-      "A": "bg-green-400",
-      "B": "bg-blue-400",
-      "C": "bg-yellow-400",
-      "D": "bg-orange-400",
-      "F": "bg-red-400",
+      "A+": "bg-green-600 text-white",
+      "A": "bg-green-500 text-white",
+      "B": "bg-blue-500 text-white",
+      "C": "bg-yellow-500 text-white",
+      "D": "bg-orange-500 text-white",
+      "F": "bg-red-500 text-white",
     };
-    return colors[grade] || "bg-gray-400";
+    return colors[grade] || "bg-neutral-400 text-white";
   };
 
   const filteredMaterials = useMemo(() => {
@@ -210,11 +210,11 @@ export default function Marketplace() {
       <div className="flex gap-6">
         {/* Filters Sidebar */}
         <div className="w-80 space-y-6 hidden lg:block">
-          <Card className="border border-border shadow-sm">
+          <Card className="border border-neutral-200 bg-white shadow-none">
             <CardContent className="pt-6 space-y-6">
               <div className="flex items-center justify-between">
-                <h3 className="text-base font-semibold">Filters</h3>
-                <Button variant="ghost" size="sm" onClick={clearFilters} className="h-8 text-xs">
+                <h3 className="text-sm font-medium text-neutral-900">Filters</h3>
+                <Button variant="ghost" size="sm" onClick={clearFilters} className="h-8 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50">
                   <X className="w-3 h-3 mr-1" />
                   Reset
                 </Button>
@@ -222,15 +222,16 @@ export default function Marketplace() {
 
               {/* Material Type */}
               <div className="space-y-3">
-                <Label className="font-semibold">Material Type</Label>
+                <Label className="text-sm font-medium text-neutral-900">Material Type</Label>
                 {materialTypes.map(type => (
                   <div key={type.value} className="flex items-center space-x-2">
                     <Checkbox
                       id={type.value}
                       checked={selectedTypes.includes(type.value)}
                       onCheckedChange={() => handleTypeToggle(type.value)}
+                      className="border-neutral-300"
                     />
-                    <label htmlFor={type.value} className="text-sm cursor-pointer flex-1">
+                    <label htmlFor={type.value} className="text-sm cursor-pointer flex-1 text-neutral-700">
                       {type.label}
                     </label>
                   </div>
@@ -239,7 +240,7 @@ export default function Marketplace() {
 
               {/* Price Range */}
               <div className="space-y-3">
-                <Label className="font-semibold">Price per Unit ($)</Label>
+                <Label className="text-sm font-medium text-neutral-900">Price per Unit ($)</Label>
                 <div className="px-2">
                   <Slider
                     value={priceRange}
@@ -248,7 +249,7 @@ export default function Marketplace() {
                     step={10}
                     className="mb-2"
                   />
-                  <div className="flex justify-between text-sm text-muted-foreground">
+                  <div className="flex justify-between text-sm text-neutral-600">
                     <span>${priceRange[0]}</span>
                     <span>${priceRange[1]}</span>
                   </div>
@@ -257,7 +258,7 @@ export default function Marketplace() {
 
               {/* Quality Grade */}
               <div className="space-y-3">
-                <Label className="font-semibold">Quality Grade</Label>
+                <Label className="text-sm font-medium text-neutral-900">Quality Grade</Label>
                 {qualityGrades.map(grade => (
                   <div key={grade} className="flex items-center space-x-2">
                     <Checkbox
@@ -270,8 +271,9 @@ export default function Marketplace() {
                           setQualityFilters(prev => prev.filter(g => g !== grade));
                         }
                       }}
+                      className="border-neutral-300"
                     />
-                    <label htmlFor={`quality-${grade}`} className="text-sm cursor-pointer">
+                    <label htmlFor={`quality-${grade}`} className="text-sm cursor-pointer text-neutral-700">
                       {grade}
                     </label>
                   </div>
@@ -280,7 +282,7 @@ export default function Marketplace() {
 
               {/* Distance */}
               <div className="space-y-3">
-                <Label className="font-semibold">Distance (miles)</Label>
+                <Label className="text-sm font-medium text-neutral-900">Distance (miles)</Label>
                 <div className="px-2">
                   <Slider
                     value={radiusMiles}
@@ -289,13 +291,13 @@ export default function Marketplace() {
                     step={25}
                     className="mb-2"
                   />
-                  <div className="text-sm text-muted-foreground text-center">
+                  <div className="text-sm text-neutral-600 text-center">
                     Within {radiusMiles[0]} miles
                   </div>
                 </div>
               </div>
 
-              <Button className="w-full" onClick={fetchMaterials}>
+              <Button className="w-full bg-neutral-900 hover:bg-neutral-800 text-white h-10" onClick={fetchMaterials}>
                 Apply Filters
               </Button>
             </CardContent>
@@ -303,18 +305,18 @@ export default function Marketplace() {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 space-y-4">
-          {/* Clean Header */}
-          <div className="border-b border-border pb-5">
+        <div className="flex-1 space-y-6">
+          {/* Header */}
+          <div className="border-b border-neutral-200 pb-5">
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-2xl font-semibold text-foreground">Marketplace</h1>
-                <p className="text-sm text-muted-foreground mt-1">
+                <h1 className="text-2xl font-light text-neutral-900">Circular Marketplace</h1>
+                <p className="text-sm text-neutral-600 mt-1">
                   {filteredMaterials.length} materials available
                 </p>
               </div>
-              <Button size="sm" onClick={() => navigate("/list-waste")}>
-                List Your Waste
+              <Button size="sm" onClick={() => navigate("/list-waste")} className="bg-neutral-900 hover:bg-neutral-800 text-white">
+                List Material
               </Button>
             </div>
           </div>
@@ -322,16 +324,16 @@ export default function Marketplace() {
           {/* Search and Sort Bar */}
           <div className="flex gap-4 items-center">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
               <Input
                 placeholder="Search materials..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
+                className="pl-10 border-neutral-300 focus:border-neutral-900"
               />
             </div>
             <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger className="w-48">
+              <SelectTrigger className="w-48 border-neutral-300">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -346,6 +348,7 @@ export default function Marketplace() {
                 variant={viewMode === "grid" ? "default" : "outline"}
                 size="icon"
                 onClick={() => setViewMode("grid")}
+                className={viewMode === "grid" ? "bg-neutral-900 hover:bg-neutral-800" : "border-neutral-300 text-neutral-700 hover:bg-neutral-50"}
               >
                 <Grid3x3 className="w-4 h-4" />
               </Button>
@@ -353,6 +356,7 @@ export default function Marketplace() {
                 variant={viewMode === "list" ? "default" : "outline"}
                 size="icon"
                 onClick={() => setViewMode("list")}
+                className={viewMode === "list" ? "bg-neutral-900 hover:bg-neutral-800" : "border-neutral-300 text-neutral-700 hover:bg-neutral-50"}
               >
                 <List className="w-4 h-4" />
               </Button>
@@ -361,16 +365,16 @@ export default function Marketplace() {
 
           {/* Materials Grid/List */}
           {loading ? (
-            <div className="text-center py-12">Loading materials...</div>
+            <div className="text-center py-12 text-neutral-600">Loading materials...</div>
           ) : filteredMaterials.length === 0 ? (
-            <Card>
+            <Card className="border border-neutral-200 bg-white shadow-none">
               <CardContent className="text-center py-12">
-                <Package className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-                <h3 className="text-lg font-semibold mb-2">No materials found</h3>
-                <p className="text-muted-foreground mb-4">
+                <Package className="w-12 h-12 mx-auto mb-4 text-neutral-400" />
+                <h3 className="text-lg font-medium mb-2 text-neutral-900">No materials found</h3>
+                <p className="text-neutral-600 mb-4">
                   Try adjusting your filters or search query
                 </p>
-                <Button variant="outline" onClick={clearFilters}>
+                <Button variant="outline" onClick={clearFilters} className="border-neutral-300 text-neutral-900 hover:bg-neutral-50">
                   Clear Filters
                 </Button>
               </CardContent>
@@ -380,7 +384,7 @@ export default function Marketplace() {
               {filteredMaterials.map((material) => (
                 <Card
                   key={material.id}
-                  className="border border-border shadow-sm hover:shadow-md transition-all cursor-pointer"
+                  className="border border-neutral-200 bg-white shadow-none hover:border-neutral-300 transition-colors cursor-pointer"
                   onClick={() => navigate(`/marketplace/${material.id}`)}
                 >
                   <CardContent className="p-4">
@@ -392,14 +396,14 @@ export default function Marketplace() {
                           className="w-full h-40 object-cover rounded"
                         />
                       ) : (
-                        <div className="w-full h-40 bg-muted rounded flex items-center justify-center">
-                          <Package className="w-10 h-10 text-muted-foreground" />
+                        <div className="w-full h-40 bg-neutral-100 rounded flex items-center justify-center">
+                          <Package className="w-10 h-10 text-neutral-400" />
                         </div>
                       )}
                       <Button
                         size="icon"
                         variant="secondary"
-                        className="absolute top-2 right-2 h-8 w-8"
+                        className="absolute top-2 right-2 h-8 w-8 bg-white hover:bg-neutral-50 border border-neutral-200"
                         onClick={(e) => {
                           e.stopPropagation();
                           toggleFavorite(material.id);
@@ -407,47 +411,47 @@ export default function Marketplace() {
                       >
                         <Heart
                           className={`w-3.5 h-3.5 ${
-                            favorites.has(material.id) ? "fill-red-500 text-red-500" : ""
+                            favorites.has(material.id) ? "fill-red-500 text-red-500" : "text-neutral-600"
                           }`}
                         />
                       </Button>
                     </div>
 
-                    <Badge variant="secondary" className="mb-2 text-xs">{material.material_type}</Badge>
+                    <Badge variant="secondary" className="mb-2 text-xs bg-neutral-100 text-neutral-700 border-0">{material.material_type}</Badge>
 
-                    <h3 className="text-sm font-semibold mb-2 capitalize">
+                    <h3 className="text-sm font-medium mb-2 capitalize text-neutral-900">
                       {material.material_subtype || material.material_type}
                     </h3>
 
                     <div className="space-y-1 text-xs mb-3">
                       <div className="flex items-center justify-between">
-                        <span className="text-muted-foreground">Quantity:</span>
-                        <span className="font-medium">
+                        <span className="text-neutral-600">Quantity:</span>
+                        <span className="font-medium text-neutral-900">
                           {material.quantity} {material.unit}
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-muted-foreground">Quality:</span>
-                        <Badge variant="secondary" className={`${getQualityColor(material.quality_grade)} text-white text-xs`}>
+                        <span className="text-neutral-600">Quality:</span>
+                        <Badge variant="secondary" className={`${getQualityColor(material.quality_grade)} text-xs border-0`}>
                           {material.quality_grade}
                         </Badge>
                       </div>
                       {material.purity_percentage && (
                         <div className="flex items-center justify-between">
-                          <span className="text-muted-foreground">Purity:</span>
-                          <span className="font-medium">{material.purity_percentage}%</span>
+                          <span className="text-neutral-600">Purity:</span>
+                          <span className="font-medium text-neutral-900">{material.purity_percentage}%</span>
                         </div>
                       )}
                     </div>
 
                     {material.location_address && (
-                      <div className="flex items-center text-xs text-muted-foreground mb-2">
+                      <div className="flex items-center text-xs text-neutral-600 mb-2">
                         <MapPin className="w-3 h-3 mr-1" />
                         <span className="truncate">{material.location_address}</span>
                       </div>
                     )}
 
-                    <div className="text-lg font-semibold text-foreground border-t border-border pt-2 mt-2">
+                    <div className="text-lg font-light text-neutral-900 border-t border-neutral-200 pt-2 mt-2">
                       {material.price_per_unit
                         ? `$${material.price_per_unit}/${material.unit}`
                         : "Price on request"}
@@ -465,16 +469,16 @@ export default function Marketplace() {
                 <PaginationItem>
                   <PaginationPrevious
                     onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                    className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                    className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer hover:bg-neutral-50"}
                   />
                 </PaginationItem>
                 <PaginationItem>
-                  <PaginationLink>{currentPage}</PaginationLink>
+                  <PaginationLink className="bg-neutral-100 text-neutral-900">{currentPage}</PaginationLink>
                 </PaginationItem>
                 <PaginationItem>
                   <PaginationNext
                     onClick={() => setCurrentPage(p => p + 1)}
-                    className="cursor-pointer"
+                    className="cursor-pointer hover:bg-neutral-50"
                   />
                 </PaginationItem>
               </PaginationContent>
