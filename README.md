@@ -1,73 +1,319 @@
-# Welcome to your Lovable project
+# ZERO - Sustainability Management Platform
 
-## Project info
+<div align="center">
 
-**URL**: https://lovable.dev/projects/a18404c8-06c0-4747-9903-8e9e537630be
+![ZERO Platform](public/favicon.ico)
 
-## How can I edit this code?
+**Comprehensive sustainability management platform integrating circular marketplace, carbon tracking, and compliance automation**
 
-There are several ways of editing your application.
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![React](https://img.shields.io/badge/React-18.3.1-blue.svg)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.8.3-blue.svg)](https://www.typescriptlang.org/)
+[![Vite](https://img.shields.io/badge/Vite-5.4.19-purple.svg)](https://vitejs.dev/)
 
-**Use Lovable**
+[Live Demo](https://uppalasampath.github.io/ProjectZero/) · [Report Bug](https://github.com/Uppalasampath/ProjectZero/issues) · [Request Feature](https://github.com/Uppalasampath/ProjectZero/issues)
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/a18404c8-06c0-4747-9903-8e9e537630be) and start prompting.
+</div>
 
-Changes made via Lovable will be committed automatically to this repo.
+---
 
-**Use your preferred IDE**
+## 📋 Table of Contents
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- [About](#about)
+- [Key Features](#key-features)
+- [Tech Stack](#tech-stack)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Development](#development)
+  - [Building](#building)
+- [Project Structure](#project-structure)
+- [Deployment](#deployment)
+- [Environment Variables](#environment-variables)
+- [Contributing](#contributing)
+- [License](#license)
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+---
 
-Follow these steps:
+## 🌍 About
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+**ZERO** is an enterprise-grade sustainability management platform designed to help organizations achieve their environmental goals through data-driven insights and automated compliance management. The platform seamlessly integrates three core pillars of modern sustainability operations:
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+- **Circular Economy Marketplace** - Facilitate waste-to-resource transformation
+- **Carbon Management** - Track, analyze, and reduce carbon emissions
+- **Compliance Automation** - Streamline regulatory reporting and framework adherence
 
-# Step 3: Install the necessary dependencies.
-npm i
+Built with modern web technologies and a minimalist design philosophy inspired by Persefoni, ZERO provides an intuitive interface for sustainability professionals to manage complex environmental data and drive measurable impact.
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+---
+
+## ✨ Key Features
+
+### 🔄 Circular Marketplace
+- **Material Exchange** - List and discover recyclable materials and waste streams
+- **Transaction Management** - Track material transactions with verification workflows
+- **Analytics Dashboard** - Real-time marketplace insights and trends
+- **Waste Listing** - Easy-to-use interface for listing available materials
+
+### 📊 Carbon Tracking & Management
+- **Emissions Dashboard** - Comprehensive carbon footprint visualization
+- **Source Management** - Track emissions across Scope 1, 2, and 3 categories
+- **Baseline Calculator** - Establish and monitor carbon reduction targets
+- **Supplier Portal** - Collaborate with suppliers on emissions data
+- **Smart Recommendations** - AI-driven suggestions for carbon reduction
+- **Offset Marketplace** - Purchase verified carbon credits and offsets
+
+### 📑 Compliance & Regulatory
+- **Framework Support** - Built-in templates for major sustainability frameworks
+- **Data Collection** - Structured workflows for regulatory data gathering
+- **Report Generation** - Automated compliance report creation
+- **Regulatory Monitor** - Stay updated on changing environmental regulations
+- **Audit Trails** - Complete tracking of compliance activities
+
+### 🏢 Organization Management
+- **Multi-user Support** - Role-based access control
+- **Organization Settings** - Configure company profile and preferences
+- **User Onboarding** - Guided setup for new organizations
+- **Help & Support** - Comprehensive documentation and resources
+
+---
+
+## 🛠 Tech Stack
+
+### Frontend
+- **React 18.3** - Modern UI library with hooks and concurrent features
+- **TypeScript 5.8** - Type-safe development experience
+- **Vite 5.4** - Lightning-fast build tool and dev server
+- **React Router 6.30** - Declarative client-side routing
+- **TanStack Query 5.83** - Powerful data synchronization and caching
+
+### UI/UX
+- **Tailwind CSS 3.4** - Utility-first CSS framework
+- **shadcn/ui** - High-quality, accessible component library
+- **Radix UI** - Unstyled, accessible component primitives
+- **Lucide React** - Beautiful, consistent icon set
+- **Recharts** - Composable charting library
+
+### Backend & Services
+- **Supabase** - Backend-as-a-Service with PostgreSQL
+- **React Hook Form** - Performant, flexible form validation
+- **Zod** - TypeScript-first schema validation
+
+### Development Tools
+- **ESLint** - Code quality and consistency
+- **TypeScript ESLint** - TypeScript-specific linting rules
+- **Vite SWC** - Fast React refresh with SWC compiler
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- **Node.js** >= 18.x (recommended: use [nvm](https://github.com/nvm-sh/nvm))
+- **npm** >= 9.x or **yarn** >= 1.22.x
+- **Git** for version control
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/Uppalasampath/ProjectZero.git
+   cd ProjectZero
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Set up environment variables**
+   ```bash
+   cp .env.example .env.local
+   ```
+
+   Edit `.env.local` with your configuration:
+   ```env
+   VITE_SUPABASE_URL=your_supabase_url
+   VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+   ```
+
+### Development
+
+Start the development server with hot module replacement:
+
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+The application will be available at `http://localhost:8080`
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Building
 
-**Use GitHub Codespaces**
+Create an optimized production build:
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+```bash
+npm run build
+```
 
-## What technologies are used for this project?
+Preview the production build locally:
 
-This project is built with:
+```bash
+npm run preview
+```
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+---
 
-## How can I deploy this project?
+## 📁 Project Structure
 
-Simply open [Lovable](https://lovable.dev/projects/a18404c8-06c0-4747-9903-8e9e537630be) and click on Share -> Publish.
+```
+ProjectZero/
+├── public/              # Static assets
+│   ├── favicon.ico
+│   ├── 404.html        # SPA redirect for GitHub Pages
+│   └── robots.txt
+├── src/
+│   ├── components/     # Reusable UI components
+│   │   ├── ui/        # shadcn/ui components
+│   │   └── ...
+│   ├── contexts/      # React context providers
+│   │   └── AuthContext.tsx
+│   ├── pages/         # Route components
+│   │   ├── Index.tsx
+│   │   ├── Dashboard.tsx
+│   │   ├── Marketplace.tsx
+│   │   ├── Carbon.tsx
+│   │   ├── Compliance.tsx
+│   │   └── ...
+│   ├── App.tsx        # Main application component
+│   ├── main.tsx       # Application entry point
+│   └── index.css      # Global styles
+├── .github/
+│   └── workflows/
+│       └── deploy.yml  # CI/CD for GitHub Pages
+├── vite.config.ts      # Vite configuration
+├── tailwind.config.ts  # Tailwind configuration
+├── tsconfig.json       # TypeScript configuration
+└── package.json        # Project dependencies
+```
 
-## Can I connect a custom domain to my Lovable project?
+---
 
-Yes, you can!
+## 🌐 Deployment
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+### GitHub Pages
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+This project is configured for automatic deployment to GitHub Pages.
+
+1. **Enable GitHub Pages**
+   - Go to repository Settings → Pages
+   - Source: Select "GitHub Actions"
+
+2. **Automatic Deployment**
+   - Push to `main` branch triggers automatic deployment
+   - Workflow builds and deploys to `gh-pages` branch
+   - Live at: `https://uppalasampath.github.io/ProjectZero/`
+
+3. **Manual Deployment**
+   - Navigate to Actions tab
+   - Select "Deploy to GitHub Pages" workflow
+   - Click "Run workflow"
+
+### Other Platforms
+
+<details>
+<summary>Deploy to Vercel</summary>
+
+```bash
+npm install -g vercel
+vercel
+```
+
+Update `vite.config.ts`:
+```typescript
+base: '/', // Remove repository-specific base path
+```
+</details>
+
+<details>
+<summary>Deploy to Netlify</summary>
+
+```bash
+npm install -g netlify-cli
+netlify deploy --prod
+```
+
+Build command: `npm run build`
+Publish directory: `dist`
+</details>
+
+---
+
+## 🔐 Environment Variables
+
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `VITE_SUPABASE_URL` | Supabase project URL | Yes |
+| `VITE_SUPABASE_ANON_KEY` | Supabase anonymous key | Yes |
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please follow these steps:
+
+1. **Fork the repository**
+2. **Create a feature branch**
+   ```bash
+   git checkout -b feature/amazing-feature
+   ```
+3. **Commit your changes**
+   ```bash
+   git commit -m 'Add some amazing feature'
+   ```
+4. **Push to the branch**
+   ```bash
+   git push origin feature/amazing-feature
+   ```
+5. **Open a Pull Request**
+
+### Code Style
+
+- Follow the existing code style
+- Run `npm run lint` before committing
+- Write meaningful commit messages
+- Add tests for new features
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🙏 Acknowledgments
+
+- **shadcn/ui** - For the excellent component library
+- **Radix UI** - For accessible primitives
+- **Supabase** - For backend infrastructure
+- **Persefoni** - For design inspiration
+
+---
+
+## 📞 Support
+
+For support, please:
+- Open an [issue](https://github.com/Uppalasampath/ProjectZero/issues)
+- Check existing [documentation](https://github.com/Uppalasampath/ProjectZero/wiki)
+- Contact the development team
+
+---
+
+<div align="center">
+
+**Built with ❤️ for a sustainable future**
+
+[⬆ Back to Top](#zero---sustainability-management-platform)
+
+</div>
