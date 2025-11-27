@@ -2,7 +2,7 @@ import { Layout } from "@/components/Layout";
 import { MetricCard } from "@/components/dashboard/MetricCard";
 import { ModuleCard } from "@/components/dashboard/ModuleCard";
 import { ActivityFeed } from "@/components/ActivityFeed";
-import { Activity, Trash2, ShieldCheck, DollarSign, Recycle, Leaf, FileCheck, TrendingUp, Sparkles, Building2 } from "lucide-react";
+import { Activity, Trash2, ShieldCheck, DollarSign, Recycle, Leaf, FileCheck, TrendingDown, Sparkles, Building2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
@@ -113,79 +113,89 @@ const Dashboard = () => {
 
   return (
     <Layout>
-      <div className="space-y-6 animate-fade-in">
-        {/* Clean Header - Persefoni Style */}
-        <div className="border-b border-border pb-6">
+      <div className="space-y-8 animate-fade-in">
+        {/* Header */}
+        <div className="border-b border-neutral-200 pb-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-semibold text-foreground mb-1">
+              <h1 className="text-2xl font-light text-neutral-900 mb-1">
                 {profile?.company_name || 'Your Organization'}
               </h1>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-neutral-600">
                 {profile?.industry || 'Manufacturing'} • Target: Net Zero by {profile?.net_zero_target_year || 2040}
               </p>
             </div>
             <div className="flex items-center gap-3">
               <div className="text-right">
-                <p className="text-xs text-muted-foreground mb-0.5">Progress to Net Zero</p>
-                <p className="text-3xl font-semibold text-foreground">{progressPercent.toFixed(0)}%</p>
+                <p className="text-xs text-neutral-500 mb-0.5">Progress to Net Zero</p>
+                <p className="text-3xl font-light text-neutral-900">{progressPercent.toFixed(0)}%</p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Key Metrics - Clean Persefoni Style */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card className="border border-border shadow-sm hover:shadow-md transition-shadow">
+        {/* Key Metrics */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Card className="border border-neutral-200 bg-white shadow-none hover:border-neutral-300 transition-colors">
             <CardContent className="pt-6">
               <div className="flex items-start justify-between mb-3">
                 <div>
-                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">Carbon Footprint</p>
-                  <p className="text-3xl font-semibold text-foreground">{totalEmissions > 0 ? formatNumber(totalEmissions) : '0'}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">tons CO2e annually</p>
+                  <p className="text-xs font-medium text-neutral-500 uppercase tracking-wide mb-1">Carbon Footprint</p>
+                  <p className="text-3xl font-light text-neutral-900">{totalEmissions > 0 ? formatNumber(totalEmissions) : '0'}</p>
+                  <p className="text-xs text-neutral-600 mt-0.5">tons CO2e annually</p>
                 </div>
-                <Activity className="h-5 w-5 text-muted-foreground" />
+                <div className="h-10 w-10 rounded-lg bg-neutral-100 flex items-center justify-center">
+                  <Activity className="h-5 w-5 text-neutral-600" />
+                </div>
               </div>
-              <div className="flex items-center gap-1 text-xs mt-3 pt-3 border-t border-border">
-                <TrendingDown className="h-3 w-3 text-success" />
-                <span className="text-success font-medium">-12%</span>
-                <span className="text-muted-foreground">vs last year</span>
+              <div className="flex items-center gap-1 text-xs mt-3 pt-3 border-t border-neutral-100">
+                <TrendingDown className="h-3 w-3 text-green-600" />
+                <span className="text-green-600 font-medium">-12%</span>
+                <span className="text-neutral-500">vs last year</span>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="border border-border shadow-sm hover:shadow-md transition-shadow">
+          <Card className="border border-neutral-200 bg-white shadow-none hover:border-neutral-300 transition-colors">
             <CardContent className="pt-6">
               <div className="flex items-start justify-between mb-3">
                 <div>
-                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">Circular Economy</p>
-                  <p className="text-3xl font-semibold text-foreground">{marketplaceCarbonCredits > 0 ? `${formatNumber(marketplaceCarbonCredits)}` : '0'}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">tons CO2e avoided</p>
+                  <p className="text-xs font-medium text-neutral-500 uppercase tracking-wide mb-1">Circular Economy</p>
+                  <p className="text-3xl font-light text-neutral-900">{marketplaceCarbonCredits > 0 ? `${formatNumber(marketplaceCarbonCredits)}` : '0'}</p>
+                  <p className="text-xs text-neutral-600 mt-0.5">tons CO2e avoided</p>
                 </div>
-                <Recycle className="h-5 w-5 text-muted-foreground" />
+                <div className="h-10 w-10 rounded-lg bg-neutral-100 flex items-center justify-center">
+                  <Recycle className="h-5 w-5 text-neutral-600" />
+                </div>
               </div>
-              <div className="flex items-center gap-1 text-xs mt-3 pt-3 border-t border-border">
+              <div className="flex items-center gap-1 text-xs mt-3 pt-3 border-t border-neutral-100">
                 {totalRevenue > 0 ? (
-                  <><DollarSign className="h-3 w-3 text-success" /><span className="text-success font-medium">${formatNumber(totalRevenue)}</span><span className="text-muted-foreground">revenue generated</span></>
+                  <>
+                    <DollarSign className="h-3 w-3 text-green-600" />
+                    <span className="text-green-600 font-medium">${formatNumber(totalRevenue)}</span>
+                    <span className="text-neutral-500">revenue generated</span>
+                  </>
                 ) : (
-                  <span className="text-muted-foreground">No transactions yet</span>
+                  <span className="text-neutral-500">No transactions yet</span>
                 )}
               </div>
             </CardContent>
           </Card>
 
-          <Card className="border border-border shadow-sm hover:shadow-md transition-shadow">
+          <Card className="border border-neutral-200 bg-white shadow-none hover:border-neutral-300 transition-colors">
             <CardContent className="pt-6">
               <div className="flex items-start justify-between mb-3">
                 <div>
-                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">Compliance</p>
-                  <p className="text-3xl font-semibold text-foreground">87%</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">frameworks complete</p>
+                  <p className="text-xs font-medium text-neutral-500 uppercase tracking-wide mb-1">Compliance</p>
+                  <p className="text-3xl font-light text-neutral-900">87%</p>
+                  <p className="text-xs text-neutral-600 mt-0.5">frameworks complete</p>
                 </div>
-                <ShieldCheck className="h-5 w-5 text-muted-foreground" />
+                <div className="h-10 w-10 rounded-lg bg-neutral-100 flex items-center justify-center">
+                  <ShieldCheck className="h-5 w-5 text-neutral-600" />
+                </div>
               </div>
-              <div className="flex items-center gap-1 text-xs mt-3 pt-3 border-t border-border">
-                <Badge variant="secondary" className="bg-success/10 text-success border-0 text-xs px-2 py-0">
+              <div className="flex items-center gap-1 text-xs mt-3 pt-3 border-t border-neutral-100">
+                <Badge variant="secondary" className="bg-green-50 text-green-700 border-0 text-xs px-2 py-0">
                   On Track
                 </Badge>
               </div>
@@ -193,7 +203,7 @@ const Dashboard = () => {
           </Card>
         </div>
 
-        {/* Main Areas - Grid */}
+        {/* Module Cards */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <ModuleCard
             title="Circular Marketplace"

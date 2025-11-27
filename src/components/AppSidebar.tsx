@@ -20,8 +20,8 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 const menuItems = [
   { title: "Dashboard", url: "/dashboard", icon: Home },
   {
-    title: "Circular Marketplace", 
-    url: "/marketplace", 
+    title: "Marketplace",
+    url: "/marketplace",
     icon: Recycle,
     submenu: [
       { title: "Browse Materials", url: "/marketplace" },
@@ -31,9 +31,9 @@ const menuItems = [
       { title: "Analytics", url: "/marketplace-analytics" },
     ]
   },
-  { 
-    title: "Carbon Engine", 
-    url: "/carbon", 
+  {
+    title: "Carbon",
+    url: "/carbon",
     icon: Leaf,
     submenu: [
       { title: "Dashboard", url: "/carbon/dashboard" },
@@ -44,9 +44,9 @@ const menuItems = [
       { title: "Offset Marketplace", url: "/offset-marketplace" },
     ]
   },
-  { 
-    title: "Compliance Autopilot", 
-    url: "/compliance", 
+  {
+    title: "Compliance",
+    url: "/compliance",
     icon: ShieldCheck,
     submenu: [
       { title: "Overview", url: "/compliance" },
@@ -76,24 +76,23 @@ export function AppSidebar() {
   };
 
   return (
-    <Sidebar className="border-r border-sidebar-border">
-      <SidebarContent>
-        <div className="p-6">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-eco flex items-center justify-center shadow-eco">
-              <Leaf className="w-6 h-6 text-white" />
+    <Sidebar className="border-r border-neutral-200 bg-white">
+      <SidebarContent className="bg-white">
+        <div className="p-6 border-b border-neutral-100">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-neutral-900 flex items-center justify-center">
+              <Leaf className="w-5 h-5 text-white" />
             </div>
             {open && (
               <div>
-                <h1 className="text-2xl font-bold text-sidebar-foreground">ZERO</h1>
-                <p className="text-xs text-sidebar-foreground/70">Sustainable Future</p>
+                <h1 className="text-lg font-semibold text-neutral-900 tracking-tight">ZERO</h1>
               </div>
             )}
           </div>
         </div>
-        
+
         <SidebarGroup>
-          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-neutral-500 text-xs font-medium px-3 py-2">Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {menuItems.map((item) => (
@@ -104,10 +103,14 @@ export function AppSidebar() {
                       onOpenChange={() => toggleMenu(item.title)}
                     >
                       <CollapsibleTrigger asChild>
-                        <SidebarMenuButton className={isSubmenuActive(item.submenu) ? "bg-sidebar-accent text-sidebar-primary font-medium" : ""}>
-                          <item.icon className="w-5 h-5" />
-                          <span>{item.title}</span>
-                          <ChevronDown className="ml-auto h-4 w-4 transition-transform" />
+                        <SidebarMenuButton className={`${
+                          isSubmenuActive(item.submenu)
+                            ? "bg-neutral-100 text-neutral-900 font-medium"
+                            : "text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900"
+                        }`}>
+                          <item.icon className="w-4 h-4" />
+                          <span className="text-sm">{item.title}</span>
+                          <ChevronDown className="ml-auto h-3.5 w-3.5 transition-transform" />
                         </SidebarMenuButton>
                       </CollapsibleTrigger>
                       <CollapsibleContent>
@@ -118,9 +121,10 @@ export function AppSidebar() {
                                 <NavLink
                                   to={subItem.url}
                                   className={({ isActive }) =>
-                                    isActive
-                                      ? "bg-sidebar-accent text-sidebar-primary font-medium"
-                                      : "hover:bg-sidebar-accent/50"
+                                    `text-sm ${isActive
+                                      ? "bg-neutral-100 text-neutral-900 font-medium"
+                                      : "text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900"
+                                    }`
                                   }
                                 >
                                   {subItem.title}
@@ -136,13 +140,14 @@ export function AppSidebar() {
                       <NavLink
                         to={item.url}
                         className={({ isActive }) =>
-                          isActive
-                            ? "bg-sidebar-accent text-sidebar-primary font-medium"
-                            : "hover:bg-sidebar-accent/50"
+                          `${isActive
+                            ? "bg-neutral-100 text-neutral-900 font-medium"
+                            : "text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900"
+                          }`
                         }
                       >
-                        <item.icon className="w-5 h-5" />
-                        <span>{item.title}</span>
+                        <item.icon className="w-4 h-4" />
+                        <span className="text-sm">{item.title}</span>
                       </NavLink>
                     </SidebarMenuButton>
                   )}

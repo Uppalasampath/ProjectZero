@@ -14,18 +14,18 @@ interface ModuleCardProps {
 
 export const ModuleCard = ({ title, description, icon, metrics, route }: ModuleCardProps) => {
   const navigate = useNavigate();
-  
+
   return (
-    <Card className="hover:shadow-lg transition-all duration-300 group">
+    <Card className="border border-neutral-200 bg-white shadow-none hover:border-neutral-300 transition-colors group">
       <CardHeader>
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover:bg-gradient-primary group-hover:text-white transition-all">
+            <div className="w-10 h-10 rounded-lg bg-neutral-100 flex items-center justify-center text-neutral-600">
               {icon}
             </div>
             <div>
-              <CardTitle className="text-xl">{title}</CardTitle>
-              <p className="text-sm text-muted-foreground mt-1">{description}</p>
+              <CardTitle className="text-lg font-medium text-neutral-900">{title}</CardTitle>
+              <p className="text-sm text-neutral-600 mt-0.5">{description}</p>
             </div>
           </div>
         </div>
@@ -34,15 +34,15 @@ export const ModuleCard = ({ title, description, icon, metrics, route }: ModuleC
         <div className="space-y-3 mb-4">
           {metrics.map((metric, index) => (
             <div key={index} className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">{metric.label}</span>
-              <span className="font-semibold">{metric.value}</span>
+              <span className="text-sm text-neutral-600">{metric.label}</span>
+              <span className="font-medium text-neutral-900">{metric.value}</span>
             </div>
           ))}
         </div>
-        <Button 
+        <Button
           onClick={() => navigate(route)}
-          variant="outline" 
-          className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
+          variant="outline"
+          className="w-full border-neutral-300 text-neutral-900 hover:bg-neutral-50 hover:border-neutral-400"
         >
           View Details
           <ArrowRight className="w-4 h-4 ml-2" />
