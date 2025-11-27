@@ -44,7 +44,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
+      <BrowserRouter basename="/ProjectZero">
         <AuthProvider>
           <Routes>
             {/* Public routes */}
