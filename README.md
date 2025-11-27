@@ -2,7 +2,6 @@
 
 <div align="center">
 
-![ZERO Platform](public/favicon.ico)
 
 **Comprehensive sustainability management platform integrating circular marketplace, carbon tracking, and compliance automation**
 
