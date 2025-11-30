@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { FileText, AlertCircle, CheckCircle, Clock } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 const frameworks = [
   { name: "CSRD", fullName: "Corporate Sustainability Reporting Directive", completion: 87, status: "yellow", deadline: "45 days" },
@@ -23,6 +24,48 @@ const getStatusColor = (status: string) => {
 };
 
 const Compliance = () => {
+  const { toast } = useToast();
+
+  const generateReport = (frameworkName?: string) => {
+    toast({
+      title: "Generating Report",
+      description: frameworkName
+        ? `Creating ${frameworkName} compliance report... This may take a few moments.`
+        : "Creating comprehensive compliance report... This may take a few moments.",
+    });
+
+    // Simulate report generation
+    setTimeout(() => {
+      toast({
+        title: "Report Generated Successfully",
+        description: frameworkName
+          ? `${frameworkName} report has been generated and saved to your downloads.`
+          : "Compliance report has been generated and saved to your downloads.",
+      });
+
+      // In a real implementation, this would trigger a PDF download
+      // For now, we'll create a mock download
+      const reportData = {
+        framework: frameworkName || "All Frameworks",
+        generatedAt: new Date().toISOString(),
+        completionStatus: frameworks.map(f => ({
+          name: f.name,
+          completion: f.completion
+        }))
+      };
+
+      const blob = new Blob([JSON.stringify(reportData, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${frameworkName || 'compliance'}_report_${Date.now()}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }, 2000);
+  };
+
   return (
     <Layout>
       <div className="space-y-6 animate-fade-in">
@@ -33,7 +76,7 @@ const Compliance = () => {
               <h1 className="text-2xl font-light text-neutral-900">Compliance Hub</h1>
               <p className="text-sm text-neutral-600 mt-1">Automated regulatory reporting and monitoring</p>
             </div>
-            <Button size="sm" className="bg-neutral-900 hover:bg-neutral-800 text-white">
+            <Button size="sm" className="bg-neutral-900 hover:bg-neutral-800 text-white" onClick={() => generateReport()}>
               <FileText className="w-3.5 h-3.5 mr-1.5" />
               Generate Report
             </Button>
@@ -116,7 +159,7 @@ const Compliance = () => {
                   <Progress value={framework.completion} className="h-1.5" />
                   <div className="flex gap-2">
                     <Button variant="outline" size="sm" className="text-xs h-8 border-neutral-300 text-neutral-900 hover:bg-neutral-50">View Details</Button>
-                    <Button variant="outline" size="sm" className="text-xs h-8 border-neutral-300 text-neutral-900 hover:bg-neutral-50">Generate Report</Button>
+                    <Button variant="outline" size="sm" className="text-xs h-8 border-neutral-300 text-neutral-900 hover:bg-neutral-50" onClick={() => generateReport(framework.name)}>Generate Report</Button>
                     {framework.completion < 100 && (
                       <Button variant="outline" size="sm" className="text-xs h-8 border-neutral-300 text-neutral-900 hover:bg-neutral-50">Add Data</Button>
                     )}

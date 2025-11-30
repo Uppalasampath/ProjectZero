@@ -114,16 +114,16 @@ export function AppSidebar() {
                         </SidebarMenuButton>
                       </CollapsibleTrigger>
                       <CollapsibleContent>
-                        <SidebarMenuSub>
+                        <SidebarMenuSub className="bg-neutral-50 border-l border-neutral-200">
                           {item.submenu.map((subItem) => (
                             <SidebarMenuSubItem key={subItem.url}>
-                              <SidebarMenuSubButton asChild>
+                              <SidebarMenuSubButton asChild className="bg-neutral-50">
                                 <NavLink
                                   to={subItem.url}
                                   className={({ isActive }) =>
                                     `text-sm ${isActive
-                                      ? "bg-neutral-100 text-neutral-900 font-medium"
-                                      : "text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900"
+                                      ? "bg-white text-neutral-900 font-medium"
+                                      : "text-neutral-700 hover:bg-white hover:text-neutral-900"
                                     }`
                                   }
                                 >
