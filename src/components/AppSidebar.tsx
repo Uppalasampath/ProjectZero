@@ -76,23 +76,23 @@ export function AppSidebar() {
   };
 
   return (
-    <Sidebar className="border-r border-neutral-200 bg-white">
-      <SidebarContent className="bg-white">
-        <div className="p-6 border-b border-neutral-100">
+    <Sidebar className="border-r border-sidebar-border">
+      <SidebarContent>
+        <div className="p-6 border-b border-sidebar-border">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-neutral-900 flex items-center justify-center">
               <Leaf className="w-5 h-5 text-white" />
             </div>
             {open && (
               <div>
-                <h1 className="text-lg font-semibold text-neutral-900 tracking-tight">ZERO</h1>
+                <h1 className="text-lg font-semibold text-sidebar-foreground tracking-tight">ZERO</h1>
               </div>
             )}
           </div>
         </div>
 
         <SidebarGroup>
-          <SidebarGroupLabel className="text-neutral-500 text-xs font-medium px-3 py-2">Navigation</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-xs font-medium px-3 py-2">Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {menuItems.map((item) => (
@@ -105,8 +105,8 @@ export function AppSidebar() {
                       <CollapsibleTrigger asChild>
                         <SidebarMenuButton className={`${
                           isSubmenuActive(item.submenu)
-                            ? "bg-neutral-100 text-neutral-900 font-medium"
-                            : "text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900"
+                            ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
+                            : "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                         }`}>
                           <item.icon className="w-4 h-4" />
                           <span className="text-sm">{item.title}</span>
@@ -114,16 +114,16 @@ export function AppSidebar() {
                         </SidebarMenuButton>
                       </CollapsibleTrigger>
                       <CollapsibleContent>
-                        <SidebarMenuSub className="bg-neutral-50 border-l border-neutral-200">
+                        <SidebarMenuSub>
                           {item.submenu.map((subItem) => (
                             <SidebarMenuSubItem key={subItem.url}>
-                              <SidebarMenuSubButton asChild className="bg-neutral-50">
+                              <SidebarMenuSubButton asChild>
                                 <NavLink
                                   to={subItem.url}
                                   className={({ isActive }) =>
                                     `text-sm ${isActive
-                                      ? "bg-white text-neutral-900 font-medium"
-                                      : "text-neutral-700 hover:bg-white hover:text-neutral-900"
+                                      ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
+                                      : "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                                     }`
                                   }
                                 >
@@ -141,8 +141,8 @@ export function AppSidebar() {
                         to={item.url}
                         className={({ isActive }) =>
                           `${isActive
-                            ? "bg-neutral-100 text-neutral-900 font-medium"
-                            : "text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900"
+                            ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
+                            : "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                           }`
                         }
                       >
