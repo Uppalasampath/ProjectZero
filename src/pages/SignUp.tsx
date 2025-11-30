@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -126,11 +127,33 @@ export default function SignUp() {
       });
       setLoading(false);
     } else {
-      toast({
-        title: 'Account Created!',
-        description: 'Welcome to ZERO'
-      });
-      navigate('/onboarding');
+      // Wait a moment for auth to complete, then create profile
+      setTimeout(async () => {
+        const { data: { user } } = await supabase.auth.getUser();
+
+        if (user) {
+          // Create profile record with user data
+          const { error: profileError } = await supabase
+            .from('profiles')
+            .upsert({
+              id: user.id,
+              ...userData,
+              onboarding_completed: false,
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString()
+            });
+
+          if (profileError) {
+            console.error('Profile creation error:', profileError);
+          }
+        }
+
+        toast({
+          title: 'Account Created!',
+          description: 'Welcome to ZERO'
+        });
+        navigate('/onboarding');
+      }, 1000);
     }
   };
 
