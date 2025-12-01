@@ -10,6 +10,7 @@ import Dashboard from "./pages/Dashboard";
 import Marketplace from "./pages/Marketplace";
 import Carbon from "./pages/Carbon";
 import Compliance from "./pages/Compliance";
+import ComplianceLearnMore from "./pages/ComplianceLearnMore";
 import Organization from "./pages/Organization";
 import Settings from "./pages/Settings";
 import Help from "./pages/Help";
@@ -49,6 +50,7 @@ const App = () => (
           <Routes>
             {/* Public routes */}
             <Route path="/" element={<Index />} />
+            <Route path="/compliance/:id" element={<ComplianceLearnMore />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
             
