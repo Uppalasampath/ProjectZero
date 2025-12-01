@@ -44,7 +44,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter basename="/ProjectZero">
+      <BrowserRouter basename={import.meta.env.PROD ? '/ProjectZero' : '/'}>
         <AuthProvider>
           <Routes>
             {/* Public routes */}

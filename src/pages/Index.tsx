@@ -10,9 +10,9 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-import zeroLogo from "@/assets/zero-logo.png";
 
 const Index = () => {
+  const logoPath = import.meta.env.PROD ? '/ProjectZero/zero-logo.png' : '/zero-logo.png';
   const navigate = useNavigate();
   const { toast } = useToast();
   const [email, setEmail] = useState("");
@@ -40,7 +40,7 @@ const Index = () => {
       <nav className="border-b border-neutral-100 bg-white/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between max-w-7xl">
           <div className="flex items-center gap-2">
-            <img src={zeroLogo} alt="ZERO" className="h-8 w-auto" />
+            <img src={logoPath} alt="ZERO" className="h-8 w-auto" />
           </div>
           <div className="flex items-center gap-3">
             <Button
@@ -336,7 +336,7 @@ const Index = () => {
 
           <div className="pt-8 border-t border-neutral-100 flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="flex items-center gap-2">
-              <img src={zeroLogo} alt="ZERO" className="h-6 w-auto" />
+              <img src={logoPath} alt="ZERO" className="h-6 w-auto" />
             </div>
             <p className="text-sm text-neutral-500">© 2024 ZERO. All rights reserved.</p>
           </div>
