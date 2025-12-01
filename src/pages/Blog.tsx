@@ -98,7 +98,7 @@ const Blog = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const logoPath = import.meta.env.PROD ? '/ProjectZero/zero-logo.png' : '/zero-logo.png';
+  const logoPath = `${import.meta.env.BASE_URL}zero-logo.png`;
 
   const filteredPosts = blogPosts.filter(post => {
     const matchesSearch = post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
