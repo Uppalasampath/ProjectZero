@@ -137,6 +137,7 @@ export default function SignUp() {
             .from('profiles')
             .upsert({
               id: user.id,
+              email: user.email || '',
               ...userData,
               onboarding_completed: false,
               created_at: new Date().toISOString(),

@@ -95,7 +95,7 @@ export const EPA_STATIONARY_COMBUSTION_FACTORS: Record<string, EmissionFactor> =
     version: '2024',
     scope: 1,
     category: 'stationary_combustion',
-    factor: 2,325.73, // kg CO2e per short ton
+    factor: 2325.73, // kg CO2e per short ton
     unit: 'short tons',
     gwp: 'AR5',
     applicableYears: [2023, 2024, 2025],
