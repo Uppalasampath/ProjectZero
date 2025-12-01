@@ -1,3 +1,4 @@
+import { useState, useMemo } from "react";
 import { Layout } from "@/components/Layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,25 +8,117 @@ import { Label } from "@/components/ui/label";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Download, FileText, Send, CheckCircle, AlertCircle } from "lucide-react";
+import { REGULATORY_FRAMEWORKS } from "@/lib/compliance";
+
+type FrameworkKey = 'SB-253' | 'CSRD' | 'CDP' | 'TCFD' | 'ISSB';
 
 const ReportGeneration = () => {
-  const reportSections = [
-    { id: "general", name: "General Information", status: "complete", pages: 5 },
-    { id: "governance", name: "Governance", status: "complete", pages: 8 },
-    { id: "e1", name: "E1: Climate Change", status: "complete", pages: 12 },
-    { id: "e2", name: "E2: Pollution", status: "complete", pages: 9 },
-    { id: "e3", name: "E3: Water & Marine", status: "complete", pages: 7 },
-    { id: "e4", name: "E4: Biodiversity", status: "incomplete", pages: 6 },
-    { id: "e5", name: "E5: Circular Economy", status: "complete", pages: 10 },
-    { id: "s1", name: "S1: Own Workforce", status: "complete", pages: 15 },
-  ];
+  const [selectedFramework, setSelectedFramework] = useState<FrameworkKey>('CSRD');
+
+  // Get sections dynamically from the selected framework
+  const reportSections = useMemo(() => {
+    const framework = REGULATORY_FRAMEWORKS[selectedFramework];
+    if (!framework) return [];
+
+    // Simulate completion status - in production, this would come from actual data
+    return framework.sections.map((section, index) => ({
+      id: section.id,
+      name: section.title,
+      description: section.description,
+      status: section.mandatory && Math.random() > 0.2 ? "complete" : (section.mandatory ? "incomplete" : "complete"),
+      pages: section.estimatedPages,
+      mandatory: section.mandatory,
+      subsections: section.subsections
+    }));
+  }, [selectedFramework]);
+
+  // Calculate overall completeness based on mandatory sections
+  const completeness = useMemo(() => {
+    const mandatorySections = reportSections.filter(s => s.mandatory);
+    const completedMandatory = mandatorySections.filter(s => s.status === "complete");
+    return mandatorySections.length > 0
+      ? Math.round((completedMandatory.length / mandatorySections.length) * 100)
+      : 100;
+  }, [reportSections]);
+
+  // Get framework-specific validation checks
+  const validationChecks = useMemo(() => {
+    const framework = REGULATORY_FRAMEWORKS[selectedFramework];
+    const checks = [
+      {
+        check: "All mandatory disclosures included",
+        status: completeness === 100
+      },
+      {
+        check: "Data sources documented",
+        status: true
+      },
+      {
+        check: "Assurance-ready documentation",
+        status: true
+      }
+    ];
+
+    // Add framework-specific checks
+    if (selectedFramework === 'SB-253') {
+      checks.push({
+        check: "Third-party assurance required",
+        status: false
+      });
+      checks.push({
+        check: "IPCC AR5 GWPs applied",
+        status: true
+      });
+    } else if (selectedFramework === 'CSRD') {
+      checks.push({
+        check: "Double materiality assessment complete",
+        status: true
+      });
+      checks.push({
+        check: "XBRL tags applied (ESRS taxonomy)",
+        status: false
+      });
+    } else if (selectedFramework === 'CDP') {
+      checks.push({
+        check: "All applicable Scope 3 categories reported",
+        status: true
+      });
+    } else if (selectedFramework === 'TCFD') {
+      checks.push({
+        check: "Scenario analysis complete (2°C or lower)",
+        status: true
+      });
+    } else if (selectedFramework === 'ISSB') {
+      checks.push({
+        check: "SASB industry-based metrics included",
+        status: true
+      });
+      checks.push({
+        check: "Climate transition plan disclosed",
+        status: true
+      });
+    }
+
+    return checks;
+  }, [selectedFramework, completeness]);
 
   return (
     <Layout>
       <div className="space-y-6 animate-fade-in max-w-4xl mx-auto">
         <div className="border-b border-border pb-5">
           <h1 className="text-2xl font-semibold text-foreground">Generate Compliance Report</h1>
-          <p className="text-sm text-muted-foreground mt-1">Create audit-ready regulatory reports</p>
+          <p className="text-sm text-muted-foreground mt-1">
+            Create audit-ready regulatory reports • {REGULATORY_FRAMEWORKS[selectedFramework]?.fullName}
+          </p>
+          <div className="flex items-center gap-4 mt-3 text-xs text-muted-foreground">
+            <span>Framework: <span className="font-semibold text-foreground">{selectedFramework}</span></span>
+            <span>•</span>
+            <span>Jurisdiction: <span className="font-semibold text-foreground">{REGULATORY_FRAMEWORKS[selectedFramework]?.jurisdiction}</span></span>
+            <span>•</span>
+            <span>Total Sections: <span className="font-semibold text-foreground">{reportSections.length}</span></span>
+            <span>•</span>
+            <span>Est. Pages: <span className="font-semibold text-foreground">{reportSections.reduce((sum, s) => sum + s.pages, 0)}</span></span>
+          </div>
         </div>
 
         <Card className="border border-border shadow-sm">
@@ -36,16 +129,19 @@ const ReportGeneration = () => {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Regulatory Framework</Label>
-                <Select defaultValue="csrd">
+                <Select
+                  value={selectedFramework}
+                  onValueChange={(value) => setSelectedFramework(value as FrameworkKey)}
+                >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="csrd">CSRD (EU)</SelectItem>
-                    <SelectItem value="sb253">SB 253 (California)</SelectItem>
-                    <SelectItem value="cdp">CDP Climate Change</SelectItem>
-                    <SelectItem value="tcfd">TCFD</SelectItem>
-                    <SelectItem value="issb">ISSB S1 & S2</SelectItem>
+                    <SelectItem value="CSRD">CSRD (EU)</SelectItem>
+                    <SelectItem value="SB-253">SB-253 (California)</SelectItem>
+                    <SelectItem value="CDP">CDP Climate Change</SelectItem>
+                    <SelectItem value="TCFD">TCFD</SelectItem>
+                    <SelectItem value="ISSB">ISSB S1 & S2</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -96,15 +192,26 @@ const ReportGeneration = () => {
                   <AccordionContent>
                     <div className="pl-8 pt-2 space-y-3">
                       <p className="text-sm text-muted-foreground">
-                        {section.id === "e1" && "Complete emissions data across all three scopes, including historical trends and reduction targets."}
-                        {section.id === "e4" && "Biodiversity assessment requires additional data on protected areas and restoration initiatives."}
-                        {section.id === "e5" && "Waste management data auto-populated from Circular Marketplace transactions."}
-                        {section.id.startsWith("e") && section.id !== "e1" && section.id !== "e4" && section.id !== "e5" && "All required disclosures completed with supporting documentation."}
-                        {!section.id.startsWith("e") && "All required disclosures completed with supporting documentation."}
+                        {section.description}
                       </p>
-                      <div className="flex items-center gap-2">
-                        <Checkbox defaultChecked />
-                        <Label>Include this section in report</Label>
+                      {section.subsections && section.subsections.length > 0 && (
+                        <div className="mt-3">
+                          <p className="text-xs font-semibold text-foreground mb-2">Subsections:</p>
+                          <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
+                            {section.subsections.map((subsection: any) => (
+                              <li key={subsection.id}>
+                                {subsection.title} ({subsection.estimatedPages} {subsection.estimatedPages === 1 ? 'page' : 'pages'})
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                      <div className="flex items-center gap-2 mt-3">
+                        <Checkbox defaultChecked={section.mandatory} />
+                        <Label>
+                          Include this section in report
+                          {section.mandatory && <span className="text-destructive ml-1">*</span>}
+                        </Label>
                       </div>
                     </div>
                   </AccordionContent>
@@ -121,18 +228,19 @@ const ReportGeneration = () => {
           <CardContent className="space-y-3">
             <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
               <div className="flex items-center gap-2">
-                <CheckCircle className="w-5 h-5 text-success" />
+                {completeness === 100 ? (
+                  <CheckCircle className="w-5 h-5 text-success" />
+                ) : completeness >= 70 ? (
+                  <AlertCircle className="w-5 h-5 text-warning" />
+                ) : (
+                  <AlertCircle className="w-5 h-5 text-destructive" />
+                )}
                 <span className="font-semibold">Overall Completeness</span>
               </div>
-              <span className="text-xl font-bold">87%</span>
+              <span className="text-xl font-bold">{completeness}%</span>
             </div>
             <div className="space-y-2">
-              {[
-                { check: "All mandatory disclosures included", status: true },
-                { check: "Data sources documented", status: true },
-                { check: "Assurance-ready documentation", status: true },
-                { check: "Third-party verification complete", status: false },
-              ].map((item, index) => (
+              {validationChecks.map((item, index) => (
                 <div key={index} className="flex items-center gap-2 text-sm">
                   {item.status ? (
                     <CheckCircle className="w-4 h-4 text-success" />
