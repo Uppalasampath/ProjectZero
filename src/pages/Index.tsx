@@ -12,7 +12,8 @@ import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
-  const logoPath = `${import.meta.env.BASE_URL}zero-logo.png`;
+  const isGitHubPages = typeof window !== 'undefined' && window.location.hostname.includes('github.io');
+  const logoPath = isGitHubPages ? '/ProjectZero/zero-logo.png' : '/zero-logo.png';
   const navigate = useNavigate();
   const { toast } = useToast();
   const [email, setEmail] = useState("");
