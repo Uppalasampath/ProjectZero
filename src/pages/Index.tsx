@@ -283,7 +283,7 @@ const Index = () => {
               { name: "TCFD", desc: "Task Force on Climate-related Financial Disclosures" },
               { name: "SBTi", desc: "Science Based Targets initiative" },
               { name: "ISSB", desc: "International Sustainability Standards Board" },
-              { name: "SEC Climate", desc: "US Securities and Exchange Commission" },
+              { name: "SB253", desc: "California Climate Corporate Data Accountability Act" },
               { name: "GHG Protocol", desc: "Greenhouse Gas Protocol" },
             ].map((framework) => (
               <div key={framework.name} className="bg-neutral-50 border border-neutral-200 rounded-xl p-6 hover:border-neutral-900 transition-colors group cursor-pointer">
