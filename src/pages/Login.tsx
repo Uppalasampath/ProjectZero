@@ -6,7 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
-import { Leaf, Mail, Lock } from 'lucide-react';
+import { Mail, Lock } from 'lucide-react';
+import zeroLogo from '@/assets/zero-logo.png';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -58,9 +59,7 @@ export default function Login() {
         <div className="w-full max-w-md space-y-8">
           <div>
             <Link to="/" className="flex items-center gap-2 mb-8">
-              <div className="h-8 w-8 rounded-lg bg-neutral-900 flex items-center justify-center">
-                <Leaf className="h-5 w-5 text-white" />
-              </div>
+              <img src={zeroLogo} alt="ZERO" className="h-8 w-8 object-contain" />
               <span className="text-xl font-semibold text-neutral-900">ZERO</span>
             </Link>
             <h1 className="text-3xl font-light text-neutral-900 mb-2">Welcome back</h1>
