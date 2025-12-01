@@ -79,7 +79,7 @@ export const complianceTypes: ComplianceType[] = [
         "Governance: Board and management oversight of climate-related risks",
         "Strategy: Climate-related risks and opportunities impact on business",
         "Risk Management: Processes for identifying and managing climate risks",
-        "Metrics & Targets: Metrics used to assess climate-related risks and opportunities"
+        "Metrics and Targets: Metrics used to assess climate-related risks and opportunities"
       ]
     },
     frequency: "Biennial reporting (every two years)",
@@ -97,13 +97,13 @@ export const complianceTypes: ComplianceType[] = [
     id: "csrd",
     name: "Corporate Sustainability Reporting Directive",
     shortName: "CSRD",
-    shortDescription: "EU's comprehensive sustainability reporting directive requiring detailed ESG disclosures under European Sustainability Reporting Standards.",
+    shortDescription: "EU comprehensive sustainability reporting directive requiring detailed ESG disclosures under European Sustainability Reporting Standards.",
     jurisdiction: "European Union",
     overview: "The Corporate Sustainability Reporting Directive (CSRD) is an EU regulation that significantly expands sustainability reporting requirements for companies operating in Europe. It replaces the Non-Financial Reporting Directive (NFRD) and introduces detailed reporting requirements under the European Sustainability Reporting Standards (ESRS), covering environmental, social, and governance topics with the concept of double materiality.",
     whoMustComply: [
-      "Large EU companies meeting 2 of 3 criteria: >250 employees, >€50M revenue, >€25M assets",
+      "Large EU companies meeting 2 of 3 criteria: more than 250 employees, more than 50M EUR revenue, more than 25M EUR assets",
       "All EU-listed companies (except micro-enterprises)",
-      "Non-EU companies with >€150M EU revenue and an EU subsidiary or branch",
+      "Non-EU companies with more than 150M EUR EU revenue and an EU subsidiary or branch",
       "Small and medium listed companies (with delayed timeline)"
     ],
     reportingScope: {
@@ -185,7 +185,7 @@ export const complianceTypes: ComplianceType[] = [
         "Governance: Board oversight and management's role in climate risks",
         "Strategy: Climate risks/opportunities and scenario analysis",
         "Risk Management: Processes for identifying and managing climate risks",
-        "Metrics & Targets: Metrics, Scope 1/2/3 emissions, and climate targets"
+        "Metrics and Targets: Metrics, Scope 1/2/3 emissions, and climate targets"
       ]
     },
     frequency: "Annual reporting (integrated into financial filings)",
@@ -218,7 +218,7 @@ export const complianceTypes: ComplianceType[] = [
       "Expected to become de facto global standard for sustainability reporting"
     ],
     reportingScope: {
-      title: "IFRS S1 & S2 Requirements",
+      title: "IFRS S1 and S2 Requirements",
       items: [
         "IFRS S1: General sustainability-related financial disclosures",
         "IFRS S2: Climate-related disclosures (builds on TCFD)",
