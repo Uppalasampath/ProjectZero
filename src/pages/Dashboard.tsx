@@ -65,7 +65,7 @@ const Dashboard = () => {
       const { count, error } = await supabase
         .from('waste_materials')
         .select('*', { count: 'exact', head: true })
-        .eq('seller_id', user?.id)
+        .eq('user_id', user?.id)
         .eq('status', 'available');
       if (error) throw error;
       return count || 0;
