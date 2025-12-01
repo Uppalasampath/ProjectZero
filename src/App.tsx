@@ -40,12 +40,21 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
+// Only use /ProjectZero/ basename on GitHub Pages (github.io domain)
+const getBasename = () => {
+  if (typeof window !== 'undefined') {
+    const isGitHubPages = window.location.hostname.includes('github.io');
+    return isGitHubPages ? '/ProjectZero' : '/';
+  }
+  return '/';
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter basename={import.meta.env.BASE_URL}>
+      <BrowserRouter basename={getBasename()}>
         <AuthProvider>
           <Routes>
             {/* Public routes */}
