@@ -17,7 +17,6 @@ const ComplianceSection = () => {
   return (
     <section className="py-24 bg-white">
       <div className="container mx-auto px-6 max-w-7xl">
-        {/* Section Header */}
         <div className="max-w-3xl mx-auto text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-light text-neutral-900 mb-6 tracking-tight">
             Compliance Types
@@ -30,7 +29,6 @@ const ComplianceSection = () => {
           </p>
         </div>
 
-        {/* Compliance Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {complianceTypes.map((compliance) => {
             const IconComponent = iconMap[compliance.id] || FileText;
@@ -41,12 +39,10 @@ const ComplianceSection = () => {
                 className="group bg-neutral-50 border border-neutral-200 rounded-2xl p-6 hover:border-neutral-400 hover:shadow-lg transition-all duration-300 cursor-pointer"
                 onClick={() => navigate(`/compliance/${compliance.id}`)}
               >
-                {/* Icon */}
                 <div className="h-12 w-12 rounded-xl bg-white border border-neutral-200 flex items-center justify-center mb-5 group-hover:border-neutral-900 group-hover:bg-neutral-900 transition-all duration-300">
                   <IconComponent className="h-6 w-6 text-neutral-700 group-hover:text-white transition-colors duration-300" />
                 </div>
 
-                {/* Content */}
                 <div className="mb-6">
                   <div className="flex items-center gap-2 mb-2">
                     <h3 className="text-lg font-medium text-neutral-900">
@@ -61,7 +57,6 @@ const ComplianceSection = () => {
                   </p>
                 </div>
 
-                {/* Learn More Button */}
                 <button
                   className="inline-flex items-center gap-2 text-sm font-medium text-neutral-900 group-hover:text-neutral-700 transition-colors"
                   onClick={(e) => {
