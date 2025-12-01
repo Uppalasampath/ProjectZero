@@ -263,6 +263,127 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Supported Frameworks Section */}
+      <section className="py-24 bg-white border-t border-neutral-100">
+        <div className="container mx-auto px-6 max-w-7xl">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-light text-neutral-900 mb-4">
+              Built for global standards
+            </h2>
+            <p className="text-lg text-neutral-500 max-w-2xl mx-auto">
+              Native support for major sustainability reporting frameworks
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
+            {[
+              { name: "CSRD", desc: "EU Corporate Sustainability Reporting Directive" },
+              { name: "CDP", desc: "Carbon Disclosure Project" },
+              { name: "GRI", desc: "Global Reporting Initiative" },
+              { name: "TCFD", desc: "Task Force on Climate-related Financial Disclosures" },
+              { name: "SBTi", desc: "Science Based Targets initiative" },
+              { name: "ISSB", desc: "International Sustainability Standards Board" },
+              { name: "SEC Climate", desc: "US Securities and Exchange Commission" },
+              { name: "GHG Protocol", desc: "Greenhouse Gas Protocol" },
+            ].map((framework) => (
+              <div key={framework.name} className="bg-neutral-50 border border-neutral-200 rounded-xl p-6 hover:border-neutral-900 transition-colors group cursor-pointer">
+                <p className="font-medium text-neutral-900 mb-1">{framework.name}</p>
+                <p className="text-xs text-neutral-500 line-clamp-2">{framework.desc}</p>
+              </div>
+            ))}
+          </div>
+          
+          <div className="text-center">
+            <p className="text-sm text-neutral-500">
+              Plus support for regional frameworks including SECR, NGER, and more
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Latest Insights Section */}
+      <section className="py-24 bg-neutral-50">
+        <div className="container mx-auto px-6 max-w-7xl">
+          <div className="flex items-center justify-between mb-12">
+            <div>
+              <h2 className="text-3xl md:text-4xl font-light text-neutral-900 mb-2">
+                Latest insights
+              </h2>
+              <p className="text-neutral-500">Research and analysis on sustainability trends</p>
+            </div>
+            <Button 
+              variant="outline" 
+              className="hidden md:flex border-neutral-300 hover:border-neutral-900"
+              onClick={() => navigate("/blog")}
+            >
+              View all articles
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              {
+                category: "Regulation",
+                title: "CSRD Compliance: What Companies Need to Know in 2024",
+                excerpt: "The EU's Corporate Sustainability Reporting Directive is reshaping how companies report on environmental impact.",
+                date: "Nov 28, 2024",
+                readTime: "8 min read"
+              },
+              {
+                category: "Carbon Markets",
+                title: "The Rise of Voluntary Carbon Markets",
+                excerpt: "Understanding the growth and evolution of voluntary carbon offset markets and their role in corporate net-zero strategies.",
+                date: "Nov 25, 2024",
+                readTime: "6 min read"
+              },
+              {
+                category: "Circular Economy",
+                title: "Industrial Symbiosis: Turning Waste into Value",
+                excerpt: "How leading manufacturers are creating new revenue streams through material exchange networks.",
+                date: "Nov 20, 2024",
+                readTime: "5 min read"
+              }
+            ].map((post, index) => (
+              <article 
+                key={index} 
+                className="bg-white border border-neutral-200 rounded-xl overflow-hidden hover:border-neutral-400 transition-colors cursor-pointer group"
+                onClick={() => navigate("/blog")}
+              >
+                <div className="h-48 bg-gradient-to-br from-neutral-100 to-neutral-200 flex items-center justify-center">
+                  <div className="h-12 w-12 rounded-full bg-neutral-300/50 flex items-center justify-center">
+                    <Leaf className="h-6 w-6 text-neutral-500" />
+                  </div>
+                </div>
+                <div className="p-6">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="text-xs font-medium text-neutral-500 uppercase tracking-wider">{post.category}</span>
+                    <span className="text-neutral-300">•</span>
+                    <span className="text-xs text-neutral-400">{post.readTime}</span>
+                  </div>
+                  <h3 className="font-medium text-neutral-900 mb-2 group-hover:text-neutral-700 transition-colors line-clamp-2">
+                    {post.title}
+                  </h3>
+                  <p className="text-sm text-neutral-600 line-clamp-2 mb-4">{post.excerpt}</p>
+                  <p className="text-xs text-neutral-400">{post.date}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+          
+          <div className="mt-8 text-center md:hidden">
+            <Button 
+              variant="outline" 
+              className="border-neutral-300 hover:border-neutral-900"
+              onClick={() => navigate("/blog")}
+            >
+              View all articles
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="py-24 bg-neutral-900">
         <div className="container mx-auto px-6 max-w-4xl text-center">
