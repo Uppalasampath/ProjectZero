@@ -1,5 +1,4 @@
 import { Home, Recycle, Leaf, ShieldCheck, Building2, Settings, HelpCircle, ChevronDown } from "lucide-react";
-import zeroLogo from "@/assets/zero-logo.png";
 import { NavLink, useLocation } from "react-router-dom";
 import { useState } from "react";
 import {
@@ -81,7 +80,9 @@ export function AppSidebar() {
       <SidebarContent>
         <div className="p-6 border-b border-sidebar-border">
           <div className="flex items-center gap-2.5">
-            <img src={zeroLogo} alt="ZERO" className="w-8 h-8 object-contain" />
+            <div className="w-8 h-8 rounded-lg bg-neutral-900 flex items-center justify-center">
+              <Leaf className="w-5 h-5 text-white" />
+            </div>
             {open && (
               <div>
                 <h1 className="text-lg font-semibold text-sidebar-foreground tracking-tight">ZERO</h1>

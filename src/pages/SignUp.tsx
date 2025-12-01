@@ -8,8 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
-import { Mail, Lock, Building2, MapPin, ArrowRight, Check } from 'lucide-react';
-import zeroLogo from '@/assets/zero-logo.png';
+import { Leaf, Mail, Lock, Building2, MapPin, ArrowRight, Check } from 'lucide-react';
 
 export default function SignUp() {
   const [step, setStep] = useState(1);
@@ -138,7 +137,6 @@ export default function SignUp() {
             .from('profiles')
             .upsert({
               id: user.id,
-              email: user.email || '',
               ...userData,
               onboarding_completed: false,
               created_at: new Date().toISOString(),
@@ -172,7 +170,9 @@ export default function SignUp() {
         <div className="w-full max-w-lg space-y-8">
           <div>
             <Link to="/" className="flex items-center gap-2 mb-8">
-              <img src={zeroLogo} alt="ZERO" className="h-8 w-8 object-contain" />
+              <div className="h-8 w-8 rounded-lg bg-neutral-900 flex items-center justify-center">
+                <Leaf className="h-5 w-5 text-white" />
+              </div>
               <span className="text-xl font-semibold text-neutral-900">ZERO</span>
             </Link>
             <h1 className="text-3xl font-light text-neutral-900 mb-2">Create account</h1>

@@ -47,11 +47,11 @@ export default function Onboarding() {
     try {
       await supabase
         .from('profiles')
-        .update({
+        .upsert({
+          id: user.id,
           onboarding_completed: true,
           updated_at: new Date().toISOString()
-        })
-        .eq('id', user.id);
+        });
 
       setShowConfetti(true);
       
