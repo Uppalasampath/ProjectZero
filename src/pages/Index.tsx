@@ -10,6 +10,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import zeroLogo from "@/assets/zero-logo.png";
+import ComplianceSection from "@/components/landing/ComplianceSection";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -262,6 +263,9 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      {/* Compliance Section */}
+      <ComplianceSection />
 
       {/* CTA Section */}
       <section className="py-24 bg-neutral-900">
