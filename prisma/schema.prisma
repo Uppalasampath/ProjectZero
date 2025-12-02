@@ -1,0 +1,728 @@
+// Unified Compliance Model - Project Zero
+// Database Schema for ESG & Sustainability Compliance Platform
+// Supports: SB-253, CSRD, CDP, TCFD, ISSB S1/S2
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// CORE ENTITIES
+// ============================================================================
+
+model Company {
+  id                      String   @id @default(uuid())
+  legalName               String
+  tradingName             String?
+  registrationNumber      String   @unique
+  jurisdiction            String
+  industry                String
+  industryCode            String   // NAICS or NACE
+  numberOfEmployees       Int
+  revenue                 Decimal
+  currency                String   @default("USD")
+  fiscalYearEnd           String
+  consolidationApproach   String   // equity-share, financial-control, operational-control
+  organizationalBoundary  String   @db.Text
+
+  // Address
+  street                  String
+  city                    String
+  state                   String?
+  postalCode              String
+  country                 String
+
+  // Timestamps
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+
+  // Relations
+  facilities              Facility[]
+  contacts                CompanyContact[]
+  activityData            ActivityData[]
+  calculatedEmissions     CalculatedEmission[]
+  reports                 GeneratedReport[]
+  materialityAssessments  MaterialityAssessment[]
+  auditLogs               AuditLog[]
+
+  @@map("companies")
+}
+
+model CompanyContact {
+  id          String   @id @default(uuid())
+  companyId   String
+  name        String
+  title       String
+  email       String
+  phone       String?
+  isPrimary   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  company     Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@map("company_contacts")
+}
+
+model Facility {
+  id                String   @id @default(uuid())
+  companyId         String
+  name              String
+  facilityType      String   // manufacturing, office, warehouse, datacenter
+
+  // Address
+  street            String
+  city              String
+  state             String?
+  postalCode        String
+  country           String
+  latitude          Float?
+  longitude         Float?
+
+  // Operational Data
+  operationalStatus String   @default("active") // active, inactive, planned
+  startDate         DateTime?
+  floorArea         Float?   // square meters
+  floorAreaUnit     String   @default("sqm")
+
+  // Energy & Utilities
+  egridSubregion    String?  // For U.S. facilities
+  gridMix           String?  // For non-U.S. facilities
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  company           Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  activityData      ActivityData[]
+  emissions         CalculatedEmission[]
+
+  @@map("facilities")
+}
+
+// ============================================================================
+// ACTIVITY DATA (Source Data for Emissions Calculations)
+// ============================================================================
+
+model ActivityData {
+  id              String   @id @default(uuid())
+  companyId       String
+  facilityId      String?
+
+  // Scope & Category
+  scope           Int      // 1, 2, or 3
+  category        String   // stationary_combustion, mobile_combustion, purchased_electricity, etc.
+  subcategory     String?
+
+  // Activity Amount
+  activityAmount  Decimal
+  activityUnit    String   // gallons, MWh, miles, kg, etc.
+
+  // Time Period
+  periodStart     DateTime
+  periodEnd       DateTime
+
+  // Data Quality
+  dataQuality     String   // measured, calculated, estimated, supplier-specific, industry-average
+  source          String   // Source of data (meter reading, invoice, estimate, etc.)
+  sourceReference String?  // Invoice number, meter ID, etc.
+
+  // Location
+  location        String?
+  geography       String?
+
+  // Metadata
+  notes           String?  @db.Text
+  tags            String[] // For categorization and filtering
+
+  // Upload Info
+  uploadedBy      String?
+  uploadedAt      DateTime?
+  uploadBatchId   String?  // For bulk uploads
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  company         Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  facility        Facility? @relation(fields: [facilityId], references: [id], onDelete: SetNull)
+  emissions       CalculatedEmission[]
+
+  @@index([companyId, scope, periodStart])
+  @@index([facilityId])
+  @@map("activity_data")
+}
+
+// ============================================================================
+// EMISSION FACTORS (Regulatory Databases)
+// ============================================================================
+
+model EmissionFactor {
+  id                String   @id @default(uuid())
+  factorId          String   @unique // e.g., "epa-ng-2024"
+  name              String
+  source            String   // EPA, eGRID, IPCC, DEFRA, IEA, custom
+  version           String
+
+  // Scope & Category
+  scope             Int
+  category          String
+  subcategory       String?
+
+  // Factor Value
+  factor            Decimal  // kg CO2e per unit
+  unit              String
+  gwp               String   @default("AR5") // AR5 or AR6
+
+  // Geographic Applicability
+  geography         String?
+  country           String?
+  region            String?
+
+  // Temporal Applicability
+  applicableYears   Int[]
+  validFrom         DateTime?
+  validTo           DateTime?
+
+  // Quality
+  uncertainty       Float?   // Percentage
+  dataQualityRating String?  // high, medium, low
+
+  // Metadata
+  metadata          Json?    // Additional factor-specific data
+  regulatoryRef     String?  // Reference to regulatory document
+
+  // Status
+  isActive          Boolean  @default(true)
+  isCustom          Boolean  @default(false) // Custom vs regulatory
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  lastReviewedAt    DateTime?
+
+  emissions         CalculatedEmission[]
+
+  @@index([source, scope, category])
+  @@index([geography, applicableYears])
+  @@map("emission_factors")
+}
+
+// ============================================================================
+// CALCULATED EMISSIONS (Results)
+// ============================================================================
+
+model CalculatedEmission {
+  id                  String   @id @default(uuid())
+  companyId           String
+  facilityId          String?
+  activityDataId      String
+  emissionFactorId    String
+
+  // Scope & Category
+  scope               Int
+  category            String
+  subcategory         String?
+
+  // Calculation Result
+  emissionAmount      Decimal  // tons CO2e
+  emissionUnit        String   @default("tons CO2e")
+
+  // Breakdown (if available)
+  co2Amount           Decimal?
+  ch4Amount           Decimal?
+  n2oAmount           Decimal?
+  otherGhgAmount      Decimal?
+
+  // Uncertainty
+  uncertaintyLower    Decimal?
+  uncertaintyUpper    Decimal?
+
+  // Methodology
+  methodology         String   @db.Text
+  formula             String   @db.Text
+  calculationMethod   String   // Activity-Based, Spend-Based, etc.
+
+  // Data Quality
+  dataQuality         String
+  confidenceLevel     String?  // high, medium, low
+
+  // Traceability
+  calculatedAt        DateTime @default(now())
+  calculatedBy        String?  // User or system
+  reviewedBy          String?
+  reviewedAt          DateTime?
+  approvedBy          String?
+  approvedAt          DateTime?
+
+  // Status
+  status              String   @default("draft") // draft, reviewed, approved, archived
+
+  // Versioning
+  version             Int      @default(1)
+  previousVersionId   String?
+
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  company             Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  facility            Facility? @relation(fields: [facilityId], references: [id], onDelete: SetNull)
+  activityData        ActivityData @relation(fields: [activityDataId], references: [id], onDelete: Restrict)
+  emissionFactor      EmissionFactor @relation(fields: [emissionFactorId], references: [id], onDelete: Restrict)
+
+  @@index([companyId, scope, status])
+  @@index([facilityId])
+  @@index([activityDataId])
+  @@map("calculated_emissions")
+}
+
+// ============================================================================
+// SUPPLY CHAIN DATA
+// ============================================================================
+
+model SupplyChainData {
+  id                    String   @id @default(uuid())
+  companyId             String
+
+  // Supplier Info
+  supplierName          String
+  supplierCategory      String   // raw_materials, manufacturing, logistics, services
+  supplierTier          Int      // 1, 2, 3
+  supplierCountry       String?
+
+  // Spend & Volume
+  annualSpend           Decimal?
+  currency              String   @default("USD")
+  productCategory       String?
+  volume                Decimal?
+  volumeUnit            String?
+
+  // Emissions Data
+  scope3Category        String   // purchased_goods_services, upstream_transportation, etc.
+  supplierEmissions     Decimal? // If supplier provides data
+  emissionIntensity     Decimal? // kg CO2e per unit
+
+  // Engagement
+  hasSetSBT             Boolean  @default(false) // Science-Based Target
+  cdpScore              String?
+  sustainabilityRating  String?
+
+  // Period
+  periodStart           DateTime
+  periodEnd             DateTime
+
+  // Metadata
+  notes                 String?  @db.Text
+
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@index([companyId, scope3Category])
+  @@map("supply_chain_data")
+}
+
+// ============================================================================
+// WORKFORCE DATA
+// ============================================================================
+
+model WorkforceData {
+  id                      String   @id @default(uuid())
+  companyId               String
+  facilityId              String?
+
+  // Period
+  periodStart             DateTime
+  periodEnd               DateTime
+
+  // Employee Counts
+  totalEmployees          Int
+  fullTimeEmployees       Int?
+  partTimeEmployees       Int?
+  contractorCount         Int?
+
+  // Demographics
+  femaleEmployees         Int?
+  maleEmployees           Int?
+  nonBinaryEmployees      Int?
+
+  // Safety & Training
+  recordableIncidents     Int?
+  lostTimeIncidents       Int?
+  trainingHoursTotal      Float?
+
+  // Commuting (for Scope 3 Cat 7)
+  averageCommuteDistance  Float?  // km
+  commuteDistanceUnit     String  @default("km")
+  remoteWorkPercentage    Float?
+
+  // Travel (for Scope 3 Cat 6)
+  businessTravelKm        Float?
+  businessFlightsShort    Int?
+  businessFlightsMedium   Int?
+  businessFlightsLong     Int?
+  hotelNights             Int?
+
+  // Metadata
+  notes                   String?  @db.Text
+
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+
+  @@index([companyId, periodStart])
+  @@map("workforce_data")
+}
+
+// ============================================================================
+// FINANCIAL DATA
+// ============================================================================
+
+model FinancialData {
+  id                    String   @id @default(uuid())
+  companyId             String
+
+  // Period
+  fiscalYear            Int
+  periodStart           DateTime
+  periodEnd             DateTime
+
+  // Revenue & Costs
+  totalRevenue          Decimal
+  operatingCosts        Decimal?
+  capitalExpenditures   Decimal?
+  currency              String   @default("USD")
+
+  // Climate-Related Financial Data
+  climateRelatedCapex   Decimal? // CapEx for climate initiatives
+  climateRelatedOpex    Decimal? // OpEx for climate initiatives
+  carbonCreditsExpense  Decimal?
+
+  // Risk Exposure
+  carbonPriceExposure   Decimal? // Estimated financial impact
+  physicalRiskExposure  Decimal?
+  transitionRiskExposure Decimal?
+
+  // Green Revenue
+  lowCarbonRevenue      Decimal? // Revenue from low-carbon products/services
+  lowCarbonRevenuePercentage Float?
+
+  // Metadata
+  notes                 String?  @db.Text
+
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@index([companyId, fiscalYear])
+  @@map("financial_data")
+}
+
+// ============================================================================
+// MATERIALITY ASSESSMENT (CSRD Double Materiality)
+// ============================================================================
+
+model MaterialityAssessment {
+  id                      String   @id @default(uuid())
+  companyId               String
+
+  // Assessment Info
+  assessmentYear          Int
+  assessmentDate          DateTime
+  methodology             String   @db.Text
+
+  // Stakeholder Engagement
+  stakeholdersEngaged     String[] // investors, employees, customers, etc.
+  engagementMethod        String?  @db.Text
+
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+
+  company                 Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  topics                  MaterialityTopic[]
+
+  @@map("materiality_assessments")
+}
+
+model MaterialityTopic {
+  id                      String   @id @default(uuid())
+  assessmentId            String
+
+  // Topic
+  topicName               String
+  topicCode               String?  // e.g., "ESRS E1"
+  category                String   // Environmental, Social, Governance
+
+  // Impact Materiality
+  impactScore             Int      // 1-5
+  impactRationale         String   @db.Text
+  impactStakeholders      String[]
+
+  // Financial Materiality
+  financialScore          Int      // 1-5
+  financialRationale      String   @db.Text
+  financialTimeHorizon    String   // short, medium, long
+
+  // Overall Assessment
+  overallMateriality      String   // material, not-material
+  disclosureRequired      Boolean  @default(false)
+
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+
+  assessment              MaterialityAssessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+
+  @@map("materiality_topics")
+}
+
+// ============================================================================
+// REGULATORY FRAMEWORK CONFIGURATION
+// ============================================================================
+
+model RegulatoryFrameworkConfig {
+  id                String   @id @default(uuid())
+  frameworkId       String   @unique // SB-253, CSRD, CDP, TCFD, ISSB
+  name              String
+  fullName          String
+  jurisdiction      String
+  version           String
+  effectiveDate     DateTime
+
+  // Configuration
+  requiredScopes    Int[]
+  supportedFormats  String[]
+  configuration     Json     // Full framework configuration
+
+  // Status
+  isActive          Boolean  @default(true)
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@map("regulatory_frameworks")
+}
+
+model ReportSection {
+  id                String   @id @default(uuid())
+  frameworkId       String
+  sectionId         String   // e.g., "sb253-general-info"
+  parentSectionId   String?
+
+  title             String
+  description       String   @db.Text
+  estimatedPages    Int
+  mandatory         Boolean  @default(true)
+  sortOrder         Int
+
+  // Data Requirements
+  dataInputs        String[] // What data is needed
+  dataOutputs       String[] // What this section produces
+  calculationsRequired String[] // What calculations are needed
+  visualsRequired   String[] // Charts, graphs, etc.
+
+  // Regulatory References
+  regulatoryRefs    String[]
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([frameworkId])
+  @@map("report_sections")
+}
+
+// ============================================================================
+// GENERATED REPORTS
+// ============================================================================
+
+model GeneratedReport {
+  id                String   @id @default(uuid())
+  companyId         String
+
+  // Framework
+  frameworkId       String   // SB-253, CSRD, CDP, TCFD, ISSB
+  frameworkVersion  String
+
+  // Report Info
+  reportName        String
+  reportPeriodStart DateTime
+  reportPeriodEnd   DateTime
+  reportingYear     Int
+
+  // Generation
+  exportFormat      String   // PDF, XBRL, EXCEL, JSON
+  outputUrl         String?  // S3/storage URL
+  outputSize        Int?     // bytes
+
+  // Validation
+  completeness      Float    // percentage
+  validationResults Json     // Array of validation results
+  validationStatus  String   @default("pending") // pending, passed, failed
+
+  // Status
+  status            String   @default("draft") // draft, in_review, approved, submitted
+
+  // Generation Metadata
+  generatedAt       DateTime @default(now())
+  generatedBy       String
+  reviewedBy        String?
+  reviewedAt        DateTime?
+  approvedBy        String?
+  approvedAt        DateTime?
+  submittedAt       DateTime?
+  submissionId      String?  // External regulator submission ID
+
+  // Versioning
+  version           Int      @default(1)
+  previousVersionId String?
+
+  // Metadata
+  metadata          Json?
+  notes             String?  @db.Text
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  company           Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@index([companyId, frameworkId, reportingYear])
+  @@index([status])
+  @@map("generated_reports")
+}
+
+// ============================================================================
+// ASSURANCE & VERIFICATION
+// ============================================================================
+
+model AssuranceStatus {
+  id                  String   @id @default(uuid())
+  companyId           String
+  reportId            String?  // If linked to specific report
+
+  // Assurance Info
+  assuranceLevel      String   // none, limited, reasonable
+  assuranceProvider   String?
+  assuranceStandard   String?  // ISAE 3410, AA1000AS, etc.
+
+  // Scope
+  scopesCovered       Int[]    // Which scopes are assured
+  categoriesCovered   String[]
+
+  // Period
+  periodStart         DateTime
+  periodEnd           DateTime
+
+  // Statement
+  statementUrl        String?
+  statementIssued     DateTime?
+
+  // Status
+  status              String   @default("not_started") // not_started, in_progress, completed
+
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@index([companyId])
+  @@map("assurance_status")
+}
+
+// ============================================================================
+// AUDIT LOGS (Data Lineage & Change Tracking)
+// ============================================================================
+
+model AuditLog {
+  id                String   @id @default(uuid())
+  companyId         String?
+
+  // Event Info
+  eventType         String   // data_created, data_updated, data_deleted, calculation_run, report_generated
+  entityType        String   // ActivityData, CalculatedEmission, Report, etc.
+  entityId          String
+
+  // Change Details
+  action            String   // CREATE, UPDATE, DELETE, CALCULATE, GENERATE
+  changes           Json?    // Before/after values
+
+  // User Info
+  userId            String?
+  userName          String?
+  userEmail         String?
+  ipAddress         String?
+  userAgent         String?
+
+  // Source
+  source            String?  // web_app, api, bulk_upload, scheduled_job
+  sourceReference   String?  // Upload batch ID, job ID, etc.
+
+  // Timestamp
+  timestamp         DateTime @default(now())
+
+  company           Company? @relation(fields: [companyId], references: [id], onDelete: SetNull)
+
+  @@index([companyId, entityType, timestamp])
+  @@index([entityId])
+  @@index([eventType, timestamp])
+  @@map("audit_logs")
+}
+
+// ============================================================================
+// DATA QUALITY & VALIDATION
+// ============================================================================
+
+model DataValidation {
+  id                String   @id @default(uuid())
+
+  // Target
+  entityType        String   // ActivityData, CalculatedEmission, etc.
+  entityId          String
+
+  // Validation
+  validationRule    String
+  validationStatus  String   // passed, failed, warning
+  validationMessage String?  @db.Text
+
+  // Severity
+  severity          String   // error, warning, info
+
+  // Resolution
+  isResolved        Boolean  @default(false)
+  resolvedBy        String?
+  resolvedAt        DateTime?
+  resolutionNotes   String?  @db.Text
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([entityType, entityId])
+  @@index([validationStatus, severity])
+  @@map("data_validations")
+}
+
+// ============================================================================
+// DASHBOARDS & WIDGETS (Configuration)
+// ============================================================================
+
+model DashboardConfig {
+  id                String   @id @default(uuid())
+  companyId         String?  // null = system default
+
+  dashboardName     String
+  dashboardType     String   // carbon_emissions, csrd_materiality, sb253_tracking, etc.
+
+  // Layout
+  layout            Json     // Widget positions and sizes
+
+  // Widgets
+  widgets           Json     // Array of widget configurations
+
+  // Filters
+  defaultFilters    Json?
+
+  // Access
+  isPublic          Boolean  @default(false)
+  ownerId           String?
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([companyId, dashboardType])
+  @@map("dashboard_configs")
+}
