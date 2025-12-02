@@ -19,6 +19,7 @@ import {
   ChevronDown,
   ChevronUp,
   Upload,
+  RefreshCw,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -81,16 +82,26 @@ export default function EmissionSourcesManagement() {
   }, [user, selectedScope]);
 
   const fetchSources = async () => {
+    setLoading(true);
     try {
-      const { data, error } = await supabase
-        .from("emission_sources")
-        .select("*")
-        .eq("user_id", user?.id)
-        .eq("scope", selectedScope)
-        .order("emission_amount", { ascending: false });
+      // Use new API endpoint
+      const response = await fetch(`/api/emissions/sources/scope${selectedScope}?companyId=${user?.id}`);
 
-      if (error) throw error;
-      setSources(data || []);
+      if (response.ok) {
+        const data = await response.json();
+        setSources(data.sources || []);
+      } else {
+        // Fallback to direct Supabase query
+        const { data, error } = await supabase
+          .from("emission_sources")
+          .select("*")
+          .eq("user_id", user?.id)
+          .eq("scope", selectedScope)
+          .order("emission_amount", { ascending: false });
+
+        if (error) throw error;
+        setSources(data || []);
+      }
     } catch (error: any) {
       toast({
         title: "Error loading sources",
@@ -220,10 +231,16 @@ export default function EmissionSourcesManagement() {
               Track and manage your emission sources by scope
             </p>
           </div>
-          <Button onClick={() => setShowAddDialog(true)}>
-            <Plus className="w-4 h-4 mr-2" />
-            Add Source
-          </Button>
+          <div className="flex gap-3">
+            <Button variant="outline" onClick={fetchSources}>
+              <RefreshCw className="w-4 h-4 mr-2" />
+              Recalculate
+            </Button>
+            <Button onClick={() => setShowAddDialog(true)}>
+              <Plus className="w-4 h-4 mr-2" />
+              Add Source
+            </Button>
+          </div>
         </div>
 
         <Tabs value={selectedScope.toString()} onValueChange={(v) => setSelectedScope(parseInt(v))}>
@@ -306,31 +323,66 @@ export default function EmissionSourcesManagement() {
                   <CardContent>
                     <div className="grid grid-cols-3 gap-4">
                       <div>
-                        <p className="text-sm text-muted-foreground">Activity Data</p>
+                        <p className="text-sm text-muted-foreground">Activity Amount</p>
                         <p className="text-lg font-semibold">
-                          {source.activity_data?.toLocaleString()} {source.activity_unit}
+                          {(source.activityAmount || source.activity_data)?.toLocaleString()} {source.activityUnit || source.activity_unit}
                         </p>
                       </div>
                       <div>
                         <p className="text-sm text-muted-foreground">Emission Factor</p>
                         <p className="text-lg font-semibold">
-                          {source.emission_factor?.toFixed(4)}
+                          {(source.emissionFactor || source.emission_factor)?.toFixed(4)}
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {source.emissionFactorUnit || 'kg CO₂e per unit'}
                         </p>
                       </div>
                       <div>
-                        <p className="text-sm text-muted-foreground">Total Emissions</p>
+                        <p className="text-sm text-muted-foreground">Total CO₂e</p>
                         <p className="text-lg font-bold text-primary">
-                          {source.emission_amount?.toFixed(2)} tons CO2e
+                          {(source.totalCO2e || source.emission_amount)?.toFixed(2)} tons
                         </p>
                       </div>
                     </div>
 
                     {expandedSource === source.id && (
-                      <div className="mt-4 pt-4 border-t space-y-2">
-                        <div className="text-sm">
-                          <span className="text-muted-foreground">Last Updated: </span>
-                          <span>{new Date(source.created_at).toLocaleDateString()}</span>
+                      <div className="mt-4 pt-4 border-t space-y-3">
+                        <div className="grid grid-cols-2 gap-4 text-sm">
+                          <div>
+                            <span className="text-muted-foreground">Emission Factor Source: </span>
+                            <Badge variant="secondary" className="ml-2">
+                              {source.emissionFactorSource || source.emission_factor_source || 'EPA'}
+                            </Badge>
+                          </div>
+                          <div>
+                            <span className="text-muted-foreground">Calculation Method: </span>
+                            <span className="font-medium">
+                              {source.calculationMethod || source.calculation_method || 'activity_data × emission_factor'}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-muted-foreground">Data Quality: </span>
+                            <Badge variant="outline">
+                              {source.dataQuality || source.data_quality || 'calculated'}
+                            </Badge>
+                          </div>
+                          <div>
+                            <span className="text-muted-foreground">Last Updated: </span>
+                            <span>{new Date(source.createdAt || source.created_at).toLocaleDateString()}</span>
+                          </div>
                         </div>
+                        {source.description && (
+                          <div className="text-sm">
+                            <span className="text-muted-foreground">Description: </span>
+                            <span>{source.description}</span>
+                          </div>
+                        )}
+                        {source.location && (
+                          <div className="text-sm">
+                            <span className="text-muted-foreground">Location: </span>
+                            <span>{source.location}</span>
+                          </div>
+                        )}
                         {source.source_document_url && (
                           <div className="text-sm">
                             <span className="text-muted-foreground">Document: </span>

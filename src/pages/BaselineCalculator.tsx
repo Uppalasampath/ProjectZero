@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Zap, TrendingUp, Clock, CheckCircle2, Upload } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -23,6 +24,7 @@ export default function BaselineCalculator() {
   const [currentStep, setCurrentStep] = useState(0);
   const [calculationMethod, setCalculationMethod] = useState("");
   const [loading, setLoading] = useState(false);
+  const [baselineResult, setBaselineResult] = useState<any>(null);
 
   // Data collection state
   const [naturalGas, setNaturalGas] = useState("");
@@ -30,24 +32,93 @@ export default function BaselineCalculator() {
   const [fuelConsumption, setFuelConsumption] = useState("");
   const [annualSpend, setAnnualSpend] = useState("");
 
-  const calculateBaseline = () => {
-    // Simplified calculation for MVP
-    const scope1 = parseFloat(naturalGas || "0") * 0.185 + parseFloat(fuelConsumption || "0") * 2.31;
-    const scope2 = parseFloat(electricity || "0") * 0.385;
-    const scope3 = parseFloat(annualSpend || "0") * 0.0005; // Rough spend-based estimate
+  // Company data for ML model
+  const [revenue, setRevenue] = useState("");
+  const [employees, setEmployees] = useState("");
+  const [energySpend, setEnergySpend] = useState("");
+  const [facilitySize, setFacilitySize] = useState("");
+  const [industry, setIndustry] = useState("");
+  const [region, setRegion] = useState("");
 
-    return {
-      scope_1_total: scope1 / 1000, // Convert kg to tons
-      scope_2_total: scope2 / 1000,
-      scope_3_total: scope3,
-      total: (scope1 + scope2) / 1000 + scope3,
-    };
+  const calculateBaseline = async () => {
+    try {
+      setLoading(true);
+
+      // Prepare company data for ML model
+      const companyData = {
+        revenue: parseFloat(revenue || "0"),
+        employees: parseInt(employees || "0"),
+        energy_spend: parseFloat(energySpend || electricity || "0"),
+        facility_sqft: parseFloat(facilitySize || "0"),
+        industry: industry || "other",
+        region: region || "north_america",
+      };
+
+      // Determine method based on calculation method selected
+      let method = "hybrid";
+      if (calculationMethod === "quick") {
+        method = "industry_average";
+      } else if (calculationMethod === "detailed") {
+        method = "historical";
+      }
+
+      // Call ML backend API
+      const response = await fetch("/api/baseline/calculate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          companyId: user?.id,
+          method,
+          companyData,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to calculate baseline");
+      }
+
+      const result = await response.json();
+      setBaselineResult(result);
+
+      return {
+        scope_1_total: result.scope1_estimate || 0,
+        scope_2_total: result.scope2_estimate || 0,
+        scope_3_total: result.scope3_estimate || 0,
+        total: result.baseline_emissions || 0,
+        method: result.method || method,
+        confidence_lower: result.confidence_interval?.[0],
+        confidence_upper: result.confidence_interval?.[1],
+        data_quality: result.data_quality_score || 50,
+      };
+    } catch (error: any) {
+      toast({
+        title: "Error calculating baseline",
+        description: error.message,
+        variant: "destructive",
+      });
+
+      // Fallback to simple calculation
+      const scope1 = parseFloat(naturalGas || "0") * 0.185 + parseFloat(fuelConsumption || "0") * 2.31;
+      const scope2 = parseFloat(electricity || "0") * 0.385;
+      const scope3 = parseFloat(annualSpend || "0") * 0.0005;
+
+      return {
+        scope_1_total: scope1 / 1000,
+        scope_2_total: scope2 / 1000,
+        scope_3_total: scope3,
+        total: (scope1 + scope2) / 1000 + scope3,
+        method: "fallback",
+        data_quality: 50,
+      };
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSaveBaseline = async () => {
     setLoading(true);
     try {
-      const results = calculateBaseline();
+      const results = await calculateBaseline();
       const today = new Date();
       const yearStart = new Date(today.getFullYear(), 0, 1);
       const yearEnd = new Date(today.getFullYear(), 11, 31);
@@ -59,8 +130,8 @@ export default function BaselineCalculator() {
         scope_1_total: results.scope_1_total,
         scope_2_total: results.scope_2_total,
         scope_3_total: results.scope_3_total,
-        calculation_method: calculationMethod,
-        data_quality_score: calculationMethod === "quick" ? 60 : calculationMethod === "hybrid" ? 80 : 95,
+        calculation_method: results.method || calculationMethod,
+        data_quality_score: results.data_quality || 50,
         verified: false,
       });
 
@@ -184,6 +255,90 @@ export default function BaselineCalculator() {
                 : "Provide detailed activity data across all scopes"}
             </p>
 
+            {/* Company Profile Data (for ML Model) */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Company Profile</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="grid gap-2">
+                    <Label>Annual Revenue ($)</Label>
+                    <Input
+                      type="number"
+                      placeholder="10000000"
+                      value={revenue}
+                      onChange={(e) => setRevenue(e.target.value)}
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label>Number of Employees</Label>
+                    <Input
+                      type="number"
+                      placeholder="100"
+                      value={employees}
+                      onChange={(e) => setEmployees(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="grid gap-2">
+                    <Label>Industry</Label>
+                    <Select value={industry} onValueChange={setIndustry}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select industry" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="manufacturing_heavy">Manufacturing (Heavy)</SelectItem>
+                        <SelectItem value="manufacturing_light">Manufacturing (Light)</SelectItem>
+                        <SelectItem value="technology">Technology</SelectItem>
+                        <SelectItem value="financial_services">Financial Services</SelectItem>
+                        <SelectItem value="retail">Retail</SelectItem>
+                        <SelectItem value="healthcare">Healthcare</SelectItem>
+                        <SelectItem value="education">Education</SelectItem>
+                        <SelectItem value="other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="grid gap-2">
+                    <Label>Region</Label>
+                    <Select value={region} onValueChange={setRegion}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select region" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="north_america">North America</SelectItem>
+                        <SelectItem value="europe">Europe</SelectItem>
+                        <SelectItem value="asia_pacific">Asia Pacific</SelectItem>
+                        <SelectItem value="latin_america">Latin America</SelectItem>
+                        <SelectItem value="middle_east_africa">Middle East & Africa</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="grid gap-2">
+                    <Label>Annual Energy Spend ($)</Label>
+                    <Input
+                      type="number"
+                      placeholder="250000"
+                      value={energySpend}
+                      onChange={(e) => setEnergySpend(e.target.value)}
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label>Facility Size (sq ft)</Label>
+                    <Input
+                      type="number"
+                      placeholder="50000"
+                      value={facilitySize}
+                      onChange={(e) => setFacilitySize(e.target.value)}
+                    />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
             {calculationMethod === "quick" && (
               <Card>
                 <CardHeader>
@@ -198,10 +353,6 @@ export default function BaselineCalculator() {
                       value={annualSpend}
                       onChange={(e) => setAnnualSpend(e.target.value)}
                     />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label>Annual Electricity Spend ($)</Label>
-                    <Input type="number" placeholder="250000" />
                   </div>
                 </CardContent>
               </Card>
@@ -277,24 +428,37 @@ export default function BaselineCalculator() {
         );
 
       case 2:
-        const results = calculateBaseline();
-        const accuracy =
-          calculationMethod === "quick" ? 60 : calculationMethod === "hybrid" ? 80 : 95;
+        // Use baselineResult if available, otherwise calculate
+        const results = baselineResult || {
+          scope_1_total: 0,
+          scope_2_total: 0,
+          scope_3_total: 0,
+          total: 0,
+          method: calculationMethod,
+          data_quality: 50,
+        };
+
+        const accuracy = results.data_quality || (calculationMethod === "quick" ? 60 : calculationMethod === "hybrid" ? 80 : 95);
 
         return (
           <div className="space-y-6">
             <h2 className="text-2xl font-bold">Review Your Baseline</h2>
             <p className="text-muted-foreground">
-              Here's your calculated carbon footprint. You can refine this later by adding more detailed
-              data.
+              Here's your calculated carbon footprint using {results.method || calculationMethod} method.
+              You can refine this later by adding more detailed data.
             </p>
 
             <Card className="bg-gradient-primary text-white">
               <CardContent className="p-6">
                 <div className="text-center">
                   <p className="text-sm opacity-90 mb-2">Total Carbon Footprint</p>
-                  <p className="text-5xl font-bold mb-1">{results.total.toLocaleString()}</p>
+                  <p className="text-5xl font-bold mb-1">{(results.total || 0).toLocaleString()}</p>
                   <p className="text-lg opacity-90">tons CO2e per year</p>
+                  {results.confidence_lower && results.confidence_upper && (
+                    <p className="text-sm opacity-75 mt-2">
+                      Confidence Range: {results.confidence_lower.toLocaleString()} - {results.confidence_upper.toLocaleString()} tons
+                    </p>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -420,10 +584,16 @@ export default function BaselineCalculator() {
 
           {currentStep < STEPS.length - 1 ? (
             <Button
-              onClick={() => setCurrentStep(currentStep + 1)}
-              disabled={currentStep === 0 && !calculationMethod}
+              onClick={async () => {
+                // Calculate baseline when moving to review step
+                if (currentStep === 1) {
+                  await calculateBaseline();
+                }
+                setCurrentStep(currentStep + 1);
+              }}
+              disabled={(currentStep === 0 && !calculationMethod) || loading}
             >
-              Next
+              {loading && currentStep === 1 ? "Calculating..." : "Next"}
             </Button>
           ) : (
             <Button onClick={handleSaveBaseline} disabled={loading}>
