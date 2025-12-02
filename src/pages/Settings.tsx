@@ -7,9 +7,67 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Upload, Check, X } from "lucide-react";
+import { Upload, Check, X, RefreshCw, AlertCircle } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useQuery } from "@tanstack/react-query";
+import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
 
 const Settings = () => {
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const [syncing, setSyncing] = useState<string | null>(null);
+
+  // Fetch integration status
+  const { data: integrationsStatus, isLoading, refetch: refetchIntegrations } = useQuery({
+    queryKey: ['integrations-status', user?.id],
+    queryFn: async () => {
+      const response = await fetch(`/api/integrations/status?companyId=${user?.id}`);
+      if (!response.ok) throw new Error('Failed to fetch integrations status');
+      return response.json();
+    },
+    enabled: !!user?.id,
+  });
+
+  const handleSync = async (integrationId: string, systemType: string) => {
+    setSyncing(integrationId);
+    try {
+      const response = await fetch('/api/integrations/sync', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          companyId: user?.id,
+          integrationId,
+          syncType: 'incremental',
+          dateRange: {
+            start: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+            end: new Date().toISOString(),
+          },
+          dataTypes: ['fuel', 'electricity', 'travel', 'procurement'],
+        }),
+      });
+
+      if (!response.ok) throw new Error('Sync failed');
+
+      const result = await response.json();
+
+      toast({
+        title: `Synced ${systemType} successfully`,
+        description: `Imported ${result.recordsImported} records`,
+      });
+
+      refetchIntegrations();
+    } catch (error: any) {
+      toast({
+        title: 'Sync failed',
+        description: error.message,
+        variant: 'destructive',
+      });
+    } finally {
+      setSyncing(null);
+    }
+  };
+
   return (
     <Layout>
       <div className="space-y-6 animate-fade-in">
@@ -76,40 +134,101 @@ const Settings = () => {
           <TabsContent value="integrations">
             <Card>
               <CardHeader>
-                <CardTitle>ERP & Data Integrations</CardTitle>
-                <CardDescription>Connect your business systems</CardDescription>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle>ERP & Data Integrations</CardTitle>
+                    <CardDescription>Connect your business systems</CardDescription>
+                  </div>
+                  {integrationsStatus?.summary && (
+                    <div className="flex gap-2">
+                      <Badge variant="outline">
+                        {integrationsStatus.summary.connected} Connected
+                      </Badge>
+                      {integrationsStatus.summary.errors > 0 && (
+                        <Badge variant="destructive">
+                          {integrationsStatus.summary.errors} Errors
+                        </Badge>
+                      )}
+                    </div>
+                  )}
+                </div>
               </CardHeader>
               <CardContent className="space-y-4">
-                {[
-                  { name: "SAP", status: "connected", description: "Financial and operational data" },
-                  { name: "Oracle", status: "connected", description: "Supply chain and inventory" },
-                  { name: "Workday", status: "connected", description: "HR and employee data" },
-                  { name: "QuickBooks", status: "disconnected", description: "Accounting and expenses" },
-                  { name: "Salesforce", status: "disconnected", description: "Customer relationship data" },
-                ].map((integration) => (
-                  <div key={integration.name} className="flex items-center justify-between p-4 border border-border rounded-lg">
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center font-bold text-primary">
-                        {integration.name.substring(0, 2)}
+                {isLoading ? (
+                  <div className="text-center py-8 text-muted-foreground">Loading integrations...</div>
+                ) : integrationsStatus?.integrations && integrationsStatus.integrations.length > 0 ? (
+                  integrationsStatus.integrations.map((integration: any) => (
+                    <div key={integration.id} className="flex items-center justify-between p-4 border border-border rounded-lg">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center font-bold text-primary">
+                          {integration.systemName.substring(0, 2)}
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="font-semibold">{integration.systemName}</h4>
+                          <div className="flex items-center gap-2 mt-1">
+                            {integration.lastSyncAt && (
+                              <p className="text-xs text-muted-foreground">
+                                Last sync: {new Date(integration.lastSyncAt).toLocaleDateString()}
+                              </p>
+                            )}
+                            {integration.mappingsCount > 0 && (
+                              <Badge variant="outline" className="text-xs">
+                                {integration.mappingsCount} mappings
+                              </Badge>
+                            )}
+                            {integration.totalRecordsSynced > 0 && (
+                              <Badge variant="outline" className="text-xs">
+                                {integration.totalRecordsSynced} records
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
                       </div>
-                      <div>
-                        <h4 className="font-semibold">{integration.name}</h4>
-                        <p className="text-sm text-muted-foreground">{integration.description}</p>
+                      <div className="flex items-center gap-2">
+                        {integration.status === "connected" ? (
+                          <>
+                            <Badge
+                              className={
+                                integration.health === "healthy" ? "bg-success" :
+                                integration.health === "warning" ? "bg-yellow-500" :
+                                "bg-destructive"
+                              }
+                            >
+                              <Check className="w-3 h-3 mr-1" />
+                              {integration.health === "healthy" ? "Connected" :
+                               integration.health === "warning" ? "Warning" : "Error"}
+                            </Badge>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleSync(integration.id, integration.systemName)}
+                              disabled={syncing === integration.id}
+                            >
+                              <RefreshCw className={`w-3 h-3 mr-1 ${syncing === integration.id ? 'animate-spin' : ''}`} />
+                              {syncing === integration.id ? 'Syncing...' : 'Sync'}
+                            </Button>
+                            <Button variant="ghost" size="sm">
+                              <X className="w-4 h-4" />
+                            </Button>
+                          </>
+                        ) : (
+                          <Button className="bg-gradient-primary" size="sm">
+                            Connect
+                          </Button>
+                        )}
                       </div>
                     </div>
-                    {integration.status === "connected" ? (
-                      <div className="flex items-center gap-2">
-                        <Badge className="bg-success">
-                          <Check className="w-3 h-3 mr-1" />
-                          Connected
-                        </Badge>
-                        <Button variant="outline" size="sm">Disconnect</Button>
-                      </div>
-                    ) : (
-                      <Button className="bg-gradient-primary">Connect</Button>
-                    )}
+                  ))
+                ) : (
+                  <div className="text-center py-12">
+                    <AlertCircle className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+                    <h3 className="text-lg font-semibold mb-2">No integrations yet</h3>
+                    <p className="text-muted-foreground mb-4">
+                      Connect your ERP systems to automatically sync emission data
+                    </p>
+                    <Button className="bg-gradient-primary">Add Integration</Button>
                   </div>
-                ))}
+                )}
               </CardContent>
             </Card>
           </TabsContent>

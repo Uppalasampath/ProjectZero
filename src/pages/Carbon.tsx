@@ -2,18 +2,42 @@ import { Layout } from "@/components/Layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Download, RefreshCw } from "lucide-react";
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, LineChart, Line, Area, AreaChart } from "recharts";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 const Carbon = () => {
   const { user } = useAuth();
+  const [trendPeriod, setTrendPeriod] = useState<'monthly' | 'quarterly' | 'annual'>('monthly');
 
-  // Fetch latest carbon emissions data
-  const { data: emissionsData, isLoading: emissionsLoading } = useQuery({
+  // Fetch emissions summary using new API endpoint
+  const { data: emissionsSummary, isLoading: emissionsLoading, refetch: refetchSummary } = useQuery({
+    queryKey: ['emissions-summary', user?.id],
+    queryFn: async () => {
+      const response = await fetch(`/api/emissions/summary?companyId=${user?.id}`);
+      if (!response.ok) throw new Error('Failed to fetch emissions summary');
+      return response.json();
+    },
+    enabled: !!user?.id,
+  });
+
+  // Fetch emissions trend using new API endpoint
+  const { data: emissionsTrend, refetch: refetchTrend } = useQuery({
+    queryKey: ['emissions-trend', user?.id, trendPeriod],
+    queryFn: async () => {
+      const response = await fetch(`/api/emissions/trend?companyId=${user?.id}&period=${trendPeriod}`);
+      if (!response.ok) throw new Error('Failed to fetch emissions trend');
+      return response.json();
+    },
+    enabled: !!user?.id,
+  });
+
+  // Keep existing Supabase query for backward compatibility
+  const { data: emissionsData } = useQuery({
     queryKey: ['carbon-emissions', user?.id],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -26,23 +50,6 @@ const Carbon = () => {
 
       if (error) throw error;
       return data;
-    },
-    enabled: !!user?.id,
-  });
-
-  // Fetch emissions history for trend chart
-  const { data: emissionsHistory } = useQuery({
-    queryKey: ['carbon-emissions-history', user?.id],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('carbon_emissions')
-        .select('reporting_period_end, scope_1_total, scope_2_total, scope_3_total')
-        .eq('user_id', user?.id)
-        .order('reporting_period_end', { ascending: true })
-        .limit(12);
-
-      if (error) throw error;
-      return data || [];
     },
     enabled: !!user?.id,
   });
@@ -95,11 +102,12 @@ const Carbon = () => {
     enabled: !!user?.id,
   });
 
-  // Calculate totals and derived data
-  const scope1Total = emissionsData?.scope_1_total || 0;
-  const scope2Total = emissionsData?.scope_2_total || 0;
-  const scope3Total = emissionsData?.scope_3_total || 0;
-  const totalEmissions = scope1Total + scope2Total + scope3Total;
+  // Calculate totals and derived data - prioritize API summary data
+  const scope1Total = emissionsSummary?.scope1?.total || emissionsData?.scope_1_total || 0;
+  const scope2Total = emissionsSummary?.scope2?.market_based || emissionsData?.scope_2_total || 0;
+  const scope2LocationBased = emissionsSummary?.scope2?.location_based || 0;
+  const scope3Total = emissionsSummary?.scope3?.total || emissionsData?.scope_3_total || 0;
+  const totalEmissions = emissionsSummary?.grand_total || (scope1Total + scope2Total + scope3Total);
 
   const totalCarbonCredits = carbonCredits?.reduce((sum, credit) => sum + (credit.quantity_tons || 0), 0) || 0;
 
@@ -108,15 +116,27 @@ const Carbon = () => {
   const yearsToTarget = netZeroYear - currentYear;
   const progressPercent = yearsToTarget > 0 ? Math.max(0, Math.min(100, ((totalCarbonCredits / totalEmissions) * 100))) : 100;
 
-  // Prepare emission data for pie chart
+  // Prepare emission data for pie chart with market-based method
   const emissionData = [
-    { name: "Scope 1", value: scope1Total, color: "hsl(var(--chart-1))" },
-    { name: "Scope 2", value: scope2Total, color: "hsl(var(--chart-2))" },
-    { name: "Scope 3", value: scope3Total, color: "hsl(var(--chart-3))" },
+    { name: "Scope 1 (Direct)", value: scope1Total, color: "hsl(var(--chart-1))" },
+    { name: "Scope 2 (Market-Based)", value: scope2Total, color: "hsl(var(--chart-2))" },
+    { name: "Scope 3 (Value Chain)", value: scope3Total, color: "hsl(var(--chart-3))" },
   ];
 
-  // Parse scope 3 breakdown from JSON
+  // Parse scope 3 breakdown from API or fallback to legacy data
   const scope3Breakdown = useMemo(() => {
+    // Prioritize API data
+    if (emissionsSummary?.scope3?.categories) {
+      return emissionsSummary.scope3.categories
+        .map((cat: any) => ({
+          category: cat.name || cat.category,
+          emissions: Number(cat.total) || 0,
+        }))
+        .filter((cat: any) => cat.emissions > 0)
+        .sort((a: any, b: any) => b.emissions - a.emissions);
+    }
+
+    // Fallback to legacy data
     if (!emissionsData?.scope_3_breakdown) return [];
 
     try {
@@ -132,7 +152,7 @@ const Carbon = () => {
       console.error('Error parsing scope 3 breakdown:', e);
       return [];
     }
-  }, [emissionsData?.scope_3_breakdown]);
+  }, [emissionsSummary?.scope3?.categories, emissionsData?.scope_3_breakdown]);
 
   // Prepare top emission sources with percentages
   const topSources = useMemo(() => {
@@ -145,23 +165,13 @@ const Carbon = () => {
     }));
   }, [emissionSources, totalEmissions]);
 
-  // Prepare emissions trend data for line chart
+  // Prepare emissions trend data from new API
   const emissionsTrendData = useMemo(() => {
-    if (!emissionsHistory || emissionsHistory.length === 0) return [];
-
-    return emissionsHistory.map(record => {
-      const date = new Date(record.reporting_period_end);
-      const monthYear = date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-
-      return {
-        period: monthYear,
-        total: (record.scope_1_total || 0) + (record.scope_2_total || 0) + (record.scope_3_total || 0),
-        scope1: record.scope_1_total || 0,
-        scope2: record.scope_2_total || 0,
-        scope3: record.scope_3_total || 0,
-      };
-    });
-  }, [emissionsHistory]);
+    if (emissionsTrend?.data && emissionsTrend.data.length > 0) {
+      return emissionsTrend.data;
+    }
+    return [];
+  }, [emissionsTrend]);
   return (
     <Layout>
       <div className="space-y-6 animate-fade-in">
@@ -172,7 +182,13 @@ const Carbon = () => {
             <p className="text-muted-foreground mt-1">Track and reduce your carbon footprint</p>
           </div>
           <div className="flex gap-3">
-            <Button variant="outline">
+            <Button
+              variant="outline"
+              onClick={() => {
+                refetchSummary();
+                refetchTrend();
+              }}
+            >
               <RefreshCw className="w-4 h-4 mr-2" />
               Recalculate
             </Button>
@@ -252,6 +268,17 @@ const Carbon = () => {
                   <Tooltip />
                 </PieChart>
               </ResponsiveContainer>
+              {scope2LocationBased > 0 && (
+                <div className="mt-4 p-3 bg-muted/50 rounded-lg text-sm">
+                  <p className="text-muted-foreground">
+                    <strong>Scope 2 Methods:</strong> Market-Based: {scope2Total.toLocaleString()} tons CO₂e |
+                    Location-Based: {scope2LocationBased.toLocaleString()} tons CO₂e
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Market-based method shown in chart (GHG Protocol recommended)
+                  </p>
+                </div>
+              )}
             </CardContent>
           </Card>
 
@@ -282,7 +309,19 @@ const Carbon = () => {
         {/* Emissions Trend Over Time */}
         <Card>
           <CardHeader>
-            <CardTitle>Emissions Trend</CardTitle>
+            <div className="flex items-center justify-between">
+              <CardTitle>Emissions Trend</CardTitle>
+              <Select value={trendPeriod} onValueChange={(value: any) => setTrendPeriod(value)}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Select period" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="monthly">Monthly</SelectItem>
+                  <SelectItem value="quarterly">Quarterly</SelectItem>
+                  <SelectItem value="annual">Annual</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </CardHeader>
           <CardContent>
             {emissionsTrendData.length > 0 ? (
